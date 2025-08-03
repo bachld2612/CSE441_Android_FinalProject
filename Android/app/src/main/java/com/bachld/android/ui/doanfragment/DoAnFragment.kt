@@ -7,31 +7,41 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bachld.android.R
+import com.bachld.android.databinding.FragmentDoAnBinding
 import com.bachld.android.databinding.FragmentHomeBinding
 
 class DoAnFragment: Fragment() {
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentDoAnBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(DoAnViewModel::class.java)
+        _binding = FragmentDoAnBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            childFragmentManager.beginTransaction()
+                .replace(R.id.container_thong_tin_do_an, ThongTinDoAnFragment())
+                .commit()
         }
-        return root
+
+//        // Xử lý nút chuyển fragment con
+//        binding.btnDangKyDeTai.setOnClickListener {
+//            childFragmentManager.beginTransaction()
+//                .replace(R.id.container_thong_tin_do_an, DangKyDoAnFragment())
+//                .addToBackStack(null)
+//                .commit()
+//        }
+//        // ... Các nút khác nếu cần
     }
 
     override fun onDestroyView() {
