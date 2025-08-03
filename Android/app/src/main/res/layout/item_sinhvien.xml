@@ -1,0 +1,48 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    android:layout_marginBottom="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="#E3F2FD">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Họ tên: Lý Duy Bách"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvMsv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MSV: 2251172245"/>
+
+        <TextView
+            android:id="@+id/tvClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lớp: 64KTPM4"/>
+
+        <TextView
+            android:id="@+id/tvDept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BM: Hệ thống thông tin"/>
+
+        <TextView
+            android:id="@+id/tvSupervisor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GVHD: Th.S Kiều Tuấn Dũng"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
