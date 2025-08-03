@@ -1,4 +1,4 @@
-package com.bachld.android.ui.home
+package com.bachld.android.ui.sinhvienfragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bachld.android.databinding.FragmentHomeBinding
+import com.bachld.android.ui.doanfragment.DoAnViewModel
 
-class HomeFragment : Fragment() {
+class SinhVienFragment: Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -23,7 +24,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this).get(SinhVienViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -39,4 +40,5 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

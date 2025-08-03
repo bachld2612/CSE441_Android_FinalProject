@@ -1,13 +1,14 @@
-package com.bachld.android.ui.notifications
+package com.bachld.android.ui.sinhvienfragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class SinhVienViewModel: ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "Trang Sinh Viên"
     }
     val text: LiveData<String> = _text
+
 }
