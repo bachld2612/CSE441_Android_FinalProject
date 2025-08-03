@@ -17,6 +17,12 @@ class ThongTinDoAnFragment:Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentThongTinDoAnBinding.inflate(inflater, container, false)
+        binding.btnDeNghiHoan.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container_thong_tin_do_an, HoanDoAnFragment())
+                .addToBackStack(null) // Cho phép quay lại Thông tin đồ án nếu bấm Back
+                .commit()
+        }
         return binding.root
     }
 

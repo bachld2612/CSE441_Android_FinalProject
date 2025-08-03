@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FB">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <!-- Card Form -->
+        <LinearLayout
+            android:id="@+id/layout_form_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginHorizontal="4dp">
+
+            <!-- Title (có thể bỏ nếu dùng toolbar AppBar ở trên) -->
+            <TextView
+                android:id="@+id/tv_de_nghi_hoan_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đề nghị hoãn đồ án"
+                android:textStyle="bold"
+                android:textColor="#232323"
+                android:textSize="17sp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <!-- Lý do hoãn -->
+            <TextView
+                android:id="@+id/tv_ly_do_hoan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lý do hoãn"
+                android:textStyle="bold"
+                android:textColor="#232323"
+                android:textSize="15sp"
+                android:layout_marginTop="0dp" />
+
+            <EditText
+                android:id="@+id/edt_ly_do_hoan"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:hint="Nhập lý do hoãn"
+                android:background="@drawable/bg_edittext_outline"
+                android:gravity="start|top"
+                android:padding="10dp"
+                android:textSize="15sp"
+                android:layout_marginTop="6dp" />
+
+            <!-- File minh chứng -->
+            <TextView
+                android:id="@+id/tv_file_minh_chung"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="File minh chứng (Nếu có)"
+                android:textStyle="bold"
+                android:textColor="#232323"
+                android:textSize="15sp"
+                android:layout_marginTop="18dp" />
+
+            <!-- Upload Box -->
+            <FrameLayout
+                android:id="@+id/frame_upload_minh_chung"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_edittext_outline"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/img_upload"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_cloud_upload"
+                        android:layout_gravity="center"
+                        app:tint="#B1B3B7" />
+
+                    <TextView
+                        android:id="@+id/tv_keo_tha_tai_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chọn file để upload"
+                        android:textColor="#B1B3B7"
+                        android:gravity="center"
+                        android:textSize="15sp"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </FrameLayout>
+
+
+            <!-- Button gửi đề nghị -->
+            <Button
+                android:id="@+id/btn_gui_de_nghi"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:text="Gửi đề nghị"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#537198"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:elevation="2dp"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
