@@ -12,11 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android">
         <activity
-            android:name=".ActivityCommittee"
+            android:name=".HoiDongActivity"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:replace="android:exported">
-            <!-- Chỉ giữ intent-filter nếu bạn muốn nó thành LAUNCHER entrypoint -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
