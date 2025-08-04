@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android">
         <activity
+            android:name=".ChiTietHoiDongActivity"
+            android:exported="false" />
+        <activity
             android:name=".SinhVienActivity"
             android:exported="false" />
         <activity
@@ -28,7 +31,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
     </application>
 
 </manifest>
