@@ -87,7 +87,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="12dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/tv_de_tai"
@@ -127,7 +127,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <Button
-                android:id="@+id/btn_thoi_gian"
+                android:id="@+id/btn_thoi_gian_thuc_hien"
                 android:text=">>"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"

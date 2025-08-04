@@ -29,6 +29,12 @@ class ThongTinDoAnFragment:Fragment() {
                 .addToBackStack(null) // Cho phép quay lại Thông tin đồ án nếu bấm Back
                 .commit()
         }
+        binding.btnThoiGianThucHien.setOnClickListener{
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container_thong_tin_do_an, ThoiGianThucHienFragment())
+                .addToBackStack(null) // Cho phép quay lại Thông tin đồ án nếu bấm Back
+                .commit()
+        }
         return binding.root
     }
 
