@@ -1,6 +1,7 @@
 package com.bachld.android
 
 import android.os.Bundle
+import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -8,6 +9,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bachld.android.databinding.ActivityMainBinding
+import com.bachld.android.ui.doanfragment.DoAnFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,5 +33,25 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        navView.setOnItemReselectedListener { item ->
+            if (item.itemId == R.id.navigation_do_an) {
+                // Lấy fragment DoAnFragment (tab đồ án)
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+                val fragments = navHostFragment?.childFragmentManager?.fragments
+                val doAnFragment = fragments?.find { it is DoAnFragment } as? DoAnFragment
+                doAnFragment?.resetToThongTinDoAn()
+            }
+        }
+
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed() // Quay lại fragment trước đó trong backstack
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
