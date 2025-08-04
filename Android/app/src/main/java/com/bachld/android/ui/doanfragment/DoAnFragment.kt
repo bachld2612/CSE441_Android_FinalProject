@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.bachld.android.R
 import com.bachld.android.databinding.FragmentDoAnBinding
@@ -17,6 +18,7 @@ class DoAnFragment: Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,5 +49,14 @@ class DoAnFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun resetToThongTinDoAn() {
+        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        if (childFragmentManager.findFragmentById(R.id.container_thong_tin_do_an) !is ThongTinDoAnFragment) {
+            childFragmentManager.beginTransaction()
+                .replace(R.id.container_thong_tin_do_an, ThongTinDoAnFragment())
+                .commit()
+        }
     }
 }

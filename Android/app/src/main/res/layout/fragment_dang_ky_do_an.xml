@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F5F7FB">
 
     <LinearLayout
@@ -13,7 +12,6 @@
         android:gravity="center_horizontal"
         android:padding="24dp">
 
-        <!-- Card Form -->
         <LinearLayout
             android:id="@+id/layout_form_container"
             android:layout_width="match_parent"
@@ -24,53 +22,72 @@
             android:layout_marginBottom="24dp"
             android:layout_marginHorizontal="4dp">
 
-            <!-- Title (có thể bỏ nếu dùng toolbar AppBar ở trên) -->
+            <!-- Title (ẩn nếu đã có ở Toolbar) -->
             <TextView
-                android:id="@+id/tv_de_nghi_hoan_title"
+                android:id="@+id/tv_dang_ky_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đề nghị hoãn đồ án"
+                android:text="Đăng ký thực hiện đồ án"
                 android:textStyle="bold"
                 android:textColor="#232323"
                 android:textSize="17sp"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"/>
 
-            <!-- Lý do hoãn -->
+            <!-- Chọn GVHD -->
             <TextView
-                android:id="@+id/tv_ly_do_hoan"
+                android:id="@+id/tv_chon_gvhd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lý do hoãn"
+                android:text="Chọn GVHD:"
                 android:textStyle="bold"
                 android:textColor="#232323"
                 android:textSize="15sp"
                 android:layout_marginTop="0dp" />
 
-            <EditText
-                android:id="@+id/edt_ly_do_hoan"
+            <Spinner
+                android:id="@+id/spn_gvhd"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:hint="Nhập lý do hoãn"
+                android:layout_height="46dp"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/bg_edittext_outline"
-                android:gravity="start|top"
-                android:padding="10dp"
-                android:textSize="15sp"
-                android:layout_marginTop="6dp" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
 
-            <!-- File minh chứng -->
+            <!-- Nhập đề tài đăng ký -->
             <TextView
-                android:id="@+id/tv_file_minh_chung"
+                android:id="@+id/tv_de_tai_dang_ky"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="File minh chứng (Nếu có)"
+                android:text="Nhập đề tài đăng ký:"
                 android:textStyle="bold"
                 android:textColor="#232323"
                 android:textSize="15sp"
-                android:layout_marginTop="18dp" />
+                android:layout_marginTop="16dp"/>
+
+            <EditText
+                android:id="@+id/edt_ten_de_tai"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:hint="Tên đề tài"
+                android:background="@drawable/bg_edittext_outline"
+                android:padding="10dp"
+                android:textSize="15sp"
+                android:layout_marginTop="6dp"/>
+
+            <!-- File tổng quan -->
+            <TextView
+                android:id="@+id/tv_file_tong_quan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="File tổng quan về đề tài:"
+                android:textStyle="bold"
+                android:textColor="#232323"
+                android:textSize="15sp"
+                android:layout_marginTop="16dp"/>
 
             <!-- Upload Box -->
             <FrameLayout
-                android:id="@+id/frame_upload_minh_chung"
+                android:id="@+id/frame_upload_file"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="6dp"
@@ -104,13 +121,12 @@
                 </LinearLayout>
             </FrameLayout>
 
-
-            <!-- Button gửi đề nghị -->
+            <!-- Button gửi đăng ký -->
             <Button
-                android:id="@+id/btn_gui_de_nghi"
+                android:id="@+id/btn_gui_dang_ky"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:text="Gửi đề nghị"
+                android:text="Gửi đăng ký"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="#537198"
                 android:textAllCaps="false"
@@ -119,6 +135,5 @@
                 android:elevation="2dp"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
