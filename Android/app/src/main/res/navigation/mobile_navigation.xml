@@ -15,7 +15,7 @@
         android:id="@+id/navigation_do_an"
         android:name="com.bachld.android.ui.doanfragment.DoAnFragment"
         android:label="Đồ án"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_do_an" />
 
     <fragment
         android:id="@+id/navigation_sinh_vien"
