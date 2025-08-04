@@ -19,6 +19,17 @@ class DoAnFragment: Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    override fun onResume() {
+        super.onResume()
+        // Xóa toàn bộ fragment con trước đó trong container_thong_tin_do_an
+        childFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        // Luôn hiển thị lại ThongTinDoAnFragment
+        if (childFragmentManager.findFragmentById(R.id.container_thong_tin_do_an) !is ThongTinDoAnFragment) {
+            childFragmentManager.beginTransaction()
+                .replace(R.id.container_thong_tin_do_an, ThongTinDoAnFragment())
+                .commit()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
