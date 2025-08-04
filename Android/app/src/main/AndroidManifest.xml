@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android">
         <activity
+            android:name=".DeCuongActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChiTietHoiDongActivity"
             android:exported="false" />
         <activity
