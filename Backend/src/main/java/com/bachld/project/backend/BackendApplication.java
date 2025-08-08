@@ -32,8 +32,8 @@ public class BackendApplication {
                         .build();
                 taiKhoanRepository.save(taiKhoan);
             }
-//            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//            log.info(passwordEncoder.encode("123456"));
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+            log.info(passwordEncoder.encode("123456"));
         };
     }
 

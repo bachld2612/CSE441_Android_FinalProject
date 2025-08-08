@@ -20,8 +20,11 @@ public enum ErrorCode {
     WRONG_PASSWORD(1007, "Wrong Password", HttpStatus.FORBIDDEN),
     INACTIVATED_ACCOUNT(1008, "Inactivated Account", HttpStatus.FORBIDDEN),
     KHOA_NOT_FOUND(1009, "Khoa Not Found", HttpStatus.NOT_FOUND),
-    KHOA_EMPTY(10010, "Ten khoa cannot be empty", HttpStatus.BAD_REQUEST),
-    DUPLICATED_KHOA(10011, "Ten khoa already exists", HttpStatus.BAD_REQUEST),
+    KHOA_EMPTY(1010, "Ten khoa cannot be empty", HttpStatus.BAD_REQUEST),
+    DUPLICATED_KHOA(1011, "Ten khoa already exists", HttpStatus.BAD_REQUEST),
+    NGANH_EMPTY(1012, "Ten nganh cannot be empty", HttpStatus.BAD_REQUEST),
+    DUPLICATED_NGANH(1013, "Ten nganh already exists", HttpStatus.BAD_REQUEST),
+    NGANH_NOT_FOUND(1014, "Ten nganh not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;

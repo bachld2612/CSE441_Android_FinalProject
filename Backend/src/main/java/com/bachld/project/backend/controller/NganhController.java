@@ -1,0 +1,53 @@
+package com.bachld.project.backend.controller;
+
+
+import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.nganh.NganhRequest;
+import com.bachld.project.backend.dto.response.nganh.NganhResponse;
+import com.bachld.project.backend.entity.Nganh;
+import com.bachld.project.backend.service.NganhService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/nganh")
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class NganhController {
+
+    NganhService nganhService;
+
+    @GetMapping
+    public ApiResponse<List<NganhResponse>> getAllNganh() {
+        return ApiResponse.<List<NganhResponse>>builder()
+                .result(nganhService.getAllNganh())
+                .build();
+    }
+
+    @PostMapping
+    public ApiResponse<NganhResponse> createNganh(@RequestBody NganhRequest nganhRequest) {
+        return ApiResponse.<NganhResponse>builder()
+                .result(nganhService.createNganh(nganhRequest))
+                .build();
+    }
+
+    @PutMapping("/{nganhId}")
+    public ApiResponse<NganhResponse> updateNganh(@PathVariable Long nganhId, @RequestBody NganhRequest nganhRequest) {
+        return ApiResponse.<NganhResponse>builder()
+                .result(nganhService.updateNganh(nganhRequest, nganhId))
+                .build();
+    }
+
+    @DeleteMapping("/{nganhId}")
+    public ApiResponse<String> deleteNganh(@PathVariable Long nganhId) {
+        nganhService.deleteNganh(nganhId);
+        return ApiResponse.<String>builder()
+                .result("Delete nganh successfully!")
+                .build();
+    }
+
+}
