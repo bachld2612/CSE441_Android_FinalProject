@@ -19,7 +19,7 @@ public class SinhVien extends BaseEntity {
     String maSV;
     String hoTen;
     String soDienThoai;
-    boolean trangThai;
+    boolean kichHoat;
     @OneToOne
     @JoinColumn(name = "tai_khoan_id")
     TaiKhoan taiKhoan;

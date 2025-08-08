@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 public class DeTai extends BaseEntity {
 
     String tenDeTai;
+    @Enumerated(EnumType.STRING)
     DeTaiState trangThai;
     String nhanXet;
     @OneToOne
