@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class KhoaServiceImpl implements KhoaService {
 
     KhoaRepository khoaRepository;
-    private final KhoaMapper khoaMapper;
+    KhoaMapper khoaMapper;
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @Override
