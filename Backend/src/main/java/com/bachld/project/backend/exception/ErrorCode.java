@@ -19,7 +19,9 @@ public enum ErrorCode {
     ACCOUNT_NOT_FOUND(1006, "Account not found", HttpStatus.NOT_FOUND),
     WRONG_PASSWORD(1007, "Wrong Password", HttpStatus.FORBIDDEN),
     INACTIVATED_ACCOUNT(1008, "Inactivated Account", HttpStatus.FORBIDDEN),
-
+    KHOA_NOT_FOUND(1009, "Khoa Not Found", HttpStatus.NOT_FOUND),
+    KHOA_EMPTY(10010, "Ten khoa cannot be empty", HttpStatus.BAD_REQUEST),
+    DUPLICATED_KHOA(10011, "Ten khoa already exists", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;

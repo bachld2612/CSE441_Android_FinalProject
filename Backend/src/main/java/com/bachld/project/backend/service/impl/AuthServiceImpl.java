@@ -139,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private String generateToken(TaiKhoan request){
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .subject(request.getEmail())
                 .issuer("bachld")
