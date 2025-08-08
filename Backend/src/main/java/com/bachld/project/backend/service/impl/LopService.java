@@ -61,10 +61,10 @@ public class LopService implements com.bachld.project.backend.service.LopService
         lopRepository.deleteById(lopId);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @Override
     public Page<LopResponse> getAllLop(Pageable pageable) {
         Page<Lop> lopPage = lopRepository.findAll(pageable);
         return lopPage.map(lopMapper::toLopResponse);
     }
+
 }
