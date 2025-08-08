@@ -26,8 +26,8 @@ import org.springframework.stereotype.Service;
 public class BoMonServiceImpl implements BoMonService {
 
     BoMonRepository boMonRepository;
-    private final BoMonMapper boMonMapper;
-    private final KhoaRepository khoaRepository;
+    BoMonMapper boMonMapper;
+    KhoaRepository khoaRepository;
 
     @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
     @Override
