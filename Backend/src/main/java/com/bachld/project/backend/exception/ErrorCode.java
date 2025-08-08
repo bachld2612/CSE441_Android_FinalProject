@@ -25,6 +25,9 @@ public enum ErrorCode {
     NGANH_EMPTY(1012, "Ten nganh cannot be empty", HttpStatus.BAD_REQUEST),
     DUPLICATED_NGANH(1013, "Ten nganh already exists", HttpStatus.BAD_REQUEST),
     NGANH_NOT_FOUND(1014, "Ten nganh not found", HttpStatus.NOT_FOUND),
+    DUPLICATED_BO_MON(1015, "Ten bo mon already exists", HttpStatus.BAD_REQUEST),
+    BO_MON_EMPTY(1016, "Ten bo mon already exists", HttpStatus.BAD_REQUEST),
+    BO_MON_NOT_FOUND(1017, "Ten bo mon already exists", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;

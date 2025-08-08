@@ -1,6 +1,5 @@
-package com.bachld.project.backend.dto.response.nganh;
+package com.bachld.project.backend.dto.request.bomon;
 
-import com.bachld.project.backend.entity.Khoa;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,10 +9,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class NganhResponse {
+public class BoMonRequest {
 
-    Long id;
-    String tenNganh;
+    @NotEmpty(message = "BO_MON_EMPTY")
+    String tenBoMon;
+    @NotEmpty(message = "KHOA_EMPTY")
     Long khoaId;
 
 }
