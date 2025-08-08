@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/dams
+    username: root
+    password: bach2612
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    user:
+      name: admin
+      password: 123456
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  config:
+    import: optional:file:secret.yml
+
+jwt:
+  refreshTokenExpirationMs: 2592000000
+
