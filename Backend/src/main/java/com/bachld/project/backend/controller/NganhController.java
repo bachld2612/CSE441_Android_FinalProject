@@ -9,6 +9,10 @@ import com.bachld.project.backend.service.NganhService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +26,14 @@ public class NganhController {
     NganhService nganhService;
 
     @GetMapping
-    public ApiResponse<List<NganhResponse>> getAllNganh() {
-        return ApiResponse.<List<NganhResponse>>builder()
-                .result(nganhService.getAllNganh())
+    public ApiResponse<Page<NganhResponse>> getAllNganh(
+            @PageableDefault(
+                    page = 0,
+                    size = 10,
+                    sort = "updatedAt",
+                    direction = Sort.Direction.DESC) Pageable pageable) {
+        return ApiResponse.<Page<NganhResponse>>builder()
+                .result(nganhService.getAllNganh(pageable))
                 .build();
     }
 

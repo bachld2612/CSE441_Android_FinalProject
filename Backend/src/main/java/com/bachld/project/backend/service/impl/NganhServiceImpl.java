@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +64,8 @@ public class NganhServiceImpl implements NganhService {
 
     @PreAuthorize("isAuthenticated()")
     @Override
-    public List<NganhResponse> getAllNganh() {
-        return nganhRepository.findAll().stream().map(nganhMapper::toNganhResponse).collect(Collectors.toList());
+    public Page<NganhResponse> getAllNganh(Pageable pageable) {
+        Page<Nganh> nganhPage = nganhRepository.findAll(pageable);
+        return nganhPage.map(nganhMapper::toNganhResponse);
     }
 }
