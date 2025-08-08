@@ -22,6 +22,7 @@ public class DotBaoVeGiangVienHoiDong extends BaseEntity {
     @JoinColumn
     HoiDong hoiDong;
 
+    @Enumerated(EnumType.STRING)
     HoiDongRole chucVu;
 
 }

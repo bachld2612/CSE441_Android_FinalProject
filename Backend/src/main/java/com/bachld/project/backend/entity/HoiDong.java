@@ -1,10 +1,7 @@
 package com.bachld.project.backend.entity;
 
 import com.bachld.project.backend.enums.HoiDongType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,6 +20,7 @@ public class HoiDong extends BaseEntity {
     String tenHoiDong;
     LocalDate thoiGianBatDau;
     LocalDate thoiGianKetThuc;
+    @Enumerated(EnumType.STRING)
     HoiDongType loaiHoiDong;
     @ManyToMany(mappedBy = "hoiDongSet")
     Set<DotBaoVeDeTai> dotBaoVeDeTaiSet;

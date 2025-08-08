@@ -25,6 +25,8 @@ public class GiangVien extends BaseEntity {
     BoMon boMon;
     @OneToMany(mappedBy = "gvhd")
     Set<DeTai> deTaiSet;
-
+    @OneToOne
+    @JoinColumn(name = "tai_khoan_id")
+    TaiKhoan taiKhoan;
 
 }

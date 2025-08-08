@@ -1,10 +1,7 @@
 package com.bachld.project.backend.entity;
 
 import com.bachld.project.backend.enums.DeCuongState;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeCuong extends BaseEntity{
 
+    @Enumerated(EnumType.STRING)
     DeCuongState trangThai;
     String deCuongUrl;
     @OneToOne
