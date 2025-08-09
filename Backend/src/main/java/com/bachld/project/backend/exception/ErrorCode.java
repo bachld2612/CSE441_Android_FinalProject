@@ -31,6 +31,16 @@ public enum ErrorCode {
     LOP_EMPTY(1018, "Ten lop cannot be empty", HttpStatus.BAD_REQUEST),
     DUPLICATED_LOP(1019, "Ten lop already exists", HttpStatus.BAD_REQUEST),
     LOP_NOT_FOUND(1020, "Lop not found", HttpStatus.NOT_FOUND),
+    FILE_NOT_FOUND(1201, "File not found", HttpStatus.NOT_FOUND),
+    FILE_URL_EMPTY(1202, "File URL cannot be empty", HttpStatus.BAD_REQUEST),
+    DE_TAI_ID_EMPTY(1203, "De tai ID cannot be empty", HttpStatus.BAD_REQUEST),
+    DE_TAI_NOT_FOUND   (1204, "De tai not found",   HttpStatus.NOT_FOUND),
+    DE_CUONG_NOT_FOUND (1205, "De cuong not found", HttpStatus.NOT_FOUND),
+    DE_CUONG_ALREADY_APPROVED(1206, "De cuong already approved!", HttpStatus.BAD_REQUEST),
+    DE_CUONG_ALREADY_SUBMITTED(1207, "De cuong already submitted!", HttpStatus.BAD_REQUEST),
+    DE_CUONG_ALREADY_REJECTED(1208, "De cuong already rejected!", HttpStatus.BAD_REQUEST),
+    DE_CUONG_EMPTY(1209, "De cuong cannot be empty", HttpStatus.BAD_REQUEST),
+    OUTLINE_NOT_PENDING(1210, "Outline is not in PENDING state", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
