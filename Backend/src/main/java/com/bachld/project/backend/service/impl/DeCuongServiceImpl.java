@@ -51,6 +51,9 @@ public class DeCuongServiceImpl implements DeCuongService {
         //nếu đã được duyệt thì không được cập nhật
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
+                    if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
+                        throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
+                    }
                     mapper.update(existing, request);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
@@ -64,32 +67,30 @@ public class DeCuongServiceImpl implements DeCuongService {
                     return created;
                 });
 
+
         return mapper.toResponse(deCuongRepository.save(dc));
     }
 
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
     @Override
     public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve) {
-        DeCuong dc = deCuongRepository.findById(deCuongId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_CUONG_NOT_FOUND)); // thêm vào ErrorCode
-
-        // GV chỉ duyệt đề cương mình hướng dẫn
         String email = currentUsername();
-        //có thể lỗi logic
-        boolean isSupervisor = dc.getDeTai() != null
-                && dc.getDeTai().getGvhd() != null
-                && dc.getDeTai().getGvhd().getTaiKhoan() != null
-                && email.equalsIgnoreCase(dc.getDeTai().getGvhd().getTaiKhoan().getEmail());
+        boolean isSupervisor = deCuongRepository
+                .existsByIdAndDeTai_Gvhd_TaiKhoan_EmailIgnoreCase(deCuongId, email);
         if (!isSupervisor) {
             throw new ApplicationException(ErrorCode.UNAUTHORIZED);
         }
 
+        DeCuong dc = deCuongRepository.findById(deCuongId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_CUONG_NOT_FOUND));
+
         if (dc.getTrangThai() == DeCuongState.ACCEPTED) {
-            throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED); // cần khai báo thêm, ví dụ 1207
+            throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
         }
         if (dc.getTrangThai() == DeCuongState.CANCELED) {
-            throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_REJECTED); // ví dụ 1208
+            throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_REJECTED);
         }
+
         dc.setTrangThai(approve ? DeCuongState.ACCEPTED : DeCuongState.CANCELED);
         return mapper.toResponse(deCuongRepository.save(dc));
     }
