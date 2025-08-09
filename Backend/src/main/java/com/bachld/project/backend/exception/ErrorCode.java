@@ -31,6 +31,13 @@ public enum ErrorCode {
     LOP_EMPTY(1018, "Ten lop cannot be empty", HttpStatus.BAD_REQUEST),
     DUPLICATED_LOP(1019, "Ten lop already exists", HttpStatus.BAD_REQUEST),
     LOP_NOT_FOUND(1020, "Lop not found", HttpStatus.NOT_FOUND),
+    MA_SV_INVALID(1021, "Ma SV invalid", HttpStatus.BAD_REQUEST),
+    HO_TEN_EMPTY(1022, "Ho ten cannot be empty", HttpStatus.BAD_REQUEST),
+    SO_DIEN_THOAI_INVALID(1023, "So dien thoai invalid", HttpStatus.BAD_REQUEST),
+    EMAIL_EXISTED(1024, "Email already exists", HttpStatus.BAD_REQUEST),
+    MA_SV_EXISTED(1025, "Ma SV already exists", HttpStatus.BAD_REQUEST),
+    MA_GV_EXISTED(1026, "Ma GV already exists", HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND(1027, "User not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;
