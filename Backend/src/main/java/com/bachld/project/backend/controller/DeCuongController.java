@@ -27,7 +27,7 @@ public class DeCuongController {
     // - Giảng viên: chỉ thấy đề cương của SV mình hướng dẫn (service đã lọc theo email GV)
     // - Admin/TBM: xem tất cả
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIÊN','SCOPE_ADMIN','SCOPE_TRUONG_BO_MON')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIÊN','SCOPE_TRUONG_BO_MON')")
     public ApiResponse<Page<DeCuongResponse>> getAll(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable) {

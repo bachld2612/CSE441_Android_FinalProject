@@ -35,7 +35,7 @@ public class DeCuongServiceImpl implements DeCuongService {
 
     @Override
     public boolean existsByDeTaiId(Long deTaiId) {
-        return deCuongRepository.existsByDeTaiId(deTaiId);
+        return deCuongRepository.existsByDeTai_Id(deTaiId);
     }
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
@@ -61,7 +61,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         }
 
         // Tạo mới / cập nhật -> set PENDING
-        DeCuong dc = deCuongRepository.findByDeTaiId(deTai.getId())
+        DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
                     mapper.update(existing, request);
                     existing.setTrangThai(DeCuongState.PENDING);
@@ -104,7 +104,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         return mapper.toResponse(deCuongRepository.save(dc));
     }
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_ADMIN','SCOPE_TRUONG_BO_MON')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
     @Override
     public Page<DeCuongResponse> getAllDeCuong(Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -10,14 +10,20 @@ import java.util.Optional;
 
 public interface DeCuongRepository extends JpaRepository<DeCuong, Long> {
 
-    boolean existsByDeTaiId(Long deTaiId);
+    // ✅ dùng property path theo quan hệ deTai
+    boolean existsByDeTai_Id(Long deTaiId);
 
-    Optional<DeCuong> findByDeTaiId(Long deTaiId);
+    Optional<DeCuong> findByDeTai_Id(Long deTaiId);
 
+    // ✅ GV này có phải GVHD của đề cương id?
+    boolean existsByIdAndDeTai_Gvhd_TaiKhoan_EmailIgnoreCase(Long deCuongId, String email);
+
+    // ✅ danh sách đề cương của các SV do GV này hướng dẫn
     @EntityGraph(attributePaths = { "deTai", "deTai.sinhVienThucHien", "deTai.gvhd" })
     Page<DeCuong> findByDeTai_Gvhd_TaiKhoan_EmailIgnoreCase(String email, Pageable pageable);
 
-    // Để tránh N+1 khi phân trang dùng cho giảng viên xem danh sách mình huớng dẫn để duyệt đề cương
+    // Admin/TBM xem tất cả (tránh N+1)
+    @Override
     @EntityGraph(attributePaths = { "deTai", "deTai.sinhVienThucHien", "deTai.gvhd" })
     Page<DeCuong> findAll(Pageable pageable);
 }
