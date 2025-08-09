@@ -21,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -33,21 +32,9 @@ public class DeCuongServiceImpl implements DeCuongService {
     DeTaiRepository deTaiRepository;
     DeCuongMapper mapper;
 
-    @Override
-    public boolean existsByDeTaiId(Long deTaiId) {
-        return deCuongRepository.existsByDeTai_Id(deTaiId);
-    }
-
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
     public DeCuongResponse submitDeCuong(DeCuongRequest request) {
-        if (request == null || request.getDeTaiId() == null) {
-            throw new ApplicationException(ErrorCode.DE_TAI_ID_EMPTY);      // 1203
-        }
-        if (!StringUtils.hasText(request.getFileUrl())) {
-            throw new ApplicationException(ErrorCode.FILE_URL_EMPTY);       // 1202
-        }
-
         DeTai deTai = deTaiRepository.findById(request.getDeTaiId())
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND)); // thêm vào ErrorCode
 
@@ -61,22 +48,26 @@ public class DeCuongServiceImpl implements DeCuongService {
         }
 
         // Tạo mới / cập nhật -> set PENDING
+        //nếu đã được duyệt thì không được cập nhật
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
                     mapper.update(existing, request);
                     existing.setTrangThai(DeCuongState.PENDING);
+                    existing.setSoLanNop(existing.getSoLanNop() + 1);
                     return existing;
                 })
                 .orElseGet(() -> {
                     DeCuong created = mapper.toEntity(request);
                     created.setDeTai(deTai);
                     created.setTrangThai(DeCuongState.PENDING);
+                    created.setSoLanNop(1);
                     return created;
                 });
 
         return mapper.toResponse(deCuongRepository.save(dc));
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
     @Override
     public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve) {
         DeCuong dc = deCuongRepository.findById(deCuongId)
@@ -84,6 +75,7 @@ public class DeCuongServiceImpl implements DeCuongService {
 
         // GV chỉ duyệt đề cương mình hướng dẫn
         String email = currentUsername();
+        //có thể lỗi logic
         boolean isSupervisor = dc.getDeTai() != null
                 && dc.getDeTai().getGvhd() != null
                 && dc.getDeTai().getGvhd().getTaiKhoan() != null
@@ -98,8 +90,6 @@ public class DeCuongServiceImpl implements DeCuongService {
         if (dc.getTrangThai() == DeCuongState.CANCELED) {
             throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_REJECTED); // ví dụ 1208
         }
-
-
         dc.setTrangThai(approve ? DeCuongState.ACCEPTED : DeCuongState.CANCELED);
         return mapper.toResponse(deCuongRepository.save(dc));
     }

@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface DeCuongService {
 
-    boolean existsByDeTaiId(Long deTaiId);
-
     /** Sinh viên nộp đề cương (tạo mới hoặc cập nhật file, status về PENDING) */
     DeCuongResponse submitDeCuong(DeCuongRequest request);
 

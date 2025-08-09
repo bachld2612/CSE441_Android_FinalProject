@@ -1,8 +1,8 @@
 package com.bachld.project.backend.dto.request.decuong;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,10 +12,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeCuongRequest {
-    @NotEmpty(message = "DE_TAI_ID_EMPTY")
-    private Long deTaiId;
+    @NotNull(message = "DE_TAI_ID_EMPTY")
+    @Positive(message = "DE_TAI_ID_MUST_BE_POSITIVE")
+    Long deTaiId;
 
     // Nếu bạn upload qua Cloudinary thì service sẽ set URL này sau khi upload
     @NotEmpty(message = "FILE_URL_EMPTY")
-    private String fileUrl;
+    String fileUrl;
 }

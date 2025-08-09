@@ -41,6 +41,7 @@ public enum ErrorCode {
     DE_CUONG_ALREADY_REJECTED(1208, "De cuong already rejected!", HttpStatus.BAD_REQUEST),
     DE_CUONG_EMPTY(1209, "De cuong cannot be empty", HttpStatus.CONFLICT),
     OUTLINE_NOT_PENDING(1210, "Outline is not in PENDING state", HttpStatus.CONFLICT),
+    DE_TAI_ID_MUST_BE_POSITIVE(1211, "De tai ID must be positive", HttpStatus.BAD_REQUEST)
     ;
     int code;
     String message;
