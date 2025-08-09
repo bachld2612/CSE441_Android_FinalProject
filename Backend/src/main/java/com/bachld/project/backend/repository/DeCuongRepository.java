@@ -15,8 +15,12 @@ public interface DeCuongRepository extends JpaRepository<DeCuong, Long> {
 
     Optional<DeCuong> findByDeTai_Id(Long deTaiId);
 
-    // ✅ GV này có phải GVHD của đề cương id?
-    boolean existsByIdAndDeTai_Gvhd_TaiKhoan_EmailIgnoreCase(Long deCuongId, String email);
+    Page<DeCuong> findByDeTai_Gvhd_Id(Long gvId, Pageable pageable);                 // danh sách theo GVHD
+    Page<DeCuong> findByDeTai_SinhVienThucHien_Id(Long svId, Pageable pageable);
+
+    // khi cần lấy entity để cập nhật, load kèm các quan hệ cần thiết
+    @EntityGraph(attributePaths = {"deTai", "deTai.gvhd", "deTai.gvhd.taiKhoan"})
+    Optional<DeCuong> findWithGraphById(Long id);
 
     // ✅ danh sách đề cương của các SV do GV này hướng dẫn
     @EntityGraph(attributePaths = { "deTai", "deTai.sinhVienThucHien", "deTai.gvhd" })

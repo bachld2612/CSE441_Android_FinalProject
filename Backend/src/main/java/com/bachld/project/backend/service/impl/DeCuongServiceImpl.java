@@ -4,12 +4,15 @@ import com.bachld.project.backend.dto.request.decuong.DeCuongRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
+import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.enums.DeCuongState;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.DeCuongMapper;
 import com.bachld.project.backend.repository.DeCuongRepository;
 import com.bachld.project.backend.repository.DeTaiRepository;
+import com.bachld.project.backend.repository.GiangVienRepository;
+import com.bachld.project.backend.repository.SinhVienRepository;
 import com.bachld.project.backend.service.DeCuongService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -30,6 +33,8 @@ public class DeCuongServiceImpl implements DeCuongService {
 
     DeCuongRepository deCuongRepository;
     DeTaiRepository deTaiRepository;
+    SinhVienRepository sinhVienRepository;
+    GiangVienRepository giangVienRepository;
     DeCuongMapper mapper;
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
@@ -54,6 +59,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
                     }
+                    // nếu đang CANCELED, tùy policy: cho nộp lại -> set PENDING
                     mapper.update(existing, request);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
@@ -74,15 +80,20 @@ public class DeCuongServiceImpl implements DeCuongService {
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
     @Override
     public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve) {
+        // Lấy GV hiện tại theo email
         String email = currentUsername();
-        boolean isSupervisor = deCuongRepository
-                .existsByIdAndDeTai_Gvhd_TaiKhoan_EmailIgnoreCase(deCuongId, email);
-        if (!isSupervisor) {
-            throw new ApplicationException(ErrorCode.UNAUTHORIZED);
-        }
+        GiangVien gv = giangVienRepository.findByTaiKhoan_EmailIgnoreCase(email)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.UNAUTHORIZED));
 
+        // Lấy đề cương
         DeCuong dc = deCuongRepository.findById(deCuongId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_CUONG_NOT_FOUND));
+
+        // Chỉ GV hướng dẫn của đề tài đó mới được duyệt
+        if (dc.getDeTai() == null || dc.getDeTai().getGvhd() == null ||
+                !dc.getDeTai().getGvhd().getId().equals(gv.getId())) {
+            throw new ApplicationException(ErrorCode.UNAUTHORIZED);
+        }
 
         if (dc.getTrangThai() == DeCuongState.ACCEPTED) {
             throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
@@ -94,6 +105,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         dc.setTrangThai(approve ? DeCuongState.ACCEPTED : DeCuongState.CANCELED);
         return mapper.toResponse(deCuongRepository.save(dc));
     }
+
 
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
     @Override
