@@ -15,12 +15,12 @@ public class DeCuongRequest {
     @NotNull(message = "DE_TAI_ID_EMPTY")
     @Positive(message = "DE_TAI_ID_MUST_BE_POSITIVE")
     Long deTaiId;
-
     // Nếu bạn upload qua Cloudinary thì service sẽ set URL này sau khi upload
     @NotEmpty(message = "FILE_URL_EMPTY")
     String fileUrl;
-    String reason;
 
+
+    String reason;
     // thêm:
     @NotNull(message="APPROVE_EMPTY")
     Boolean approve;

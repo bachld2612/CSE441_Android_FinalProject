@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface DeCuongService {
     // DeCuongService.java
-    DeCuongResponse submitDeCuong(DeCuongRequest request);
+    DeCuongResponse submitDeCuong(Long deTaiId, String fileUrl);
     DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason);
     Page<DeCuongResponse> getAllDeCuong(Pageable pageable);
 

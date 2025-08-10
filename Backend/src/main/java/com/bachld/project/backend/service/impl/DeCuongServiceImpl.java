@@ -38,16 +38,14 @@ public class DeCuongServiceImpl implements DeCuongService {
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
-    public DeCuongResponse submitDeCuong(DeCuongRequest request) {
-        DeTai deTai = deTaiRepository.findById(request.getDeTaiId())
+    public DeCuongResponse submitDeCuong(Long deTaiId, String fileUrl) {
+        DeTai deTai = deTaiRepository.findById(deTaiId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
         if (deTai.getTrangThai() != DeTaiState.ACCEPTED) {
             throw new ApplicationException(ErrorCode.DE_TAI_NOT_ACCEPTED);
         }
-        // Nếu bạn dùng enum khác, hãy đổi điều kiện cho phù hợp.
 
-        // (B) Chỉ SV chủ đề tài được nộp
         String email = currentUsername();
         boolean isOwner = deTai.getSinhVienThucHien() != null
                 && deTai.getSinhVienThucHien().getTaiKhoan() != null
@@ -56,23 +54,21 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.UNAUTHORIZED);
         }
 
-        // (C) Tạo mới / cập nhật
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
-                        // Đã duyệt rồi thì không cho thay đổi
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
                     }
-                    // Cho nộp lại: cập nhật URL, về PENDING, tăng số lần nộp, xóa lý do cũ
-                    mapper.update(existing, request);
+                    existing.setDeCuongUrl(fileUrl);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
                     existing.setNhanXet(null);
                     return existing;
                 })
                 .orElseGet(() -> {
-                    DeCuong created = mapper.toEntity(request);
+                    DeCuong created = new DeCuong();
                     created.setDeTai(deTai);
+                    created.setDeCuongUrl(fileUrl);
                     created.setTrangThai(DeCuongState.PENDING);
                     created.setSoLanNop(1);
                     created.setNhanXet(null);
@@ -81,6 +77,7 @@ public class DeCuongServiceImpl implements DeCuongService {
 
         return mapper.toResponse(deCuongRepository.save(dc));
     }
+
 
 
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")

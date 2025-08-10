@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +29,11 @@ public class DeCuongController {
 
     @GetMapping
     public ApiResponse<Page<DeCuongResponse>> getAll(
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
+            @ParameterObject
+            @PageableDefault(page = 0,
+                             size = 10,
+                             sort = "updatedAt",
+                             direction = Sort.Direction.DESC)
             Pageable pageable) {
         return ApiResponse.<Page<DeCuongResponse>>builder()
                 .result(deCuongService.getAllDeCuong(pageable))
@@ -37,11 +42,15 @@ public class DeCuongController {
 
     // Sinh viên nộp/cập nhật đề cương cho Đề tài của chính mình
     @PostMapping
-    public ApiResponse<DeCuongResponse> submit(@Valid @RequestBody DeCuongRequest request) {
-        return ApiResponse.<DeCuongResponse>builder()
-                .result(deCuongService.submitDeCuong(request))
-                .build();
+    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    public ApiResponse<DeCuongResponse> submit(
+            @RequestParam Long deTaiId,
+            @RequestParam String fileUrl
+    ) {
+        var res = deCuongService.submitDeCuong(deTaiId, fileUrl);
+        return ApiResponse.<DeCuongResponse>builder().result(res).message("Nộp đề cương thành công").build();
     }
+
 
     @PutMapping("/{id}/approve")
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
