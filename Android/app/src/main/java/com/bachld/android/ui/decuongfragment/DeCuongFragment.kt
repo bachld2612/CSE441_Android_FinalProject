@@ -1,19 +1,17 @@
-package com.bachld.android.ui.hoidongfragment
+package com.bachld.android.ui.decuongfragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.bachld.android.databinding.FragmentHoiDongBinding
+import com.bachld.android.databinding.FragmentDeCuongBinding
 
-class HoiDongFragment: Fragment() {
-    private var _binding: FragmentHoiDongBinding? = null
+class DeCuongFragment : Fragment() {
+    private var _binding: FragmentDeCuongBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -21,10 +19,9 @@ class HoiDongFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HoiDongViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(DeCuongViewModel::class.java)
 
-        _binding = FragmentHoiDongBinding.inflate(inflater, container, false)
+        _binding = FragmentDeCuongBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         return root
@@ -34,5 +31,4 @@ class HoiDongFragment: Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }

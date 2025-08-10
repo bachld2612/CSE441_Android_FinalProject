@@ -19,6 +19,7 @@ public class DeTai extends BaseEntity {
     DeTaiState trangThai;
     @Column(columnDefinition = "TEXT")
     String nhanXet;
+    String tongQuanDeTaiUrl;
     @OneToOne
     @JoinColumn(name = "sinh_vien_thuc_hien_id")
     SinhVien sinhVienThucHien;
