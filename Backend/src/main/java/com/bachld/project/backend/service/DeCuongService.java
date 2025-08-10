@@ -10,5 +10,7 @@ public interface DeCuongService {
     DeCuongResponse submitDeCuong(Long deTaiId, String fileUrl);
     DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason);
     Page<DeCuongResponse> getAllDeCuong(Pageable pageable);
-
+    /** TBM xem danh sách đề cương đã duyệt của bộ môn quản lý */
+    Page<DeCuongResponse> getAcceptedForTBM(Pageable pageable);
+    byte[] exportAcceptedForTBMAsExcel();
 }

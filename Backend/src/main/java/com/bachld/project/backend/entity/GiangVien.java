@@ -7,11 +7,17 @@ import lombok.experimental.FieldDefaults;
 import java.util.Set;
 
 @Entity
-@Table(name = "giang_vien")
+@Table(
+        name = "giang_vien",
+        indexes = {
+                @Index(name="idx_sv_maGV", columnList = "maGV")
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GiangVien extends BaseEntity {
 
@@ -28,5 +34,7 @@ public class GiangVien extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "tai_khoan_id")
     TaiKhoan taiKhoan;
+    @OneToOne(mappedBy = "truongBoMon")
+    BoMon boMonQuanLy;
 
 }
