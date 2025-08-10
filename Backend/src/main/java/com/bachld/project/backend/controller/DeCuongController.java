@@ -43,19 +43,17 @@ public class DeCuongController {
                 .build();
     }
 
-    // Giảng viên duyệt
     @PutMapping("/{id}/approve")
-    public ApiResponse<DeCuongResponse> approve(@PathVariable("id") Long deCuongId) {
-        return ApiResponse.<DeCuongResponse>builder()
-                .result(deCuongService.reviewDeCuong(deCuongId, true))
-                .build();
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
+    public ApiResponse<DeCuongResponse> approve(@PathVariable Long id) {
+        var res = deCuongService.reviewDeCuong(id, true, null);
+        return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã phê duyệt").build();
     }
 
-    // Giảng viên từ chối
     @PutMapping("/{id}/reject")
-    public ApiResponse<DeCuongResponse> reject(@PathVariable("id") Long deCuongId) {
-        return ApiResponse.<DeCuongResponse>builder()
-                .result(deCuongService.reviewDeCuong(deCuongId, false))
-                .build();
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
+    public ApiResponse<DeCuongResponse> reject(@PathVariable Long id, @RequestParam String reason) {
+        var res = deCuongService.reviewDeCuong(id, false, reason);
+        return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã từ chối").build();
     }
 }

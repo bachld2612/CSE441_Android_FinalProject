@@ -6,13 +6,13 @@ import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.enums.DeCuongState;
+import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.DeCuongMapper;
 import com.bachld.project.backend.repository.DeCuongRepository;
 import com.bachld.project.backend.repository.DeTaiRepository;
 import com.bachld.project.backend.repository.GiangVienRepository;
-import com.bachld.project.backend.repository.SinhVienRepository;
 import com.bachld.project.backend.service.DeCuongService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -33,7 +33,6 @@ public class DeCuongServiceImpl implements DeCuongService {
 
     DeCuongRepository deCuongRepository;
     DeTaiRepository deTaiRepository;
-    SinhVienRepository sinhVienRepository;
     GiangVienRepository giangVienRepository;
     DeCuongMapper mapper;
 
@@ -41,9 +40,14 @@ public class DeCuongServiceImpl implements DeCuongService {
     @Override
     public DeCuongResponse submitDeCuong(DeCuongRequest request) {
         DeTai deTai = deTaiRepository.findById(request.getDeTaiId())
-                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND)); // thêm vào ErrorCode
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
-        // SV chỉ được nộp đề tài của mình
+        if (deTai.getTrangThai() != DeTaiState.ACCEPTED) {
+            throw new ApplicationException(ErrorCode.DE_TAI_NOT_ACCEPTED);
+        }
+        // Nếu bạn dùng enum khác, hãy đổi điều kiện cho phù hợp.
+
+        // (B) Chỉ SV chủ đề tài được nộp
         String email = currentUsername();
         boolean isOwner = deTai.getSinhVienThucHien() != null
                 && deTai.getSinhVienThucHien().getTaiKhoan() != null
@@ -52,17 +56,18 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.UNAUTHORIZED);
         }
 
-        // Tạo mới / cập nhật -> set PENDING
-        //nếu đã được duyệt thì không được cập nhật
+        // (C) Tạo mới / cập nhật
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
+                        // Đã duyệt rồi thì không cho thay đổi
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
                     }
-                    // nếu đang CANCELED, tùy policy: cho nộp lại -> set PENDING
+                    // Cho nộp lại: cập nhật URL, về PENDING, tăng số lần nộp, xóa lý do cũ
                     mapper.update(existing, request);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
+                    existing.setNhanXet(null);
                     return existing;
                 })
                 .orElseGet(() -> {
@@ -70,39 +75,60 @@ public class DeCuongServiceImpl implements DeCuongService {
                     created.setDeTai(deTai);
                     created.setTrangThai(DeCuongState.PENDING);
                     created.setSoLanNop(1);
+                    created.setNhanXet(null);
                     return created;
                 });
-
 
         return mapper.toResponse(deCuongRepository.save(dc));
     }
 
+
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
     @Override
-    public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve) {
-        // Lấy GV hiện tại theo email
+    public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason) {
+        // 1) Lấy GV hiện tại theo email
         String email = currentUsername();
         GiangVien gv = giangVienRepository.findByTaiKhoan_EmailIgnoreCase(email)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.UNAUTHORIZED));
 
-        // Lấy đề cương
+        // 2) Lấy đề cương
         DeCuong dc = deCuongRepository.findById(deCuongId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_CUONG_NOT_FOUND));
 
-        // Chỉ GV hướng dẫn của đề tài đó mới được duyệt
-        if (dc.getDeTai() == null || dc.getDeTai().getGvhd() == null ||
-                !dc.getDeTai().getGvhd().getId().equals(gv.getId())) {
+        // 3) Chỉ GV hướng dẫn của đề tài đó mới được duyệt
+        if (dc.getDeTai() == null || dc.getDeTai().getGvhd() == null
+                || !dc.getDeTai().getGvhd().getId().equals(gv.getId())) {
             throw new ApplicationException(ErrorCode.UNAUTHORIZED);
         }
 
+        // 4) Chỉ cho review khi đang PENDING
         if (dc.getTrangThai() == DeCuongState.ACCEPTED) {
             throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
         }
         if (dc.getTrangThai() == DeCuongState.CANCELED) {
             throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_REJECTED);
         }
+        if (dc.getTrangThai() != DeCuongState.PENDING) {
+            throw new ApplicationException(ErrorCode.OUTLINE_NOT_PENDING);
+        }
 
-        dc.setTrangThai(approve ? DeCuongState.ACCEPTED : DeCuongState.CANCELED);
+        // 5) Áp trạng thái & lý do
+        if (approve) {
+            dc.setTrangThai(DeCuongState.ACCEPTED);
+            // Ghi nhận xét khi duyệt (optional)
+            if (reason != null && !reason.isBlank()) {
+                dc.setNhanXet(reason.trim());
+            }
+        } else {
+            // Reject -> bắt buộc có lý do
+            if (reason == null || reason.isBlank()) {
+                // dùng mã 1219 như đã thống nhất
+                throw new ApplicationException(ErrorCode.DE_CUONG_REASON_REQUIRED);
+            }
+            dc.setTrangThai(DeCuongState.CANCELED);
+            dc.setNhanXet(reason.trim());
+        }
+
         return mapper.toResponse(deCuongRepository.save(dc));
     }
 

@@ -19,4 +19,9 @@ public class DeCuongRequest {
     // Nếu bạn upload qua Cloudinary thì service sẽ set URL này sau khi upload
     @NotEmpty(message = "FILE_URL_EMPTY")
     String fileUrl;
+    String reason;
+
+    // thêm:
+    @NotNull(message="APPROVE_EMPTY")
+    Boolean approve;
 }

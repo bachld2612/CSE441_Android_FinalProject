@@ -19,12 +19,8 @@ public class DeCuongResponse {
     Long id;
     String deCuongUrl;
     DeCuongState trangThai;
-
-    // Nếu entity DeCuong có auditing (created_at/updated_at) thì map được luôn
-    LocalDate createdAt;
-    LocalDate updatedAt;
-
-    // Chỉ lấy các field yêu cầu từ quan hệ
+    Integer soLanNop;
+    String nhanXet;
     String tenDeTai;       // deTai.tenDeTai
     String maSV;           // deTai.sinhVienThucHien.maSV
     String hoTenSinhVien;  // deTai.sinhVienThucHien.hoTen

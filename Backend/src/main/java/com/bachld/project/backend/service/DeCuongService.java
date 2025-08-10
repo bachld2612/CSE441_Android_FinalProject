@@ -6,12 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DeCuongService {
-
-    /** Sinh viên nộp đề cương (tạo mới hoặc cập nhật file, status về PENDING) */
+    // DeCuongService.java
     DeCuongResponse submitDeCuong(DeCuongRequest request);
-
-    /** Giảng viên/Quản trị xét duyệt đề cương */
-    DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve);
-
+    DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason);
     Page<DeCuongResponse> getAllDeCuong(Pageable pageable);
+
 }
