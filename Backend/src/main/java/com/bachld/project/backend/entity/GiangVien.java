@@ -34,5 +34,7 @@ public class GiangVien extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "tai_khoan_id")
     TaiKhoan taiKhoan;
+    @OneToOne(mappedBy = "truongBoMon")
+    BoMon boMonQuanLy;
 
 }

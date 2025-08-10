@@ -38,6 +38,9 @@ public enum ErrorCode {
     MA_SV_EXISTED(1025, "Ma SV already exists", HttpStatus.BAD_REQUEST),
     MA_GV_EXISTED(1026, "Ma GV already exists", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(1027, "User not found", HttpStatus.NOT_FOUND),
+    GIANG_VIEN_NOT_FOUND(1028, "Giang Vien Not Found", HttpStatus.NOT_FOUND),
+    TRUONG_BO_MON_ALREADY(1029, "This account has been Truong Bo Mon", HttpStatus.BAD_REQUEST),
+    NOT_IN_BO_MON(1030, "Giang Vien is not in Bo Mon", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
