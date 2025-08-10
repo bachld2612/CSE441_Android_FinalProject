@@ -43,7 +43,7 @@ public class DeTaiController {
     }
 
     @PutMapping("/xet-duyet/{deTaiId}")
-    public ApiResponse<DeTaiResponse> approve(
+    public ApiResponse<DeTaiResponse> approveDeTai(
             @PathVariable Long deTaiId,
             @RequestBody DeTaiApprovalRequest request) {
 
