@@ -23,6 +23,7 @@ public class DotBaoVe extends BaseEntity {
     LocalDate thoiGianKetThuc;
     @OneToOne(mappedBy = "dotBaoVe")
     DotBaoVeDeTai dotBaoVeDeTai;
-
+    @OneToOne(mappedBy = "dotBaoVe")
+    ThoiGianThucHien thoiGianThucHien;
 
 }

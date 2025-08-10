@@ -7,4 +7,8 @@ import java.util.Optional;
 
 public interface GiangVienRepository extends JpaRepository<GiangVien, Long> {
     Optional<GiangVien> findByTaiKhoan_EmailIgnoreCase(String email);
+    boolean existsByTaiKhoan_Email(String email);
+    boolean existsByMaGV(String maGV);
+    Optional<GiangVien> findByTaiKhoan_Email(String taiKhoanEmail);
+
 }

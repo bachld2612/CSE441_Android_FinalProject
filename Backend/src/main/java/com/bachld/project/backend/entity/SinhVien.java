@@ -4,14 +4,19 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
 
 @Entity
-@Table(name = "sinh_vien")
+@Table(
+        name = "sinh_vien",
+        indexes = {
+                @Index(name="idx_sv_maSV", columnList = "maSV")
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SinhVien extends BaseEntity {
 
@@ -27,4 +32,5 @@ public class SinhVien extends BaseEntity {
     DeTai deTai;
     @ManyToOne
     Lop lop;
+
 }

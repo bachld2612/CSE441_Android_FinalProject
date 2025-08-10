@@ -2,7 +2,9 @@ package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.bomon.BoMonRequest;
+import com.bachld.project.backend.dto.request.bomon.TruongBoMonCreationRequest;
 import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
+import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
 import com.bachld.project.backend.service.BoMonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +59,15 @@ public class BoMonController {
         boMonService.deleteBoMon(boMonId);
         return ApiResponse.<String>builder()
                 .result("Delete bo mon successfully")
+                .build();
+
+    }
+
+    @PostMapping("truong-bo-mon")
+    public ApiResponse<TruongBoMonCreationResponse> createTruongBoMon(@RequestBody TruongBoMonCreationRequest truongBoMonCreationRequest) {
+
+        return ApiResponse.<TruongBoMonCreationResponse>builder()
+                .result(boMonService.createTruongBoMon(truongBoMonCreationRequest))
                 .build();
 
     }

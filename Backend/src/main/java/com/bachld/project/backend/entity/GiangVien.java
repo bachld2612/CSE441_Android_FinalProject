@@ -12,7 +12,7 @@ import java.util.Set;
         indexes = {
                 @Index(name="idx_sv_maGV", columnList = "maGV")
         }
-)
+    )
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

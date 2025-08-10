@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/committee_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <!-- AppBar + Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#FFFFFF"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Chi tiết hội đồng"
+            app:titleTextColor="@color/black"
+            android:elevation="4dp"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Nội dung chính cuộn cùng AppBar -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Tiêu đề hội đồng -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hội đồng A"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#232323"
+                android:gravity="center"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.cardview.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:background="#E3F2FD">
+
+                    <!-- 1: Ngày bảo vệ -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvDateLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ngày bảo vệ:"
+                            android:textColor="#232323"
+                            android:textStyle="bold"
+                            />
+
+                        <TextView
+                            android:id="@+id/tvDateDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#232323"
+                            android:text="21/7/2025 – 22/7/2025"/>
+                    </LinearLayout>
+
+                    <!-- 2: Chủ tịch hội đồng -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvChairLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chủ tịch hội đồng:"
+                            android:textStyle="bold"
+                            android:textColor="#232323"/>
+
+                        <TextView
+                            android:id="@+id/tvChairDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#232323"
+                            android:text="Th.S Kiều Tuấn Dũng"/>
+                    </LinearLayout>
+
+                    <!-- 3: Thư ký hội đồng -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvSecretaryLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Thư ký hội đồng:"
+                            android:textStyle="bold"
+                            android:textColor="#232323"/>
+
+                        <TextView
+                            android:id="@+id/tvSecretaryDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#232323"
+                            android:text="Th.S Kiều Tuấn Dũng"/>
+                    </LinearLayout>
+
+                    <!-- 4: Giảng viên PB 1 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvReviewer1Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Giảng viên PB 1:"
+                            android:textColor="#232323"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/tvReviewer1Detail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#232323"
+                            android:text="Th.S Kiều Tuấn Dũng"/>
+                    </LinearLayout>
+
+                    <!-- 5: Giảng viên PB 2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvReviewer2Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Giảng viên PB 2:"
+                            android:textStyle="bold"
+                            android:textColor="#232323"/>
+
+                        <TextView
+                            android:id="@+id/tvReviewer2Detail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#232323"
+                            android:text="Th.S Kiều Tuấn Dũng"/>
+                    </LinearLayout>
+
+                    <!-- 6: Giảng viên PB 3 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvReviewer3Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Giảng viên PB 3:"
+                            android:textColor="#232323"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/tvReviewer3Detail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#232323"
+                            android:text="Th.S Kiều Tuấn Dũng"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Nhãn phân vùng Sinh viên bảo vệ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sinh viên bảo vệ:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#232323"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- RecyclerView danh sách sinh viên -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvStudents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

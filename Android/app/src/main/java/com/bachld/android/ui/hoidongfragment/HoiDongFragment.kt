@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.bachld.android.databinding.FragmentHomeBinding
+import com.bachld.android.databinding.FragmentHoiDongBinding
 
 class HoiDongFragment: Fragment() {
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentHoiDongBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -24,13 +24,9 @@ class HoiDongFragment: Fragment() {
         val homeViewModel =
             ViewModelProvider(this).get(HoiDongViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHoiDongBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

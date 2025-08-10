@@ -9,4 +9,5 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Long> {
 
     Optional<TaiKhoan> findByEmail(String email);
 
+    boolean existsByEmail(String email);
 }
