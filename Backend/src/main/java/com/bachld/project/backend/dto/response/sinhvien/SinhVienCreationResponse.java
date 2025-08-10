@@ -1,4 +1,4 @@
-package com.bachld.project.backend.dto.response.auth;
+package com.bachld.project.backend.dto.response.sinhvien;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -10,8 +10,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LoginResponse {
+public class SinhVienCreationResponse {
 
-    String token;
+    String maSV;
+    String hoTen;
+    String soDienThoai;
+    String email;
+    Long lopId;
 
 }

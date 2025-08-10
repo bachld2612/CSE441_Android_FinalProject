@@ -1,9 +1,6 @@
 package com.bachld.project.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,6 +15,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Lop extends BaseEntity {
 
+    @Column(unique = true, nullable = false)
     String tenLop;
     @ManyToOne
     Nganh nganh;
