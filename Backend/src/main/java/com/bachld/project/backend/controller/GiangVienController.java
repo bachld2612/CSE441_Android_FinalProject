@@ -2,6 +2,7 @@ package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
+import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
 import com.bachld.project.backend.service.GiangVienService;
 import lombok.AccessLevel;
@@ -25,6 +26,16 @@ public class GiangVienController {
 
         return ApiResponse.<GiangVienCreationResponse>builder()
                 .result(giangVienService.createGiangVien(giangVienCreationRequest))
+                .build();
+
+    }
+
+    @PostMapping("tro-ly-khoa")
+    public ApiResponse<String> createTroLyKhoa(@RequestBody TroLyKhoaCreationRequest troLyKhoaCreationRequest) {
+
+        giangVienService.createTroLyKhoa(troLyKhoaCreationRequest);
+        return ApiResponse.<String>builder()
+                .result("Create Tro Ly Khoa successfully")
                 .build();
 
     }

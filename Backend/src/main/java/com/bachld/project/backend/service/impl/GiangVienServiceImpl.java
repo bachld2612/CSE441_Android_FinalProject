@@ -1,6 +1,7 @@
 package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
+import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
@@ -74,5 +75,20 @@ public class GiangVienServiceImpl implements GiangVienService {
         taiKhoanRepository.save(taiKhoan);
         return giangVienMapper.toGiangVienCreationResponse(giangVienRepository.save(giangVien));
 
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @Override
+    public void createTroLyKhoa(TroLyKhoaCreationRequest troLyKhoaCreationRequest) {
+        GiangVien troLyKhoa = giangVienRepository.findById(troLyKhoaCreationRequest.getGiangVienId())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.GIANG_VIEN_NOT_FOUND));
+        if(troLyKhoa.getTaiKhoan().getVaiTro() == Role.TRUONG_BO_MON){
+            throw new ApplicationException(ErrorCode.INVALID_TRO_LY_KHOA);
+        }
+        if(troLyKhoa.getTaiKhoan().getVaiTro() == Role.TRO_LY_KHOA){
+            return;
+        }
+        troLyKhoa.getTaiKhoan().setVaiTro(Role.TRO_LY_KHOA);
+        giangVienRepository.save(troLyKhoa);
     }
 }

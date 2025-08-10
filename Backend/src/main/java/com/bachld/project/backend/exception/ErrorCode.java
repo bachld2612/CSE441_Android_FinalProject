@@ -41,6 +41,7 @@ public enum ErrorCode {
     GIANG_VIEN_NOT_FOUND(1028, "Giang Vien Not Found", HttpStatus.NOT_FOUND),
     TRUONG_BO_MON_ALREADY(1029, "This account has been Truong Bo Mon", HttpStatus.BAD_REQUEST),
     NOT_IN_BO_MON(1030, "Giang Vien is not in Bo Mon", HttpStatus.BAD_REQUEST),
+    INVALID_TRO_LY_KHOA(1031, "Truong bo mon cannot be Tro Ly Khoa", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
