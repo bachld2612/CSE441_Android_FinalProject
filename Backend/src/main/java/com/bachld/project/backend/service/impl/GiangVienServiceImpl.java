@@ -3,6 +3,7 @@ package com.bachld.project.backend.service.impl;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.TaiKhoan;
@@ -18,10 +19,23 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -90,5 +104,82 @@ public class GiangVienServiceImpl implements GiangVienService {
         }
         troLyKhoa.getTaiKhoan().setVaiTro(Role.TRO_LY_KHOA);
         giangVienRepository.save(troLyKhoa);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @Override
+    public GiangVienImportResponse importGiangVien(MultipartFile file) throws IOException {
+        int total = 0, ok = 0;
+        List<String> errs = new ArrayList<>();
+
+        try (InputStream in = file.getInputStream();
+             XSSFWorkbook wb = new XSSFWorkbook(in)) {
+
+            XSSFSheet sheet = wb.getSheetAt(0);
+            DataFormatter fmt = new DataFormatter();     // đọc mọi cell -> String, không mất số đầu
+            Map<String,Integer> col = headerIndex(sheet.getRow(0));
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row r = sheet.getRow(i);
+                if (r == null) continue;
+                total++;
+
+                try {
+                    String maGV    = fmt.formatCellValue(r.getCell(col.get("Mã giảng viên"))).trim();
+                    String hoTen   = fmt.formatCellValue(r.getCell(col.get("Họ tên"))).trim();
+                    String sdt     = fmt.formatCellValue(r.getCell(col.get("Số điện thoại"))).trim();
+                    String email   = fmt.formatCellValue(r.getCell(col.get("Email"))).trim().toLowerCase();
+                    String matKhau = fmt.formatCellValue(r.getCell(col.get("Mật khẩu"))).trim();
+                    String boMonTx = fmt.formatCellValue(r.getCell(col.get("Bộ môn"))).trim();
+                    String hocVi   = fmt.formatCellValue(r.getCell(col.get("Học vị"))).trim();
+                    String hocHam  = fmt.formatCellValue(r.getCell(col.get("Học hàm"))).trim();
+
+                    // Lấy boMonId: nếu cột là ID thì parse, còn không thì tìm theo tên
+                    Long boMonId = tryParseLong(boMonTx);
+                    if (boMonId == null) {
+                        boMonId = boMonRepository.findByTenBoMon((boMonTx))
+                                .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND))
+                                .getId();
+                    }
+
+                    var req = GiangVienCreationRequest.builder()
+                            .maGV(maGV)
+                            .hoTen(hoTen)
+                            .soDienThoai(sdt)
+                            .email(email)
+                            .matKhau(matKhau)
+                            .hocVi(hocVi)
+                            .hocHam(hocHam)
+                            .boMonId(boMonId)
+                            .build();
+
+                    createGiangVien(req);  // tái dùng logic hiện có
+                    ok++;
+
+                } catch (ApplicationException ex) {
+                    errs.add("Row " + (i + 1) + ": " + ex.getErrorCode().name());
+                } catch (Exception ex) {
+                    errs.add("Row " + (i + 1) + ": " + ex.getMessage());
+                }
+            }
+        }
+
+        return GiangVienImportResponse.builder()
+                .totalRows(total)
+                .success(ok)
+                .errors(errs)
+                .build();
+    }
+
+    private Map<String,Integer> headerIndex(Row header) {
+        Map<String,Integer> m = new HashMap<>();
+        DataFormatter fmt = new DataFormatter();
+        for (int c = 0; c < header.getLastCellNum(); c++) {
+            m.put(fmt.formatCellValue(header.getCell(c)).trim(), c);
+        }
+        return m;
+    }
+    private Long tryParseLong(String s) {
+        try { return Long.valueOf(s); } catch (Exception e) { return null; }
     }
 }
