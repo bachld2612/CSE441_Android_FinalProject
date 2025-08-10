@@ -18,6 +18,7 @@ public class DeTai extends BaseEntity {
     @Enumerated(EnumType.STRING)
     DeTaiState trangThai;
     String nhanXet;
+    String tongQuanDeTaiUrl;
     @OneToOne
     @JoinColumn(name = "sinh_vien_thuc_hien_id")
     SinhVien sinhVienThucHien;

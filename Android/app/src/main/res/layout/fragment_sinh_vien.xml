@@ -48,8 +48,9 @@
                 android:layout_height="wrap_content"
                 android:text="Danh sách sinh viên đủ điều kiện làm đồ án"
                 android:textStyle="bold"
-                android:textSize="16sp"
                 android:gravity="center"
+                android:textColor="#232323"
+                android:textSize="17sp"
                 android:layout_marginBottom="12dp"/>
 
             <!-- SearchView trong CardView -->

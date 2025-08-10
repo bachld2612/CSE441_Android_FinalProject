@@ -27,4 +27,5 @@ public class SinhVien extends BaseEntity {
     DeTai deTai;
     @ManyToOne
     Lop lop;
+
 }

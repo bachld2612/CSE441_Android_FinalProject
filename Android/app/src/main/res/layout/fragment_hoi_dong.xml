@@ -42,6 +42,8 @@
             android:layout_height="wrap_content"
             android:text="Danh sách hội đồng bảo vệ"
             android:textStyle="bold"
+            android:textColor="#232323"
+            android:textSize="17sp"
             android:gravity="center"/>
 
         <androidx.cardview.widget.CardView
