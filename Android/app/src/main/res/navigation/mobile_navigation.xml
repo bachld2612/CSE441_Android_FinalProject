@@ -9,7 +9,7 @@
         android:id="@+id/navigation_trang_chu"
         android:name="com.bachld.android.ui.trangchufragment.TrangChuFragment"
         android:label="Trang chủ"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_trang_chu_scrolling" />
 
     <fragment
         android:id="@+id/navigation_do_an"
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigation_thong_tin"
-        android:name="com.bachld.android.ui.doanfragment.DoAnFragment"
+        android:name="com.bachld.android.ui.sinhvienfragment.ThongTinSinhVienFragment"
         android:label="Thông tin"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_thong_tin_sinh_vien" />
 </navigation>

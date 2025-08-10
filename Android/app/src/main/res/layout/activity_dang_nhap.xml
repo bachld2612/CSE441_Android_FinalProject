@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4B84A7">
+    android:background="#4B84A7"
+    android:id="@+id/dang_nhap_layout">
 
     <!-- Logo trường ĐHTL -->
     <ImageView
-        android:id="@+id/imgLogo"
+        android:id="@+id/img_logo"
         android:layout_width="161dp"
         android:layout_height="179dp"
         android:layout_marginTop="32dp"
@@ -34,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLogo">
+        app:layout_constraintTop_toBottomOf="@id/img_logo">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,7 +48,7 @@
 
             <!-- Tiêu đề căn giữa -->
             <TextView
-                android:id="@+id/tvTitle"
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -59,6 +60,7 @@
 
             <!-- Label Tài khoản căn trái -->
             <TextView
+                android:id="@+id/tv_tai_khoan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -69,7 +71,7 @@
 
             <!-- EditText tài khoản -->
             <EditText
-                android:id="@+id/edtUsername"
+                android:id="@+id/edt_tai_khoan"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="4dp"
@@ -81,6 +83,7 @@
 
             <!-- Label Mật khẩu căn trái -->
             <TextView
+                android:id="@+id/tv_mat_khau"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="13dp"
@@ -91,7 +94,7 @@
 
             <!-- EditText mật khẩu -->
             <EditText
-                android:id="@+id/edtPassword"
+                android:id="@+id/edt_mat_khau"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="4dp"
@@ -104,7 +107,7 @@
 
             <!-- Nút đăng nhập -->
             <Button
-                android:id="@+id/btnLogin"
+                android:id="@+id/btn_dang_nhap"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="22dp"
@@ -116,10 +119,11 @@
 
             <!-- Link Quên mật khẩu? căn giữa, gạch chân -->
             <TextView
-                android:id="@+id/tvForgotPassword"
+                android:id="@+id/tv_forgot_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:gravity="center"
                 android:layout_marginTop="14dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/forgot_password_underline"

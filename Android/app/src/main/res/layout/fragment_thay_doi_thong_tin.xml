@@ -8,7 +8,7 @@
 
     <!-- AppBar/Header -->
     <LinearLayout
-        android:id="@+id/layoutHeader"
+        android:id="@+id/layout_header"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:background="@android:color/white"
@@ -19,16 +19,15 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/icBack"
+            android:id="@+id/ic_back"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="8dp"
             android:src="@drawable/back_blue"
-            android:tint="#2196F3"
             android:contentDescription="Back"/>
 
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -39,7 +38,7 @@
             android:gravity="center"/>
 
         <ImageView
-            android:id="@+id/icSave"
+            android:id="@+id/ic_save"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
@@ -49,17 +48,17 @@
 
     <!-- Dòng nhập thông tin -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutEdit"
+        android:id="@+id/layout_edit"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:background="#F4F4F4"
         android:layout_marginTop="2dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintTop_toBottomOf="@id/layout_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
-            android:id="@+id/edtValue"
+            android:id="@+id/edt_value"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="12dp"
@@ -77,13 +76,12 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageButton
-            android:id="@+id/btnClear"
+            android:id="@+id/btn_clear"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="6dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/close_square"
-            android:tint="#222"
             android:contentDescription="Xóa"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -96,13 +94,13 @@
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:background="#E2E2E2"
-        app:layout_constraintTop_toBottomOf="@id/layoutEdit"
+        app:layout_constraintTop_toBottomOf="@id/layout_edit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Ghi chú số ký tự -->
     <TextView
-        android:id="@+id/tvHint"
+        android:id="@+id/tv_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tối đa 100 kí tự"

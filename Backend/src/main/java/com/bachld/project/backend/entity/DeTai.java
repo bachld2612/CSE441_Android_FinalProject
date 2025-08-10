@@ -30,4 +30,9 @@ public class DeTai extends BaseEntity {
     @OneToOne(mappedBy = "deTai")
     DotBaoVeDeTai dotBaoVeDeTai;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bo_mon_quan_ly_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    BoMon boMonQuanLy;
 }

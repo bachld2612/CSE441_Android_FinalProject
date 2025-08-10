@@ -17,6 +17,8 @@ public class DeCuong extends BaseEntity{
     @Enumerated(EnumType.STRING)
     DeCuongState trangThai;
     String deCuongUrl;
+    int soLanNop;
+    String nhanXet;
     @OneToOne
     @JoinColumn(name = "de_tai_id")
     DeTai deTai;

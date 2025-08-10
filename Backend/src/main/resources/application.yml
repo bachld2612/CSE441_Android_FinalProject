@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/dams?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_vietnamese_ci&serverTimezone=UTC
     username: root
-    password: bach2612
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -20,4 +20,3 @@ spring:
 
 jwt:
   refreshTokenExpirationMs: 2592000000
-
