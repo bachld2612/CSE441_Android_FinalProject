@@ -25,6 +25,9 @@ public class SinhVien extends BaseEntity {
     String hoTen;
     String soDienThoai;
     boolean kichHoat;
+    @Column(columnDefinition = "TEXT")
+    String lyDoHoan;
+    String minhChungLyDoHoanUrl;
     @OneToOne
     @JoinColumn(name = "tai_khoan_id")
     TaiKhoan taiKhoan;
