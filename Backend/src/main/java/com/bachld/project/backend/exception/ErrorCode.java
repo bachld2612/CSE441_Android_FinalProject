@@ -44,7 +44,7 @@ public enum ErrorCode {
     DE_TAI_ID_MUST_BE_POSITIVE(1211, "De tai ID must be positive", HttpStatus.BAD_REQUEST),
     DE_TAI_NOT_ACCEPTED       (1212, "Topic has not been accepted", HttpStatus.BAD_REQUEST),
     DE_CUONG_REASON_REQUIRED(1213, "Reason is required when rejecting the outline", HttpStatus.BAD_REQUEST),
-    INTERNAL_SERVER_ERROR(1214, "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR)
+    INTERNAL_SERVER_ERROR(1214, "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR),
 
     //Duc
     DE_TAI_EMPTY(1101, "Ten de tai cannot be empty", HttpStatus.BAD_REQUEST),
