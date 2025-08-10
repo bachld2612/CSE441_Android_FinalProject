@@ -1,4 +1,4 @@
-package com.bachld.project.backend.dto.response.auth;
+package com.bachld.project.backend.dto.response.taikhoan;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -9,9 +9,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class LoginResponse {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class AnhDaiDienUploadResponse {
 
-    String token;
+    String anhDaiDienUrl;
 
 }

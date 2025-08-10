@@ -9,11 +9,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class BoMonResponse {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class TruongBoMonCreationResponse {
 
-    Long id;
+    String maGV;
+    String hoTen;
+    String hocVi;
+    String hocHam;
     String tenBoMon;
-    Long khoaId;
 
 }

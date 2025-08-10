@@ -17,6 +17,7 @@ public class DeTai extends BaseEntity {
     String tenDeTai;
     @Enumerated(EnumType.STRING)
     DeTaiState trangThai;
+    @Column(columnDefinition = "TEXT")
     String nhanXet;
     String tongQuanDeTaiUrl;
     @OneToOne
