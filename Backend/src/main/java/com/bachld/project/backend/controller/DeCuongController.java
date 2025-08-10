@@ -71,7 +71,8 @@ public class DeCuongController {
 
     @GetMapping("/tbm/accepted")
     public ApiResponse<Page<DeCuongResponse>> getAcceptedForTBM(
-            @ParameterObject
+//            @ParameterObject
+            //c thể lọc theo lớp
             @PageableDefault(page = 0, size = 10, sort = "updatedAt", direction = Sort.Direction.DESC)
             Pageable pageable) {
         return ApiResponse.<Page<DeCuongResponse>>builder()

@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+//define các request khác nhau cho nộp, xét duyệt
 public class DeCuongRequest {
     @NotNull(message = "DE_TAI_ID_EMPTY")
     @Positive(message = "DE_TAI_ID_MUST_BE_POSITIVE")

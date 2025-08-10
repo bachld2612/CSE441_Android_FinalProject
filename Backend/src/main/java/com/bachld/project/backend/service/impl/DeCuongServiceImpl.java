@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+//them danh sách log đề cương của sinh viên
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -176,8 +178,8 @@ public class DeCuongServiceImpl implements DeCuongService {
             var bold = wb.createFont(); bold.setBold(true);
             headerStyle.setFont(bold);
 
-            // Header
-            String[] headers = {"Mã sinh viên","Họ và tên","Lớp","GVHD","Tên đề tài","File URL"};
+            // ⚠️ Thêm "Bộ môn quản lý" giữa "Tên đề tài" và "File URL"
+            String[] headers = {"Mã sinh viên","Họ và tên","Lớp","GVHD","Tên đề tài","Bộ môn quản lý","File URL"};
             var row0 = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
                 var c = row0.createCell(i);
@@ -191,7 +193,8 @@ public class DeCuongServiceImpl implements DeCuongService {
                 var dt = dc.getDeTai();
                 var sv = dt != null ? dt.getSinhVienThucHien() : null;
                 var lop = (sv != null && sv.getLop() != null) ? sv.getLop().getTenLop() : "";
-                var gv = (dt != null && dt.getGvhd() != null) ? dt.getGvhd().getHoTen() : "";
+                var gv  = (dt != null && dt.getGvhd() != null) ? dt.getGvhd().getHoTen() : "";
+                var bm  = (dt != null && dt.getBoMonQuanLy() != null) ? dt.getBoMonQuanLy().getTenBoMon() : "";
 
                 var row = sheet.createRow(r++);
                 row.createCell(0).setCellValue(sv != null ? nvl(sv.getMaSV()) : "");
@@ -199,7 +202,8 @@ public class DeCuongServiceImpl implements DeCuongService {
                 row.createCell(2).setCellValue(nvl(lop));
                 row.createCell(3).setCellValue(nvl(gv));
                 row.createCell(4).setCellValue(dt != null ? nvl(dt.getTenDeTai()) : "");
-                row.createCell(5).setCellValue(nvl(dc.getDeCuongUrl()));
+                row.createCell(5).setCellValue(nvl(bm));                    // ← Bộ môn quản lý (cột mới)
+                row.createCell(6).setCellValue(nvl(dc.getDeCuongUrl()));    // File URL
             }
 
             // Autosize
@@ -215,6 +219,7 @@ public class DeCuongServiceImpl implements DeCuongService {
     }
 
     private static String nvl(String s) { return s == null ? "" : s; }
+
 
 
     private String currentUsername() {
