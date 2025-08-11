@@ -69,18 +69,18 @@ public class DeCuongController {
         return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã từ chối").build();
     }
 
-    @GetMapping("/tbm/accepted")
+    @GetMapping("/tbm/danh-sach")
     public ApiResponse<Page<DeCuongResponse>> getAcceptedForTBM(
 //            @ParameterObject
             //c thể lọc theo lớp
-            @PageableDefault(page = 0, size = 10, sort = "updatedAt", direction = Sort.Direction.DESC)
+            @PageableDefault(page = 0, size = 10, sort = "deTai.sinhVienThucHien.lop.tenLop", direction = Sort.Direction.DESC)
             Pageable pageable) {
         return ApiResponse.<Page<DeCuongResponse>>builder()
                 .result(deCuongService.getAcceptedForTBM(pageable))
                 .build();
     }
 
-    @GetMapping(value = "/tbm/accepted/export-xlsx",
+    @GetMapping(value = "/tbm/danh-sach/export-xlsx",
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> exportAcceptedForTBMAsExcel() {
         byte[] xlsx = deCuongService.exportAcceptedForTBMAsExcel();

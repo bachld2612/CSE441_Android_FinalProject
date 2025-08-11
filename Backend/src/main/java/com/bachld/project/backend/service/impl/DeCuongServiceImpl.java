@@ -173,12 +173,19 @@ public class DeCuongServiceImpl implements DeCuongService {
         try (var wb = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
             var sheet = wb.createSheet("DeCuongAccepted");
 
-            // Header style
             var headerStyle = wb.createCellStyle();
             var bold = wb.createFont(); bold.setBold(true);
             headerStyle.setFont(bold);
 
-            // ⚠️ Thêm "Bộ môn quản lý" giữa "Tên đề tài" và "File URL"
+            var linkStyle = wb.createCellStyle();
+            var linkFont = wb.createFont();
+            linkFont.setUnderline(org.apache.poi.ss.usermodel.Font.U_SINGLE);
+            linkFont.setColor(org.apache.poi.ss.usermodel.IndexedColors.BLUE.getIndex());
+            linkStyle.setFont(linkFont);
+
+            var helper = wb.getCreationHelper();
+
+            // Headers
             String[] headers = {"Mã sinh viên","Họ và tên","Lớp","GVHD","Tên đề tài","Bộ môn quản lý","File URL"};
             var row0 = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
@@ -187,7 +194,6 @@ public class DeCuongServiceImpl implements DeCuongService {
                 c.setCellStyle(headerStyle);
             }
 
-            // Data
             int r = 1;
             for (DeCuong dc : list) {
                 var dt = dc.getDeTai();
@@ -195,6 +201,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                 var lop = (sv != null && sv.getLop() != null) ? sv.getLop().getTenLop() : "";
                 var gv  = (dt != null && dt.getGvhd() != null) ? dt.getGvhd().getHoTen() : "";
                 var bm  = (dt != null && dt.getBoMonQuanLy() != null) ? dt.getBoMonQuanLy().getTenBoMon() : "";
+                var fileUrl = dc.getDeCuongUrl();
 
                 var row = sheet.createRow(r++);
                 row.createCell(0).setCellValue(sv != null ? nvl(sv.getMaSV()) : "");
@@ -202,8 +209,28 @@ public class DeCuongServiceImpl implements DeCuongService {
                 row.createCell(2).setCellValue(nvl(lop));
                 row.createCell(3).setCellValue(nvl(gv));
                 row.createCell(4).setCellValue(dt != null ? nvl(dt.getTenDeTai()) : "");
-                row.createCell(5).setCellValue(nvl(bm));                    // ← Bộ môn quản lý (cột mới)
-                row.createCell(6).setCellValue(nvl(dc.getDeCuongUrl()));    // File URL
+                row.createCell(5).setCellValue(nvl(bm));
+
+                // Ô chứa hyperlink
+                var linkCell = row.createCell(6);
+
+                if (fileUrl != null && !fileUrl.isBlank()) {
+                    String address = toClickableUrl(fileUrl);
+
+                    var hyperlink = helper.createHyperlink(
+                            address.startsWith("http") || address.startsWith("file:")
+                                    ? org.apache.poi.common.usermodel.HyperlinkType.URL
+                                    : org.apache.poi.common.usermodel.HyperlinkType.FILE
+                    );
+                    hyperlink.setAddress(address);
+
+                    // Nhãn hiển thị (có thể là "Mở file" hoặc chính URL)
+                    linkCell.setCellValue("Mở file");
+                    linkCell.setHyperlink(hyperlink);
+                    linkCell.setCellStyle(linkStyle);
+                } else {
+                    linkCell.setCellValue("");
+                }
             }
 
             // Autosize
@@ -217,6 +244,20 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
+    private static String toClickableUrl(String input) {
+        String s = input.trim();
+        if (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("file:")) {
+            return s;
+        }
+        try {
+            java.nio.file.Path p = java.nio.file.Paths.get(s);
+            return p.toUri().toString();
+        } catch (Exception e) {
+            return s;
+        }
+    }
+
 
     private static String nvl(String s) { return s == null ? "" : s; }
 
