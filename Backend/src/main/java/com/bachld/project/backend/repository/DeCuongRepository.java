@@ -1,6 +1,5 @@
 package com.bachld.project.backend.repository;
 
-import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.enums.DeCuongState;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -15,34 +14,33 @@ public interface DeCuongRepository extends JpaRepository<DeCuong, Long> {
 
     Optional<DeCuong> findByDeTai_Id(Long deTaiId);
 
-    // ✅ danh sách đề cương của các SV do GV này hướng dẫn
-    @EntityGraph(attributePaths = { "deTai", "deTai.sinhVienThucHien", "deTai.gvhd" })
-    Page<DeCuong> findByDeTai_Gvhd_TaiKhoan_EmailIgnoreCase(String email, Pageable pageable);
-
     // Admin/TBM xem tất cả (tránh N+1)
     @Override
     @EntityGraph(attributePaths = { "deTai", "deTai.sinhVienThucHien", "deTai.gvhd" })
     Page<DeCuong> findAll(Pageable pageable);
 
-    // ✅ TBM: danh sách đề cương đã duyệt theo bộ môn quản lý
-    @EntityGraph(attributePaths = {
-            "deTai",
-            "deTai.sinhVienThucHien",
-            "deTai.sinhVienThucHien.lop",
-            "deTai.gvhd",
-            "deTai.boMonQuanLy"
-    })
-    Page<DeCuong> findByTrangThaiAndDeTai_BoMonQuanLy_Id(
-            DeCuongState trangThai, Long boMonId, Pageable pageable);
+    // ====== CÁC HÀM MỚI: lọc theo danh sách đợt đang mở ======
 
     @EntityGraph(attributePaths = {
-            "deTai",
-            "deTai.sinhVienThucHien",
-            "deTai.sinhVienThucHien.lop",
-            "deTai.gvhd",
-            "deTai.boMonQuanLy"
+            "deTai","deTai.sinhVienThucHien","deTai.sinhVienThucHien.lop","deTai.gvhd","deTai.boMonQuanLy"
     })
-    List<DeCuong> findByTrangThaiAndDeTai_BoMonQuanLy_Id(
-            DeCuongState trangThai, Long boMonId);
+    Page<DeCuong> findByDeTai_Gvhd_TaiKhoan_EmailIgnoreCaseAndDeTai_DotBaoVe_IdIn(
+            String email, List<Long> dotIds, Pageable pageable);
 
+    @EntityGraph(attributePaths = {
+            "deTai","deTai.sinhVienThucHien","deTai.sinhVienThucHien.lop","deTai.gvhd","deTai.boMonQuanLy"
+    })
+    Page<DeCuong> findByDeTai_DotBaoVe_IdIn(List<Long> dotIds, Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+            "deTai","deTai.sinhVienThucHien","deTai.sinhVienThucHien.lop","deTai.gvhd","deTai.boMonQuanLy"
+    })
+    Page<DeCuong> findByTrangThaiAndDeTai_BoMonQuanLy_IdAndDeTai_DotBaoVe_IdIn(
+            DeCuongState trangThai, Long boMonId, List<Long> dotIds, Pageable pageable);
+
+    @EntityGraph(attributePaths = {
+            "deTai","deTai.sinhVienThucHien","deTai.sinhVienThucHien.lop","deTai.gvhd","deTai.boMonQuanLy"
+    })
+    List<DeCuong> findByTrangThaiAndDeTai_BoMonQuanLy_IdAndDeTai_DotBaoVe_IdIn(
+            DeCuongState trangThai, Long boMonId, List<Long> dotIds);
 }

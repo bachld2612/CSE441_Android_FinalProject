@@ -1,10 +1,8 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
-import com.bachld.project.backend.dto.request.decuong.DeCuongRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.service.DeCuongService;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,10 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/de-cuong")
@@ -72,8 +67,7 @@ public class DeCuongController {
     @GetMapping("/tbm/danh-sach")
     public ApiResponse<Page<DeCuongResponse>> getAcceptedForTBM(
 //            @ParameterObject
-            //c thể lọc theo lớp
-            @PageableDefault(page = 0, size = 10, sort = "deTai.sinhVienThucHien.lop.tenLop", direction = Sort.Direction.DESC)
+            @PageableDefault(page = 0, size = 10, sort = "deTai.sinhVienThucHien.hoTen", direction = Sort.Direction.ASC)
             Pageable pageable) {
         return ApiResponse.<Page<DeCuongResponse>>builder()
                 .result(deCuongService.getAcceptedForTBM(pageable))
