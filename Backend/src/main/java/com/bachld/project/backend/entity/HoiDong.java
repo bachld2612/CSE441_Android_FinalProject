@@ -22,9 +22,14 @@ public class HoiDong extends BaseEntity {
     LocalDate thoiGianKetThuc;
     @Enumerated(EnumType.STRING)
     HoiDongType loaiHoiDong;
-    @ManyToMany(mappedBy = "hoiDongSet")
-    Set<DotBaoVeDeTai> dotBaoVeDeTaiSet;
     @OneToMany(mappedBy = "hoiDong")
     Set<DotBaoVeGiangVienHoiDong> dotBaoVeGiangVienHoiDongSet;
+    @ManyToMany
+    @JoinTable(
+            name = "hoi_dong_de_tai",
+            joinColumns = @JoinColumn(name = "hoi_dong_id"),
+            inverseJoinColumns = @JoinColumn(name = "de_tai_id")
+    )
+    Set<DeTai> deTaiSet;
 
 }
