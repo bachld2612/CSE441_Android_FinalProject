@@ -43,11 +43,11 @@ public class DotBaoVeServiceImpl implements DotBaoVeService {
             throw new ApplicationException(ErrorCode.DUPLICATED_DOT_BAO_VE);
         }
         if (request.getThoiGianBatDau().isAfter(request.getThoiGianKetThuc())) {
-            throw new ApplicationException(ErrorCode.DOT_BAO_VE_INVALID);
+            throw new ApplicationException(ErrorCode.INVALID_TIME_RANGE);
         }
         if(request.getThoiGianBatDau().getYear() != request.getNamBatDau()
                 && request.getThoiGianBatDau().getYear() != request.getNamKetThuc()){
-            throw new ApplicationException(ErrorCode.DOT_BAO_VE_INVALID);
+            throw new ApplicationException(ErrorCode.INVALID_TIME_RANGE);
         }
         dotBaoVeMapper.updateDotBaoVeFromDto(request, dotBaoVe);
         return dotBaoVeMapper.toDotBaoVeResponse(dotBaoVeRepository.save(dotBaoVe));
@@ -58,11 +58,11 @@ public class DotBaoVeServiceImpl implements DotBaoVeService {
             throw new ApplicationException(ErrorCode.DUPLICATED_DOT_BAO_VE);
         }
         if (request.getThoiGianBatDau().isAfter(request.getThoiGianKetThuc())) {
-            throw new ApplicationException(ErrorCode.DOT_BAO_VE_INVALID);
+            throw new ApplicationException(ErrorCode.INVALID_TIME_RANGE);
         }
         if(request.getThoiGianBatDau().getYear() != request.getNamBatDau()
                 && request.getThoiGianBatDau().getYear() != request.getNamKetThuc()){
-            throw new ApplicationException(ErrorCode.DOT_BAO_VE_INVALID);
+            throw new ApplicationException(ErrorCode.INVALID_TIME_RANGE);
         }
     }
 
