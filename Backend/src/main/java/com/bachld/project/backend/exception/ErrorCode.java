@@ -69,6 +69,9 @@ public enum ErrorCode {
     TRUONG_BO_MON_ALREADY(1029, "This account has been Truong Bo Mon", HttpStatus.BAD_REQUEST),
     NOT_IN_BO_MON(1030, "Giang Vien is not in Bo Mon", HttpStatus.BAD_REQUEST),
     INVALID_TRO_LY_KHOA(1031, "Truong bo mon cannot be Tro Ly Khoa", HttpStatus.BAD_REQUEST),
+    DUPLICATED_DOT_BAO_VE(1032, "Dot bao ve has been existed",  HttpStatus.BAD_REQUEST),
+    DOT_BAO_VE_NOT_FOUND(1033, "Dot bao ve not found", HttpStatus.NOT_FOUND),
+    DOT_BAO_VE_INVALID(1034, "Dot bao ve time is not valid", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;
