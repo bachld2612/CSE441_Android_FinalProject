@@ -1,5 +1,7 @@
 package com.bachld.project.backend.repository;
 
+
+import com.bachld.project.backend.entity.DotBaoVe;
 import com.bachld.project.backend.entity.ThoiGianThucHien;
 import com.bachld.project.backend.enums.CongViec;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -17,5 +19,6 @@ public interface ThoiGianThucHienRepository extends JpaRepository<ThoiGianThucHi
             CongViec congViec, LocalDate today1, LocalDate today2
     );
 
+    boolean existsByDotBaoVeAndCongViec(DotBaoVe dotBaoVe, CongViec congViec);
     Optional<ThoiGianThucHien> findByDotBaoVe_IdAndCongViec(Long dotBaoVeId, CongViec congViec);
 }
