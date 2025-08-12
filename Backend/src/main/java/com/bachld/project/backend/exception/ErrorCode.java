@@ -62,7 +62,6 @@ public enum ErrorCode {
     DON_HOAN_FILE_UPLOAD_FAILED(1115, "Failed to upload MinhChungFile for DonHoanDoAn", HttpStatus.INTERNAL_SERVER_ERROR),
     POSTPONE_NOT_ALLOWED_WHEN_HAS_DE_TAI(1116, "Sinh viên has a DeTai already; postpone request is not allowed", HttpStatus.BAD_REQUEST),
 
-
     MA_SV_INVALID(1021, "Ma SV invalid", HttpStatus.BAD_REQUEST),
     HO_TEN_EMPTY(1022, "Ho ten cannot be empty", HttpStatus.BAD_REQUEST),
     SO_DIEN_THOAI_INVALID(1023, "So dien thoai invalid", HttpStatus.BAD_REQUEST),
@@ -73,7 +72,11 @@ public enum ErrorCode {
     TRUONG_BO_MON_ALREADY(1029, "This account has been Truong Bo Mon", HttpStatus.BAD_REQUEST),
     NOT_IN_BO_MON(1030, "Giang Vien is not in Bo Mon", HttpStatus.BAD_REQUEST),
     INVALID_TRO_LY_KHOA(1031, "Truong bo mon cannot be Tro Ly Khoa", HttpStatus.BAD_REQUEST),
-
+    DUPLICATED_DOT_BAO_VE(1032, "Dot bao ve has been existed",  HttpStatus.BAD_REQUEST),
+    DOT_BAO_VE_NOT_FOUND(1033, "Dot bao ve not found", HttpStatus.NOT_FOUND),
+    INVALID_TIME_RANGE(1034, "Invalid time range", HttpStatus.BAD_REQUEST),
+    CONG_VIEC_EXISTED(1035, "Cong viec already exists in this dot bao ve", HttpStatus.BAD_REQUEST),
+    THOI_GIAN_THUC_HIEN_NOT_FOUND(1036, "Thoi gian thuc hien not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;

@@ -4,8 +4,8 @@ import com.bachld.project.backend.enums.DeTaiState;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.util.List;
-import java.util.ArrayList;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "de_tai")
@@ -29,8 +29,6 @@ public class DeTai extends BaseEntity {
     GiangVien gvhd;
     @OneToOne(mappedBy = "deTai")
     DeCuong deCuong;
-    @OneToOne(mappedBy = "deTai")
-    DotBaoVeDeTai dotBaoVeDeTai;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bo_mon_quan_ly_id")
@@ -38,4 +36,10 @@ public class DeTai extends BaseEntity {
     @EqualsAndHashCode.Exclude
     BoMon boMonQuanLy;
 
+    @ManyToOne
+    @JoinColumn(name = "dot_bao_ve_id")
+    DotBaoVe dotBaoVe;
+
+    @ManyToMany(mappedBy = "deTaiSet")
+    Set<HoiDong> hoiDongSet;
 }
