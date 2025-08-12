@@ -4,6 +4,8 @@ import com.bachld.project.backend.enums.DeTaiState;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "de_tai")
@@ -35,4 +37,7 @@ public class DeTai extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     BoMon boMonQuanLy;
+
+    @OneToMany(mappedBy = "deTai", fetch = FetchType.LAZY)
+    List<DonHoanDoAn> donHoanList = new ArrayList<>();
 }

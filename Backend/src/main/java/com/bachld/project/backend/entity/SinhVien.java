@@ -3,6 +3,8 @@ package com.bachld.project.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import java.util.List;
+import java.util.ArrayList;
 
 
 @Entity
@@ -25,9 +27,6 @@ public class SinhVien extends BaseEntity {
     String hoTen;
     String soDienThoai;
     boolean kichHoat;
-    @Column(columnDefinition = "TEXT")
-    String lyDoHoan;
-    String minhChungLyDoHoanUrl;
     @OneToOne
     @JoinColumn(name = "tai_khoan_id")
     TaiKhoan taiKhoan;
@@ -35,5 +34,7 @@ public class SinhVien extends BaseEntity {
     DeTai deTai;
     @ManyToOne
     Lop lop;
+    @OneToMany(mappedBy = "sinhVien", fetch = FetchType.LAZY)
+    List<DonHoanDoAn> donHoanList = new ArrayList<>();
 
 }

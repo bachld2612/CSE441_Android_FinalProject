@@ -18,9 +18,11 @@ import java.time.LocalDate;
 public class DotBaoVe extends BaseEntity {
 
     String tenDotBaoVe;
-    String hocKi;
+    int hocKi;
     LocalDate thoiGianBatDau;
     LocalDate thoiGianKetThuc;
+    int namBatDau;
+    int namKetThuc;
     @OneToOne(mappedBy = "dotBaoVe")
     DotBaoVeDeTai dotBaoVeDeTai;
     @OneToOne(mappedBy = "dotBaoVe")
