@@ -23,11 +23,6 @@ public class DonHoanDoAn extends BaseEntity {
     @JoinColumn(name = "sinh_vien_id", nullable = false)
     SinhVien sinhVien;
 
-    //xoa
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "de_tai_id")
-    DeTai deTai;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     HoanState trangThai;

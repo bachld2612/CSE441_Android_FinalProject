@@ -54,7 +54,6 @@ public class DonHoanDoAnServiceImpl implements DonHoanDoAnService {
 
         DonHoanDoAn don = new DonHoanDoAn();
         don.setSinhVien(sv);
-        don.setDeTai(null);
         don.setTrangThai(HoanState.PENDING);
         don.setLyDo(request.getLyDo());
         don.setRequestedAt(LocalDateTime.now());

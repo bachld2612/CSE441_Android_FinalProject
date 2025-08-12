@@ -38,6 +38,4 @@ public class DeTai extends BaseEntity {
     @EqualsAndHashCode.Exclude
     BoMon boMonQuanLy;
 
-    @OneToMany(mappedBy = "deTai", fetch = FetchType.LAZY)
-    List<DonHoanDoAn> donHoanList = new ArrayList<>();
 }

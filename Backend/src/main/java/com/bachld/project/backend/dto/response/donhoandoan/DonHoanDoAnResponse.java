@@ -15,7 +15,6 @@ public class DonHoanDoAnResponse {
     Long id;
 
     Long sinhVienId;
-    Long deTaiId;
 
     HoanState trangThai;
     String lyDo;

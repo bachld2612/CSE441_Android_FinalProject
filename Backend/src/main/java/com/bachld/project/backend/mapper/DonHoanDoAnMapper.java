@@ -11,12 +11,9 @@ import org.mapstruct.*;
 public interface DonHoanDoAnMapper {
 
     @Mapping(source = "sinhVien.id", target = "sinhVienId")
-    @Mapping(source = "deTai.id", target = "deTaiId")
     @Mapping(source = "nguoiPheDuyet.id", target = "nguoiPheDuyetId")
     DonHoanDoAnResponse toResponse(DonHoanDoAn entity);
 
-    // helpers id <-> entity (nếu cần dùng sau)
-    default Long toId(DeTai x) { return x != null ? x.getId() : null; }
     default Long toId(SinhVien x) { return x != null ? x.getId() : null; }
     default Long toId(TaiKhoan x) { return x != null ? x.getId() : null; }
 }
