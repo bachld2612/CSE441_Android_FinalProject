@@ -19,7 +19,7 @@ public interface DeTaiMapper {
     @Mapping(target = "trangThai", ignore = true)
     @Mapping(target = "nhanXet", ignore = true)
     @Mapping(target = "sinhVienThucHien", ignore = true)
-    @Mapping(target = "dotBaoVeDeTai", ignore = true)
+//    @Mapping(target = "dotBaoVeDeTai", ignore = true)
     @Mapping(target = "tongQuanDeTaiUrl", ignore = true)
     DeTai toDeTai(DeTaiRequest request);
 

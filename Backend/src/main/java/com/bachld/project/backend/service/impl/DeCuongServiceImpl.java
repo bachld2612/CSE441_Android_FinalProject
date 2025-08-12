@@ -68,7 +68,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                     existing.setDeCuongUrl(fileUrl);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
-                    existing.setNhanXet(null);
+//                    existing.setNhanXet(null);
                     return existing;
                 })
                 .orElseGet(() -> {
@@ -77,7 +77,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                     created.setDeCuongUrl(fileUrl);
                     created.setTrangThai(DeCuongState.PENDING);
                     created.setSoLanNop(1);
-                    created.setNhanXet(null);
+//                    created.setNhanXet(null);
                     return created;
                 });
 
@@ -120,7 +120,7 @@ public class DeCuongServiceImpl implements DeCuongService {
             dc.setTrangThai(DeCuongState.ACCEPTED);
             // Ghi nhận xét khi duyệt (optional)
             if (reason != null && !reason.isBlank()) {
-                dc.setNhanXet(reason.trim());
+//                dc.setNhanXet(reason.trim());
             }
         } else {
             // Reject -> bắt buộc có lý do
@@ -129,7 +129,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                 throw new ApplicationException(ErrorCode.DE_CUONG_REASON_REQUIRED);
             }
             dc.setTrangThai(DeCuongState.CANCELED);
-            dc.setNhanXet(reason.trim());
+//            dc.setNhanXet(reason.trim());
         }
 
         return mapper.toResponse(deCuongRepository.save(dc));
