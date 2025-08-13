@@ -135,6 +135,8 @@ public class AuthServiceImpl implements AuthService {
                     .email(authentication.getName())
                     .build();
         }
+        infoResponse.setRole(taiKhoan.getVaiTro());
+        infoResponse.setAnhDaiDienUrl(taiKhoan.getAnhDaiDienUrl());
         return infoResponse;
     }
 

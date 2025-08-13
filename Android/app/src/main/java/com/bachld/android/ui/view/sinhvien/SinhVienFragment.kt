@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bachld.android.R
 import com.bachld.android.databinding.FragmentSinhVienBinding
 import com.bachld.android.ui.viewmodel.SinhVienViewModel
 
-class SinhVienFragment: Fragment() {
+class SinhVienFragment: Fragment(R.layout.fragment_sinh_vien) {
 
     private var _binding: FragmentSinhVienBinding? = null
 

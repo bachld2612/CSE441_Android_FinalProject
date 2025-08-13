@@ -1,5 +1,6 @@
 package com.bachld.project.backend.dto.response.auth;
 
+import com.bachld.project.backend.enums.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,5 +25,7 @@ public class InfoResponse {
     String nganh;
     String boMon;
     String khoa;
+    Role role;
+    String anhDaiDienUrl;
 
 }

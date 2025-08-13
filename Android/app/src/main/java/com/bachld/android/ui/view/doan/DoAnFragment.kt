@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.bachld.android.R
 import com.bachld.android.databinding.FragmentDoAnBinding
 
-class DoAnFragment: Fragment() {
+class DoAnFragment: Fragment(R.layout.fragment_do_an) {
     private var _binding: FragmentDoAnBinding? = null
 
     // This property is only valid between onCreateView and
