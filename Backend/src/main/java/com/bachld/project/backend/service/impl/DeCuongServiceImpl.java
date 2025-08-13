@@ -1,5 +1,6 @@
 package com.bachld.project.backend.service.impl;
 
+import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
@@ -12,10 +13,7 @@ import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.DeCuongMapper;
-import com.bachld.project.backend.repository.DeCuongRepository;
-import com.bachld.project.backend.repository.DeTaiRepository;
-import com.bachld.project.backend.repository.GiangVienRepository;
-import com.bachld.project.backend.repository.ThoiGianThucHienRepository;
+import com.bachld.project.backend.repository.*;
 import com.bachld.project.backend.service.DeCuongService;
 import com.bachld.project.backend.service.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
@@ -45,7 +43,7 @@ public class DeCuongServiceImpl implements DeCuongService {
     DeTaiRepository deTaiRepository;
     GiangVienRepository giangVienRepository;
     DeCuongMapper mapper;
-
+    DeCuongLogRepository deCuongLogRepository;
     ThoiGianThucHienRepository thoiGianThucHienRepository;
     TimeGatekeeper timeGatekeeper;
 
@@ -66,10 +64,10 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // time gate: chỉ cho nộp khi trong khoảng NỘP_ĐỀ_CƯƠNG của ĐỢT của đề tài
+        // Chỉ cho nộp trong mốc NỘP_ĐỀ_CƯƠNG của chính đợt của đề tài
         timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, dot);
 
-        // kiểm tra SV sở hữu
+        // Chỉ SV chủ sở hữu
         String email = currentUsername();
         boolean isOwner = deTai.getSinhVienThucHien() != null
                 && deTai.getSinhVienThucHien().getTaiKhoan() != null
@@ -81,12 +79,12 @@ public class DeCuongServiceImpl implements DeCuongService {
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
+                        // Đã duyệt thì không cho nộp nữa
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
                     }
                     existing.setDeCuongUrl(fileUrl);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
-                    existing.setNhanXet(null);
                     return existing;
                 })
                 .orElseGet(() -> {
@@ -95,11 +93,36 @@ public class DeCuongServiceImpl implements DeCuongService {
                     created.setDeCuongUrl(fileUrl);
                     created.setTrangThai(DeCuongState.PENDING);
                     created.setSoLanNop(1);
-                    created.setNhanXet(null);
                     return created;
                 });
 
         return mapper.toResponse(deCuongRepository.save(dc));
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    @Override
+    public DeCuongLogResponse viewDeCuongLog() {
+        String email = currentUsername();
+
+        // Tìm đề cương theo tài khoản SV (mỗi SV tối đa 1 đề tài nhờ UNIQUE)
+        DeCuong dc = deCuongRepository
+                .findByDeTai_SinhVienThucHien_TaiKhoan_EmailIgnoreCase(email)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_CUONG_NOT_FOUND));
+
+        // Lấy toàn bộ log bị từ chối (được ghi khi GV reject)
+        var logs = deCuongLogRepository.findByDeCuong_IdOrderByCreatedAtAsc(dc.getId());
+
+        DeCuongLogResponse res = new DeCuongLogResponse();
+        res.setFileUrlMoiNhat(dc.getDeCuongUrl());
+        res.setNgayNopGanNhat(dc.getUpdatedAt());
+        res.setTongSoLanNop(dc.getSoLanNop());
+        res.setCacNhanXetTuChoi(
+                logs.stream()
+                        .filter(l -> l.getNhanXet() != null && !l.getNhanXet().isBlank())
+                        .map(l -> new DeCuongLogResponse.RejectNote(l.getCreatedAt(), l.getNhanXet()))
+                        .toList()
+        );
+        return res;
     }
 
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
@@ -117,10 +140,10 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // duyệt chỉ trong khoảng NỘP_ĐỀ_CƯƠNG của đợt đề tài
+        // Chỉ trong mốc NỘP_ĐỀ_CƯƠNG của đúng đợt của đề tài
         timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, deTai.getDotBaoVe());
 
-        // chỉ GVHD được duyệt
+        // Chỉ GVHD
         if (deTai.getGvhd() == null || !deTai.getGvhd().getId().equals(gv.getId())) {
             throw new ApplicationException(ErrorCode.UNAUTHORIZED);
         }
@@ -129,6 +152,7 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
         }
         if (dc.getTrangThai() == DeCuongState.CANCELED) {
+            // Đã bị từ chối thì SV phải nộp lại (PENDING) rồi mới xét tiếp
             throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_REJECTED);
         }
         if (dc.getTrangThai() != DeCuongState.PENDING) {
@@ -137,15 +161,17 @@ public class DeCuongServiceImpl implements DeCuongService {
 
         if (approve) {
             dc.setTrangThai(DeCuongState.ACCEPTED);
-            if (reason != null && !reason.isBlank()) {
-                dc.setNhanXet(reason.trim());
-            }
         } else {
             if (reason == null || reason.isBlank()) {
                 throw new ApplicationException(ErrorCode.DE_CUONG_REASON_REQUIRED);
             }
+            // Ghi log nhận xét từ chối
+            var log = new com.bachld.project.backend.entity.DeCuongLog();
+            log.setDeCuong(dc);
+            log.setNhanXet(reason.trim());
+            deCuongLogRepository.save(log);
+
             dc.setTrangThai(DeCuongState.CANCELED);
-            dc.setNhanXet(reason.trim());
         }
 
         return mapper.toResponse(deCuongRepository.save(dc));

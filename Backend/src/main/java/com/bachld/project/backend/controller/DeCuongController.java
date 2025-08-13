@@ -1,6 +1,7 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.service.DeCuongService;
 import lombok.AccessLevel;
@@ -39,7 +40,7 @@ public class DeCuongController {
     }
 
     // Sinh viên nộp/cập nhật đề cương cho Đề tài của chính mình
-    @PostMapping
+    @PostMapping("/sv/nop-de-cuong")
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     public ApiResponse<DeCuongResponse> submitDeCuong(
             @RequestParam Long deTaiId,
@@ -47,6 +48,13 @@ public class DeCuongController {
     ) {
         var res = deCuongService.submitDeCuong(deTaiId, fileUrl);
         return ApiResponse.<DeCuongResponse>builder().result(res).message("Nộp đề cương thành công").build();
+    }
+
+    @GetMapping("/sv/log")
+    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    public ApiResponse<DeCuongLogResponse> viewDeCuongLog() {
+        var res = deCuongService.viewDeCuongLog();
+        return ApiResponse.<DeCuongLogResponse>builder().result(res).build();
     }
 
 
@@ -74,7 +82,7 @@ public class DeCuongController {
                 .build();
     }
 
-    @GetMapping(value = "/tbm/danh-sach/export-xlsx",
+    @GetMapping(value = "/tbm/danh-sach/excel",
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> exportAcceptedForTBMAsExcel() {
         byte[] xlsx = deCuongService.exportAcceptedForTBMAsExcel();

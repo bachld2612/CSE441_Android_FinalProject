@@ -20,7 +20,7 @@ public class DeCuong extends BaseEntity{
     DeCuongState trangThai;
     String deCuongUrl;
     int soLanNop;
-    @OneToMany
+    @OneToMany(mappedBy = "deCuong")
     Set<DeCuongLog> deCuongLogSet;
     @OneToOne
     @JoinColumn(name = "de_tai_id")

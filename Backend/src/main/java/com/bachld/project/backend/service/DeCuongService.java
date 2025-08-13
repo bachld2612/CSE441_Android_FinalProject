@@ -1,6 +1,6 @@
 package com.bachld.project.backend.service;
 
-import com.bachld.project.backend.dto.request.decuong.DeCuongRequest;
+import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +13,5 @@ public interface DeCuongService {
     /** TBM xem danh sách đề cương đã duyệt của bộ môn quản lý */
     Page<DeCuongResponse> getAcceptedForTBM(Pageable pageable);
     byte[] exportAcceptedForTBMAsExcel();
+    DeCuongLogResponse viewDeCuongLog();
 }
