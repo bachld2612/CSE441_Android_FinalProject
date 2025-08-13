@@ -20,8 +20,8 @@ public class ThoiGianThucHien extends  BaseEntity {
     CongViec congViec;
     LocalDate thoiGianBatDau;
     LocalDate thoiGianKetThuc;
-    @OneToOne
-    @JoinColumn(name = "dot_bao_ve_id")
+    @ManyToOne
+    @JoinColumn(name = "dot_bao_ve_id", nullable = false)
     DotBaoVe  dotBaoVe;
 
 }

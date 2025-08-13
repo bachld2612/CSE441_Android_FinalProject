@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "de_cuong")
 @NoArgsConstructor
@@ -18,7 +20,8 @@ public class DeCuong extends BaseEntity{
     DeCuongState trangThai;
     String deCuongUrl;
     int soLanNop;
-    String nhanXet;
+    @OneToMany(mappedBy = "deCuong")
+    Set<DeCuongLog> deCuongLogSet;
     @OneToOne
     @JoinColumn(name = "de_tai_id")
     DeTai deTai;

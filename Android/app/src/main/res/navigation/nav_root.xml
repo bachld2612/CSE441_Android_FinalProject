@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_root">
+
+    <include app:graph="@navigation/nav_sinh_vien" />
+    <include app:graph="@navigation/nav_auth" />
+
+    <action
+        android:id="@+id/action_global_graph_student"
+        app:destination="@id/nav_auth" />
+
+    <action
+        android:id="@+id/action_global_graph_auth"
+        app:destination="@id/nav_sinh_vien" />
+</navigation>
