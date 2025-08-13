@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) { // chỉ set lần đầu
             val graph = navController.navInflater.inflate(R.navigation.nav_root)
-            val start = if (Session.isLoggedIn(this)) R.id.navigation_sinh_vien else R.id.nav_auth
+            val start = if (Session.isLoggedIn(this)) R.id.nav_sinh_vien else R.id.nav_auth
             graph.setStartDestination(start)
             navController.graph = graph
         }
