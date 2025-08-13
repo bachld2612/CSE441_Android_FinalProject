@@ -45,6 +45,10 @@ public enum ErrorCode {
     DE_TAI_NOT_ACCEPTED       (1212, "Topic has not been accepted", HttpStatus.BAD_REQUEST),
     DE_CUONG_REASON_REQUIRED(1213, "Reason is required when rejecting the outline", HttpStatus.BAD_REQUEST),
     INTERNAL_SERVER_ERROR(1214, "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR),
+    OUT_OF_SUBMISSION_WINDOW(1215, "Ngoài thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
+    NO_ACTIVE_SUBMISSION_WINDOW(1216, "Chưa tới thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
+    NO_ACTIVE_REVIEW_LIST(1217, "Chưa đến thời gian thực hiện xét duyệt đề cương", HttpStatus.BAD_REQUEST),
+
 
     //Duc
     DE_TAI_EMPTY(1101, "Ten de tai cannot be empty", HttpStatus.BAD_REQUEST),
