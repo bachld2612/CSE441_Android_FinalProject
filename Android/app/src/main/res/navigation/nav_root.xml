@@ -13,4 +13,10 @@
     <action
         android:id="@+id/action_global_graph_auth"
         app:destination="@id/nav_sinh_vien" />
+
+    <action
+        android:id="@+id/action_global_nav_sinh_vien"
+        app:destination="@id/nav_sinh_vien"
+        app:popUpTo="@id/nav_auth"
+        app:popUpToInclusive="true" />
 </navigation>

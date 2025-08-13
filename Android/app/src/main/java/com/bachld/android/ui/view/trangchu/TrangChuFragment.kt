@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bachld.android.R
 import com.bachld.android.databinding.FragmentTrangChuScrollingBinding
 
-class TrangChuFragment: Fragment() {
+class TrangChuFragment: Fragment(R.layout.fragment_trang_chu_scrolling) {
 
     private var _binding: FragmentTrangChuScrollingBinding? = null
 
