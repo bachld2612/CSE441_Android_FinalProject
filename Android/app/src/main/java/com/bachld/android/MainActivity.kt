@@ -1,10 +1,12 @@
 package com.bachld.android
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -13,6 +15,8 @@ import com.bachld.android.core.Session
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.databinding.ActivityMainBinding
 import com.bachld.android.ui.view.doan.DoAnFragment
+import kotlinx.coroutines.launch
+import retrofit2.http.Tag
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,15 +32,14 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val navView: BottomNavigationView = binding.navView
 
+        Log.d("token", "token: ${Session.getTokenSync()}")
         if (savedInstanceState == null) {
-            val graph = navController.navInflater.inflate(R.navigation.nav_root)
-            val start = if (Session.isLoggedIn(this)) {
-                R.id.nav_sinh_vien
-            } else {
-                R.id.nav_auth
+            lifecycleScope.launch {
+                val loggedIn = Session.isLoggedIn()        // suspend
+                val graph = navController.navInflater.inflate(R.navigation.nav_root)
+                graph.setStartDestination(if (loggedIn) R.id.nav_sinh_vien else R.id.nav_auth)
+                navController.graph = graph
             }
-            graph.setStartDestination(start)
-            navController.graph = graph
         }
 
         val appBarConfiguration = AppBarConfiguration(
