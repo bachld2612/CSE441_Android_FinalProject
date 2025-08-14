@@ -1,4 +1,4 @@
-package com.bachld.android.ui.view.sinhvien
+package com.bachld.android.ui.view.thongtin
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bachld.android.R
-import com.bachld.android.databinding.FragmentThongTinSinhVienBinding
+import com.bachld.android.databinding.FragmentThongTinBinding
 
-class ThongTinSinhVienFragment : Fragment(R.layout.fragment_thong_tin_sinh_vien) {
-    private var _binding: FragmentThongTinSinhVienBinding? = null
+class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
+    private var _binding: FragmentThongTinBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class ThongTinSinhVienFragment : Fragment(R.layout.fragment_thong_tin_sinh_vien)
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentThongTinSinhVienBinding.inflate(inflater, container, false)
+        _binding = FragmentThongTinBinding.inflate(inflater, container, false)
         return binding.root
     }
 
