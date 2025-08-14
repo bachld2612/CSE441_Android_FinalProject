@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bachld.android.R
 import com.bachld.android.databinding.FragmentThongTinSinhVienBinding
 
-class ThongTinSinhVienFragment : Fragment() {
+class ThongTinSinhVienFragment : Fragment(R.layout.fragment_thong_tin_sinh_vien) {
     private var _binding: FragmentThongTinSinhVienBinding? = null
     private val binding get() = _binding!!
 
