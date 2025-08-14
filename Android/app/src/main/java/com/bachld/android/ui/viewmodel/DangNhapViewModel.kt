@@ -41,7 +41,7 @@ class DangNhapViewModel(app: Application): AndroidViewModel(app) {
                 val res = repo.login(loginRequest)
                 Log.d("DangNhapVM", "API trả code=${res.code}, message=${res.message}")
                 if (res.code == 1000) {
-                    Session.saveToken(appContext, res.result?.token ?: "")
+                    Session.saveToken(res.result?.token ?: "")
                     _loginState.value = UiState.Success(res)
 
                     fetchMyInfo(forceRefresh = true)

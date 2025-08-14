@@ -14,7 +14,7 @@ class AuthInterceptor (private val appContext: Context): Interceptor {
                 .build()
             return chain.proceed(cleanRequest)
         }
-        val token = Session.getToken(appContext)
+        val token = Session.getTokenSync()
         val newRequest = if (!token.isNullOrBlank()) {
             request.newBuilder()
                 .header("Authorization", "Bearer $token")
