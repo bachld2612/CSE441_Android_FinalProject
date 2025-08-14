@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_sinh_vien"
+    app:startDestination="@+id/navigation_trang_chu">
+
+    <fragment
+        android:id="@+id/navigation_trang_chu"
+        android:name="com.bachld.android.ui.view.trangchu.TrangChuFragment"
+        android:label="Trang chủ"
+        tools:layout="@layout/fragment_trang_chu_scrolling" />
+
+    <fragment
+        android:id="@+id/navigation_do_an"
+        android:name="com.bachld.android.ui.view.doan.DoAnFragment"
+        android:label="Đồ án"
+        tools:layout="@layout/fragment_do_an" />
+
+    <fragment
+        android:id="@+id/navigation_sinh_vien"
+        android:name="com.bachld.android.ui.view.sinhvien.SinhVienFragment"
+        android:label="Sinh viên"
+        tools:layout="@layout/fragment_sinh_vien" />
+
+    <fragment
+        android:id="@+id/navigation_hoi_dong"
+        android:name="com.bachld.android.ui.view.hoidong.HoiDongFragment"
+        android:label="Hội đồng"
+        tools:layout="@layout/fragment_hoi_dong" />
+
+    <fragment
+        android:id="@+id/navigation_thong_tin"
+        android:name="com.bachld.android.ui.view.sinhvien.ThongTinSinhVienFragment"
+        android:label="Thông tin"
+        tools:layout="@layout/fragment_thong_tin_sinh_vien" />
+</navigation>

@@ -22,6 +22,6 @@ public class ThoiGianThucHien extends  BaseEntity {
     LocalDate thoiGianKetThuc;
     @ManyToOne
     @JoinColumn(name = "dot_bao_ve_id", nullable = false)
-    DotBaoVe  dotBaoVe;
+    DotBaoVe dotBaoVe;
 
 }
