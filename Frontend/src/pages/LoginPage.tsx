@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-export default function Login() {
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const login = useAuthStore((s) => s.login);
   const navigate = useNavigate();

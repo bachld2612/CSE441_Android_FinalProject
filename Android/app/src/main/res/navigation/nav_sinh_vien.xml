@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigation_thong_tin"
-        android:name="com.bachld.android.ui.view.sinhvien.ThongTinSinhVienFragment"
+        android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"
         android:label="Thông tin"
-        tools:layout="@layout/fragment_thong_tin_sinh_vien" />
+        tools:layout="@layout/fragment_thong_tin" />
 </navigation>

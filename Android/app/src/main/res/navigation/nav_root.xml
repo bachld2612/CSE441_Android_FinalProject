@@ -19,4 +19,10 @@
         app:destination="@id/nav_sinh_vien"
         app:popUpTo="@id/nav_auth"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_global_nav_auth"
+        app:destination="@id/nav_auth"
+        app:popUpTo="@id/nav_sinh_vien"
+        app:popUpToInclusive="true" />
 </navigation>
