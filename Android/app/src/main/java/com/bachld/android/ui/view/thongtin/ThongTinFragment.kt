@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil3.load
 import coil3.request.CachePolicy
@@ -157,10 +159,19 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
                 }
             }
         }
-
-
         // Trigger load
         infoVm.loadMyInfo(requireContext())
+
+        binding.btnLogout.setOnClickListener {
+            binding.btnLogout.isEnabled = false
+            infoVm.doLogout(requireContext())
+
+            runCatching {
+                findNavController().navigate(R.id.action_global_nav_auth)
+            }.onFailure {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun submitRows(info: MyInfoResponse) {

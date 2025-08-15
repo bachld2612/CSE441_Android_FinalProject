@@ -3,8 +3,10 @@ package com.bachld.android.ui.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bachld.android.core.Session
 import com.bachld.android.core.UiState
 import com.bachld.android.core.UserPrefs
+import com.bachld.android.data.dto.request.auth.LogoutRequest
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.auth.MyInfoResponse
 import com.bachld.android.data.dto.response.taikhoan.AnhDaiDienUploadResponse
@@ -66,6 +68,24 @@ class ThongTinViewModel(
                 _uploadState.value = UiState.Success(res)
             } catch (e: Exception) {
                 _uploadState.value = UiState.Error(e.message)
+            }
+        }
+    }
+
+    fun doLogout(context: Context, callApi: Boolean = true) {
+        viewModelScope.launch {
+            try {
+                val token = Session.getTokenSync()
+                if (callApi && !token.isNullOrBlank()) {
+                    runCatching {
+                        // gọi backend invalidate token (không crash nếu lỗi)
+                        ApiClient.authApi.logout(LogoutRequest(token))
+                    }
+                }
+            } finally {
+                // Dọn sạch local
+                Session.logout()              // xoá token
+                UserPrefs(context).clear()    // xoá cache my_info
             }
         }
     }
