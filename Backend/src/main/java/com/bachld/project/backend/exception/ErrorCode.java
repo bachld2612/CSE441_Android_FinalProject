@@ -48,6 +48,7 @@ public enum ErrorCode {
     OUT_OF_SUBMISSION_WINDOW(1215, "Ngoài thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
     NO_ACTIVE_SUBMISSION_WINDOW(1216, "Chưa tới thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
     NO_ACTIVE_REVIEW_LIST(1217, "Chưa đến thời gian thực hiện xét duyệt đề cương", HttpStatus.BAD_REQUEST),
+    ACCESS_DENIED(1218, "Access Denied", HttpStatus.FORBIDDEN),
 
 
     //Duc

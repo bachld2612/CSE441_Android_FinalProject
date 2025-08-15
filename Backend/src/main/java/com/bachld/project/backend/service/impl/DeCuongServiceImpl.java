@@ -73,7 +73,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                 && deTai.getSinhVienThucHien().getTaiKhoan() != null
                 && email.equalsIgnoreCase(deTai.getSinhVienThucHien().getTaiKhoan().getEmail());
         if (!isOwner) {
-            throw new ApplicationException(ErrorCode.UNAUTHORIZED);
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
@@ -130,7 +130,7 @@ public class DeCuongServiceImpl implements DeCuongService {
     public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason) {
         String email = currentUsername();
         GiangVien gv = giangVienRepository.findByTaiKhoan_EmailIgnoreCase(email)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.UNAUTHORIZED));
+                .orElseThrow(() -> new ApplicationException(ErrorCode.ACCESS_DENIED));
 
         DeCuong dc = deCuongRepository.findById(deCuongId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_CUONG_NOT_FOUND));
@@ -145,7 +145,7 @@ public class DeCuongServiceImpl implements DeCuongService {
 
         // Chỉ GVHD
         if (deTai.getGvhd() == null || !deTai.getGvhd().getId().equals(gv.getId())) {
-            throw new ApplicationException(ErrorCode.UNAUTHORIZED);
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
         if (dc.getTrangThai() == DeCuongState.ACCEPTED) {
@@ -340,9 +340,9 @@ public class DeCuongServiceImpl implements DeCuongService {
     private Long currentTBMBoMonId() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         GiangVien gv = giangVienRepository.findByTaiKhoan_EmailIgnoreCase(email)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.UNAUTHORIZED));
+                .orElseThrow(() -> new ApplicationException(ErrorCode.ACCESS_DENIED));
         if (gv.getBoMon() == null) {
-            throw new ApplicationException(ErrorCode.UNAUTHORIZED);
+            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
         return gv.getBoMon().getId();
     }
