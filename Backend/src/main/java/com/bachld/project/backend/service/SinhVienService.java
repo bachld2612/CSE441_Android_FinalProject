@@ -11,5 +11,4 @@ public interface SinhVienService {
 
     SinhVienCreationResponse createSinhVien(SinhVienCreationRequest request);
     SinhVienImportResponse importSinhVien(MultipartFile file) throws IOException;
-
 }

@@ -2,6 +2,7 @@ package com.bachld.android.data.remote.service
 
 import com.bachld.android.data.dto.request.auth.IntrospectRequest
 import com.bachld.android.data.dto.request.auth.LoginRequest
+import com.bachld.android.data.dto.request.auth.LogoutRequest
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.auth.IntrospectResponse
 import com.bachld.android.data.dto.response.auth.LoginResponse
@@ -24,4 +25,6 @@ interface AuthApi {
     @GET("api/v1/auth/my-info")
     suspend fun myInfo(): ApiResponse<MyInfoResponse>
 
+    @POST("api/v1/auth/logout")
+    suspend fun logout(@Body req: LogoutRequest): ApiResponse<String>
 }

@@ -23,6 +23,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +47,7 @@ public class SinhVienServiceImpl implements SinhVienService {
     PasswordEncoder passwordEncoder;
     SinhVienMapper sinhVienMapper;
     TaiKhoanRepository taiKhoanRepository;
-
+    CloudinaryServiceImpl cloudinaryService;
 
     @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
     @Override
@@ -151,5 +153,16 @@ public class SinhVienServiceImpl implements SinhVienService {
     private Long tryParseLong(String s) {
         try { return Long.valueOf(s); } catch (Exception e) { return null; }
     }
+    private String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) {
+            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
+        }
+        return auth.getName();
+    }
 
+    private String upload(org.springframework.web.multipart.MultipartFile file) {
+        try { return cloudinaryService.upload(file); }
+        catch (Exception e) { throw new ApplicationException(ErrorCode.UPLOAD_FILE_FAILED); }
+    }
 }

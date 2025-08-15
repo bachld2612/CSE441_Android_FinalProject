@@ -45,6 +45,11 @@ public enum ErrorCode {
     DE_TAI_NOT_ACCEPTED       (1212, "Topic has not been accepted", HttpStatus.BAD_REQUEST),
     DE_CUONG_REASON_REQUIRED(1213, "Reason is required when rejecting the outline", HttpStatus.BAD_REQUEST),
     INTERNAL_SERVER_ERROR(1214, "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR),
+    OUT_OF_SUBMISSION_WINDOW(1215, "Ngoài thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
+    NO_ACTIVE_SUBMISSION_WINDOW(1216, "Chưa tới thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
+    NO_ACTIVE_REVIEW_LIST(1217, "Chưa đến thời gian thực hiện xét duyệt đề cương", HttpStatus.BAD_REQUEST),
+    ACCESS_DENIED(1218, "Access Denied", HttpStatus.FORBIDDEN),
+
 
     //Duc
     DE_TAI_EMPTY(1101, "Ten de tai cannot be empty", HttpStatus.BAD_REQUEST),
@@ -57,7 +62,10 @@ public enum ErrorCode {
     TRANG_THAI_INVALID(1109, "Trang thai invalid", HttpStatus.BAD_REQUEST),
     NOT_GVHD_OF_DE_TAI(1110, "Giang vien khong co quyen tren de tai nay", HttpStatus.FORBIDDEN),
     DE_TAI_NOT_IN_PENDING_STATUS(1111, "Only process de tai in PENDING status", HttpStatus.BAD_REQUEST),
-
+    LY_DO_HOAN_REQUIRED(1113, "Ly do hoan cannot be empty", HttpStatus.BAD_REQUEST),
+    DON_HOAN_ALREADY_PENDING(1114, "Sinh vien has already submitted a DonHoanDoAn and it is still pending", HttpStatus.BAD_REQUEST),
+    DON_HOAN_FILE_UPLOAD_FAILED(1115, "Failed to upload MinhChungFile for DonHoanDoAn", HttpStatus.INTERNAL_SERVER_ERROR),
+    POSTPONE_NOT_ALLOWED_WHEN_HAS_DE_TAI(1116, "Sinh viên has a DeTai already; postpone request is not allowed", HttpStatus.BAD_REQUEST),
 
     MA_SV_INVALID(1021, "Ma SV invalid", HttpStatus.BAD_REQUEST),
     HO_TEN_EMPTY(1022, "Ho ten cannot be empty", HttpStatus.BAD_REQUEST),
