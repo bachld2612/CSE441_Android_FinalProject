@@ -6,7 +6,6 @@ import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.auth.IntrospectResponse
 import com.bachld.android.data.dto.response.auth.LoginResponse
 import com.bachld.android.data.dto.response.auth.MyInfoResponse
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
