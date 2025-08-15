@@ -39,7 +39,17 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers(PERMIT_ALL).permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated())
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                            corsConfig.addAllowedOriginPattern("*");
+                            corsConfig.addAllowedHeader("*");
+                            corsConfig.addAllowedMethod("*");
+                            corsConfig.setAllowCredentials(true);
+                            return corsConfig;
+                        })
+                );
 
         http.exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthenticationEntryPoint));
 
