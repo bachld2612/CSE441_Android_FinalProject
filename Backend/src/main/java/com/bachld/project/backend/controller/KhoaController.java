@@ -2,10 +2,9 @@ package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.khoa.KhoaRequest;
-import com.bachld.project.backend.dto.response.auth.InfoResponse;
 import com.bachld.project.backend.dto.response.khoa.KhoaResponse;
-import com.bachld.project.backend.entity.Khoa;
 import com.bachld.project.backend.service.KhoaService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,37 +22,31 @@ public class KhoaController {
 
     @GetMapping
     public ApiResponse<List<KhoaResponse>> getKhoa() {
-
         return ApiResponse.<List<KhoaResponse>>builder()
                 .result(khoaService.getAllKhoa())
                 .build();
-
     }
 
     @PostMapping
-    public ApiResponse<KhoaResponse> createKhoa(KhoaRequest khoaRequest) {
-
+    public ApiResponse<KhoaResponse> createKhoa(@Valid @RequestBody KhoaRequest khoaRequest) {
         return ApiResponse.<KhoaResponse>builder()
                 .result(khoaService.createKhoa(khoaRequest))
                 .build();
-
     }
 
     @PutMapping("/{khoaId}")
-    public ApiResponse<KhoaResponse> updateKhoa(KhoaRequest khoaRequest, @PathVariable Long khoaId) {
-
+    public ApiResponse<KhoaResponse> updateKhoa(@PathVariable Long khoaId,
+                                                @Valid @RequestBody KhoaRequest khoaRequest) {
         return ApiResponse.<KhoaResponse>builder()
                 .result(khoaService.updateKhoa(khoaRequest, khoaId))
                 .build();
-
     }
 
-    @DeleteMapping("{khoaId}")
+    @DeleteMapping("/{khoaId}")  // ⬅️ thêm "/" (trước bạn đang thiếu)
     public ApiResponse<String> deleteKhoa(@PathVariable Long khoaId) {
         khoaService.deleteKhoa(khoaId);
         return ApiResponse.<String>builder()
                 .result("Delete khoa successfully")
                 .build();
     }
-
 }
