@@ -7,8 +7,16 @@ type AuthState = {
   login: (data: LoginRequest) => Promise<LoginResponse>;
   logout: () => Promise<LogoutResponse> | Promise<LoginResponse>;
   getMyInfo: () => Promise<MyInfoResponse>;
+  introspect: () => Promise<boolean>;
 };
 
+
+interface IntrospectResponse {
+  code: number;
+  result:{
+    valid: string
+  }
+}
 
 interface LoginResponse {
   code: number;
@@ -98,6 +106,26 @@ export const useAuthStore = create<AuthState>(() => ({
       }
       console.error("Unexpected error:", error);
       return { code: 500, message: "Đã xảy ra lỗi không mong muốn" };
+    }
+  },
+
+  introspect: async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return false;
+      }
+      const response: IntrospectResponse = await api.post("/auth/introspect", {
+        token: token,
+      });
+      console.log("Introspect response:", response);
+      if (response.code === 1000 && response.result.valid) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Introspect error:", error);
+      return false;
     }
   }
 }));
