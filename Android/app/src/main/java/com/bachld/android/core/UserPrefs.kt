@@ -47,6 +47,14 @@ class UserPrefs(context: Context) {
         sp.edit { remove(KEY_MY_INFO).remove(KEY_CACHED_AT) }
     }
 
+    fun updateAvatarUrl(url: String) {
+        val info = getCached() ?: return
+        info.anhDaiDienUrl = url
+        save(info) // đã ghi lại my_info + my_info_cached_at
+    }
+
+
+
     companion object {
         private const val KEY_MY_INFO = "my_info"
         private const val KEY_CACHED_AT = "my_info_cached_at"

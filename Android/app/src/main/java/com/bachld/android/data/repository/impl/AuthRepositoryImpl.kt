@@ -3,6 +3,7 @@ package com.bachld.android.data.repository.impl
 import android.content.Context
 import com.bachld.android.data.dto.request.auth.IntrospectRequest
 import com.bachld.android.data.dto.request.auth.LoginRequest
+import com.bachld.android.data.dto.request.auth.LogoutRequest
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.auth.IntrospectResponse
 import com.bachld.android.data.dto.response.auth.LoginResponse
@@ -29,4 +30,8 @@ class AuthRepositoryImpl(
         override suspend fun introspect(loginRequest: IntrospectRequest): ApiResponse<IntrospectResponse> {
             return authApi.introspect(loginRequest)
         }
+
+    override suspend fun logout(token: String): ApiResponse<String> {
+        return authApi.logout(LogoutRequest(token))
+    }
 }

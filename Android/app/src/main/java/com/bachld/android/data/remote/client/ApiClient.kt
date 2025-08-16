@@ -5,6 +5,7 @@ import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
 import com.bachld.android.data.remote.service.AuthApi
 import com.bachld.android.data.remote.service.DeTaiApi
+import com.bachld.android.data.remote.service.TaiKhoanApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -16,20 +17,25 @@ import java.util.concurrent.TimeUnit
 object ApiClient {
     lateinit var authApi: AuthApi
         private set
+    lateinit var taiKhoanApi: TaiKhoanApi
+        private set
+    lateinit var app: Application
+        private set
 
     lateinit var deTaiApi: DeTaiApi
         private set
 
     fun init(app: Application) {
+        this.app = app
+
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
         val okHttp = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(app.applicationContext))
             .addInterceptor(logging)
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
             .build()
 
         // Khởi tạo Moshi với hỗ trợ Kotlin
@@ -44,6 +50,7 @@ object ApiClient {
             .build()
 
         authApi = retrofit.create(AuthApi::class.java)
+        taiKhoanApi = retrofit.create(TaiKhoanApi::class.java)
         deTaiApi = retrofit.create(DeTaiApi::class.java)
     }
 }

@@ -41,7 +41,10 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.logging.interceptor.v510)
+    implementation(libs.coil)
+    implementation(libs.coil.transformations)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

@@ -12,5 +12,6 @@ interface AuthRepository {
     suspend fun login(loginRequest: LoginRequest): ApiResponse<LoginResponse>
     suspend fun getMyInfo(): ApiResponse<MyInfoResponse>
     suspend fun introspect(loginRequest: IntrospectRequest): ApiResponse<IntrospectResponse>
+    suspend fun logout(token: String): ApiResponse<String>
 
 }
