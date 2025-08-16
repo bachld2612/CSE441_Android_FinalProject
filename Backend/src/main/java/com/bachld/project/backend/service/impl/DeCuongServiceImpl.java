@@ -188,7 +188,9 @@ public class DeCuongServiceImpl implements DeCuongService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         boolean isGV = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("SCOPE_GIANG_VIEN"));
+                .anyMatch(a -> a.getAuthority().equals("SCOPE_GIANG_VIEN")
+                        || a.getAuthority().equals("SCOPE_TRUONG_BO_MON"));
+
 
         Page<DeCuong> page = isGV
                 ? deCuongRepository
