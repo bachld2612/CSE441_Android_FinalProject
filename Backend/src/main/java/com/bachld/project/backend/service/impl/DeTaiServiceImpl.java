@@ -34,7 +34,6 @@ public class DeTaiServiceImpl implements DeTaiService {
     DeTaiRepository deTaiRepository;
     SinhVienRepository sinhVienRepository;
     GiangVienRepository giangVienRepository;
-    DeCuongRepository deCuongRepository;
     CloudinaryService cloudinaryService;
     DeTaiMapper deTaiMapper;
 
@@ -63,6 +62,19 @@ public class DeTaiServiceImpl implements DeTaiService {
 
         DeTai saved = deTaiRepository.save(detai);
         return deTaiMapper.toDeTaiResponse(saved);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    @Override
+    public DeTaiResponse getMyDeTai() {
+        String accountEmail = getCurrentUsername();
+        SinhVien sv = sinhVienRepository.findByTaiKhoan_Email(accountEmail)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+
+        DeTai deTai = deTaiRepository.findBySinhVienThucHien_Id(sv.getId())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
+
+        return deTaiMapper.toDeTaiResponse(deTai);
     }
 
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")

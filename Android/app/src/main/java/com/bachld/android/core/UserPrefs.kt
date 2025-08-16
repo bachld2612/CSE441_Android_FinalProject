@@ -6,12 +6,20 @@ import com.squareup.moshi.Moshi
 import com.bachld.android.data.dto.response.auth.MyInfoResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import androidx.core.content.edit
+import com.bachld.android.data.dto.response.DeTaiResponse
 
 class UserPrefs(context: Context) {
 
     private val sp = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     private val adapter = moshi.adapter(MyInfoResponse::class.java)
+
+    private val projectAdapter = moshi.adapter(DeTaiResponse::class.java)
+
+    private fun keyProject(userId: Long) = "project_$userId"
+    private fun keyProjectCachedAt(userId: Long) = "project_cached_at_$userId"
+
+    fun getToken(): String? = sp.getString("token", null)
 
     fun save(info: MyInfoResponse) {
         val json = adapter.toJson(info)
@@ -43,5 +51,23 @@ class UserPrefs(context: Context) {
         private const val KEY_MY_INFO = "my_info"
         private const val KEY_CACHED_AT = "my_info_cached_at"
         const val TTL_3H: Long = 3L * 60 * 60 * 1000
+    }
+
+    fun saveProject(userId: Long, project: DeTaiResponse) {
+        val json = projectAdapter.toJson(project)
+        sp.edit {
+            putString(keyProject(userId), json)
+            putLong(keyProjectCachedAt(userId), System.currentTimeMillis())
+        }
+    }
+
+    fun getProject(userId: Long): DeTaiResponse? {
+        val json = sp.getString(keyProject(userId), null) ?: return null
+        return projectAdapter.fromJson(json)
+    }
+
+    fun isProjectStale(userId: Long, maxAgeMillis: Long): Boolean {
+        val ts = sp.getLong(keyProjectCachedAt(userId), 0L)
+        return ts == 0L || (System.currentTimeMillis() - ts) > maxAgeMillis
     }
 }

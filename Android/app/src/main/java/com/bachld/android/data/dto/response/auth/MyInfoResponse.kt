@@ -2,6 +2,7 @@ package com.bachld.android.data.dto.response.auth
 
 class MyInfoResponse {
 
+    var id: Long? = null
     var maSV: String? = null
     var email: String? = null
     var maGV: String? = null

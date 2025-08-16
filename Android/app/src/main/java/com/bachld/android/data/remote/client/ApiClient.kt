@@ -4,6 +4,7 @@ import android.app.Application
 import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
 import com.bachld.android.data.remote.service.AuthApi
+import com.bachld.android.data.remote.service.DeTaiApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -14,6 +15,9 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
     lateinit var authApi: AuthApi
+        private set
+
+    lateinit var deTaiApi: DeTaiApi
         private set
 
     fun init(app: Application) {
@@ -40,5 +44,6 @@ object ApiClient {
             .build()
 
         authApi = retrofit.create(AuthApi::class.java)
+        deTaiApi = retrofit.create(DeTaiApi::class.java)
     }
 }
