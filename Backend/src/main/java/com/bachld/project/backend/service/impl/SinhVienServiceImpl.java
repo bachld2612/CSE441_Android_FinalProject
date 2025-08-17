@@ -164,6 +164,17 @@ public class SinhVienServiceImpl implements SinhVienService {
         return sinhVienPage.map(sinhVienMapper::toSinhVienResponse);
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @Override
+    public void changeSinhVienStatus(String maSV) {
+
+        SinhVien sinhVien = sinhVienRepository.findByMaSV((maSV))
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        sinhVien.setKichHoat(!sinhVien.isKichHoat());
+        sinhVienRepository.save(sinhVien);
+
+    }
+
     private Map<String,Integer> headerIndex(Row header) {
         Map<String,Integer> m = new HashMap<>();
         for (int c = 0; c < header.getLastCellNum(); c++) {

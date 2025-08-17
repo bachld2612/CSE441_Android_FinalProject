@@ -72,4 +72,12 @@ public class SinhVienController {
                 .build();
     }
 
+    @PutMapping("change-status/{maSV}")
+    public ApiResponse<String> changeSinhVienStatus(@PathVariable String maSV) {
+        sinhVienService.changeSinhVienStatus(maSV);
+        return ApiResponse.<String>builder()
+                .result("Change status successfully!")
+                .build();
+    }
+
 }

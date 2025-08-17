@@ -16,4 +16,5 @@ public interface SinhVienService {
     SinhVienImportResponse importSinhVien(MultipartFile file) throws IOException;
     Page<SinhVienResponse> getAllSinhVien(Pageable pageable);
     Page<SinhVienResponse> getAllSinhVienByTenOrMaSV(String request, Pageable pageable);
+    void changeSinhVienStatus(String maSV);
 }

@@ -14,4 +14,6 @@ public interface SinhVienRepository extends JpaRepository<SinhVien, Long> {
     boolean existsByMaSV(String maSV);
 
     Page<SinhVien> findAllByHoTenContainingIgnoreCaseOrMaSVContainingIgnoreCase(String hoTen, String maSV, Pageable pageable);
+
+    Optional<SinhVien> findByMaSV(String maSV);
 }
