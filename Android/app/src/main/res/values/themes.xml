@@ -13,4 +13,10 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- nếu dùng AppCompat thì parent="Theme.AppCompat.Light.NoActionBar" -->
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- các attribute khác… -->
+    </style>
 </resources>
