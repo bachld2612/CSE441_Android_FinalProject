@@ -1,6 +1,7 @@
 package com.bachld.project.backend.service;
 
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
+import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
@@ -17,4 +18,5 @@ public interface SinhVienService {
     Page<SinhVienResponse> getAllSinhVien(Pageable pageable);
     Page<SinhVienResponse> getAllSinhVienByTenOrMaSV(String request, Pageable pageable);
     void changeSinhVienStatus(String maSV);
+    SinhVienCreationResponse updateSinhVien(SinhVienUpdateRequest request, String maSV);
 }

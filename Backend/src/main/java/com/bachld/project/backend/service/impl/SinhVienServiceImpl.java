@@ -1,6 +1,7 @@
 package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
+import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
@@ -85,6 +86,8 @@ public class SinhVienServiceImpl implements SinhVienService {
         return sinhVienMapper.toSinhVienCreationResponse(sinhVienRepository.save(sinhVien));
 
     }
+
+
 
     @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
     @Override
@@ -173,6 +176,34 @@ public class SinhVienServiceImpl implements SinhVienService {
         sinhVien.setKichHoat(!sinhVien.isKichHoat());
         sinhVienRepository.save(sinhVien);
 
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @Override
+    public SinhVienCreationResponse updateSinhVien(SinhVienUpdateRequest request, String maSV) {
+        SinhVien existingSinhVien = sinhVienRepository.findByMaSV(maSV)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        if (taiKhoanRepository.existsByEmail(request.getEmail())
+                && !existingSinhVien.getTaiKhoan().getEmail().equals(request.getEmail())) {
+            throw new ApplicationException(ErrorCode.EMAIL_EXISTED);
+        }
+
+        if (request.getMatKhau() != null && !request.getMatKhau().isBlank() && request.getMatKhau().length() < 6) {
+            throw new ApplicationException(ErrorCode.PASSWORD_INVALID);
+        }
+
+        Lop lop = lopRepository.findById(request.getLopId())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.LOP_NOT_FOUND));
+        TaiKhoan taiKhoan = existingSinhVien.getTaiKhoan();
+        taiKhoan.setEmail(request.getEmail());
+        if(request.getMatKhau() != null && !request.getMatKhau().isBlank()) {
+            taiKhoan.setMatKhau(passwordEncoder.encode(request.getMatKhau()));
+        }
+        taiKhoanRepository.save(taiKhoan);
+        existingSinhVien.setHoTen(request.getHoTen());
+        existingSinhVien.setSoDienThoai(request.getSoDienThoai());
+        existingSinhVien.setLop(lop);
+        return sinhVienMapper.toSinhVienCreationResponse(sinhVienRepository.save(existingSinhVien));
     }
 
     private Map<String,Integer> headerIndex(Row header) {

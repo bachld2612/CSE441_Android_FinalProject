@@ -2,6 +2,7 @@ package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
+import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
@@ -77,6 +78,16 @@ public class SinhVienController {
         sinhVienService.changeSinhVienStatus(maSV);
         return ApiResponse.<String>builder()
                 .result("Change status successfully!")
+                .build();
+    }
+
+    @PutMapping("{maSV}")
+    public ApiResponse<SinhVienCreationResponse> updateSinhVien(
+            @RequestBody SinhVienUpdateRequest request,
+            @PathVariable String maSV
+    ) {
+        return ApiResponse.<SinhVienCreationResponse>builder()
+                .result(sinhVienService.updateSinhVien(request, maSV))
                 .build();
     }
 
