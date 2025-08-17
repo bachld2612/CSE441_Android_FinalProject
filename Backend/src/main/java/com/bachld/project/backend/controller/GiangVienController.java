@@ -3,17 +3,21 @@ package com.bachld.project.backend.controller;
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
+import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
+import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
+import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.service.GiangVienService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -52,6 +56,27 @@ public class GiangVienController {
                 .result(giangVienService.importGiangVien(file))
                 .build();
 
+    }
+
+    @GetMapping("/sinh-vien")
+    public ApiResponse<Page<SinhVienSupervisedResponse>> getMySupervisedStudents(
+            @PageableDefault(page = 0, size = 10, sort = "hoTen", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+
+        return ApiResponse.<Page<SinhVienSupervisedResponse>>builder()
+                .result(giangVienService.getMySupervisedStudents(pageable))
+                .build();
+    }
+
+    @GetMapping("/xet-duyet/sinh-vien")
+    public ApiResponse<Page<DeTaiSinhVienApprovalResponse>> getDeTaiSinhVienApproval(
+            @RequestParam(name = "status", defaultValue = "ACCEPTED") DeTaiState status,
+            @PageableDefault(page = 0, size = 10, sort = "hoTen", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+
+        return ApiResponse.<Page<DeTaiSinhVienApprovalResponse>>builder()
+                .result(giangVienService.getDeTaiSinhVienApproval(status, pageable))
+                .build();
     }
 
 }

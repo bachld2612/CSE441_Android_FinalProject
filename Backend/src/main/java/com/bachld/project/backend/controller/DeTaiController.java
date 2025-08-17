@@ -52,7 +52,7 @@ public class DeTaiController {
                 .build();
     }
 
-    @GetMapping("/me")
+    @GetMapping("/chi-tiet")
     public ApiResponse<DeTaiResponse> getMyDeTai() {
         return ApiResponse.<DeTaiResponse>builder()
                 .result(deTaiService.getMyDeTai())
