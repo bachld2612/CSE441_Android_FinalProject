@@ -2,6 +2,7 @@ package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
+import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
@@ -55,6 +56,38 @@ public class SinhVienController {
     ) {
         return ApiResponse.<Page<SinhVienResponse>>builder()
                 .result(sinhVienService.getAllSinhVien(pageable))
+                .build();
+    }
+
+    @GetMapping("search")
+    public ApiResponse<Page<SinhVienResponse>> getAllSinhVienByTenOrMaSV(
+            @RequestParam String info,
+            @PageableDefault(
+                page = 0,
+                size = 10,
+                sort = "updatedAt",
+                direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ApiResponse.<Page<SinhVienResponse>>builder()
+                .result(sinhVienService.getAllSinhVienByTenOrMaSV(info, pageable))
+                .build();
+    }
+
+    @PutMapping("change-status/{maSV}")
+    public ApiResponse<String> changeSinhVienStatus(@PathVariable String maSV) {
+        sinhVienService.changeSinhVienStatus(maSV);
+        return ApiResponse.<String>builder()
+                .result("Change status successfully!")
+                .build();
+    }
+
+    @PutMapping("{maSV}")
+    public ApiResponse<SinhVienCreationResponse> updateSinhVien(
+            @RequestBody SinhVienUpdateRequest request,
+            @PathVariable String maSV
+    ) {
+        return ApiResponse.<SinhVienCreationResponse>builder()
+                .result(sinhVienService.updateSinhVien(request, maSV))
                 .build();
     }
 

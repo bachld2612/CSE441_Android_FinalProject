@@ -12,7 +12,7 @@ import StudentsEntry from "@/routes/SinhVienEntry";
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   {
-    path: "/students",
+    path: "/sinh-vien",
     element: <SinhVienLayout />,
     children: [
       { index: true, element: <StudentsEntry /> },
