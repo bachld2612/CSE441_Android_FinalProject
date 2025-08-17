@@ -1,14 +1,23 @@
 import { createBrowserRouter, } from "react-router-dom";
 import Hello from "../pages/Hello";
-import Login from "../pages/Login";
 import AuthPage from "../pages/AuthPage";
 import MainLayout from "../layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/pages/NotFound";
+import LoginPage from "@/pages/LoginPage";
+import SinhVienLayout from "@/layouts/SinhVienLayout";
+import SinhVienPage from "@/pages/SinhVienPage";
 
 
 export const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
+  { path: "/login", element: <LoginPage /> },
+  {
+    path: "/sinh-vien",
+    element: <SinhVienLayout />,
+    children: [
+      { index: true, element: <SinhVienPage /> },
+    ]
+  },
   {
     path: "/",
     element: <MainLayout />, 

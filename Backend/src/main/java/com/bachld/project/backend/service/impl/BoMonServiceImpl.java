@@ -35,7 +35,7 @@ public class BoMonServiceImpl implements BoMonService {
     KhoaRepository khoaRepository;
     private final GiangVienRepository giangVienRepository;
 
-    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
     public BoMonResponse createBoMon(BoMonRequest boMonRequest) {
         if(boMonRepository.existsByTenBoMonIgnoreCase(boMonRequest.getTenBoMon())) {
@@ -44,7 +44,7 @@ public class BoMonServiceImpl implements BoMonService {
         return boMonMapper.toBoMonResponse(boMonRepository.save(boMonMapper.toBoMon(boMonRequest)));
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
     public BoMonResponse updateBoMon(BoMonRequest boMonRequest, Long boMonId) {
         if(boMonRepository.existsByTenBoMonIgnoreCase(boMonRequest.getTenBoMon())) {
@@ -59,7 +59,8 @@ public class BoMonServiceImpl implements BoMonService {
         return boMonMapper.toBoMonResponse(boMonRepository.save(boMon));
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
     public void deleteBoMon(Long boMonId) {
         boMonRepository.deleteById(boMonId);

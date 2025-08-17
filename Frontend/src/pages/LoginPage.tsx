@@ -48,6 +48,13 @@ export default function LoginPage() {
     if (response.code === 1000) {
       const myInfoResponse = await useAuthStore.getState().getMyInfo();
       if (myInfoResponse.code === 1000) {
+        if (myInfoResponse.result?.role === "SINH_VIEN"){
+          toast.error("Bạn không có quyền truy cập vào hệ thống này", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          return;
+        }
         localStorage.setItem("myInfo", JSON.stringify(myInfoResponse.result));
       }
       navigate("/auth");
