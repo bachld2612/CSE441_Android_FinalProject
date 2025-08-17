@@ -3,6 +3,7 @@ package com.bachld.project.backend.service.impl;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
+import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
 import com.bachld.project.backend.entity.Lop;
 import com.bachld.project.backend.entity.SinhVien;
 import com.bachld.project.backend.entity.TaiKhoan;
@@ -22,6 +23,8 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -141,6 +144,13 @@ public class SinhVienServiceImpl implements SinhVienService {
                 .success(ok)
                 .errors(errs)
                 .build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public Page<SinhVienResponse> getAllSinhVien(Pageable pageable) {
+        Page<SinhVien> sinhVienPage = sinhVienRepository.findAll(pageable);
+        return sinhVienPage.map(sinhVienMapper::toSinhVienResponse);
     }
 
     private Map<String,Integer> headerIndex(Row header) {
