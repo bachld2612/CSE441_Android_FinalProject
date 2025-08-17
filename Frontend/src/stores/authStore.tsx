@@ -127,5 +127,6 @@ export const useAuthStore = create<AuthState>(() => ({
       console.error("Introspect error:", error);
       return false;
     }
-  }
+  },
+  
 }));
