@@ -58,4 +58,18 @@ public class SinhVienController {
                 .build();
     }
 
+    @GetMapping("search")
+    public ApiResponse<Page<SinhVienResponse>> getAllSinhVienByTenOrMaSV(
+            @RequestParam String info,
+            @PageableDefault(
+                page = 0,
+                size = 10,
+                sort = "updatedAt",
+                direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ApiResponse.<Page<SinhVienResponse>>builder()
+                .result(sinhVienService.getAllSinhVienByTenOrMaSV(info, pageable))
+                .build();
+    }
+
 }

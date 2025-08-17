@@ -15,4 +15,5 @@ public interface SinhVienService {
     SinhVienCreationResponse createSinhVien(SinhVienCreationRequest request);
     SinhVienImportResponse importSinhVien(MultipartFile file) throws IOException;
     Page<SinhVienResponse> getAllSinhVien(Pageable pageable);
+    Page<SinhVienResponse> getAllSinhVienByTenOrMaSV(String request, Pageable pageable);
 }

@@ -153,6 +153,17 @@ public class SinhVienServiceImpl implements SinhVienService {
         return sinhVienPage.map(sinhVienMapper::toSinhVienResponse);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public Page<SinhVienResponse> getAllSinhVienByTenOrMaSV(String request, Pageable pageable) {
+        if(request == null || request.isBlank()) {
+            return getAllSinhVien(pageable);
+        }
+        Page<SinhVien> sinhVienPage = sinhVienRepository.findAllByHoTenContainingIgnoreCaseOrMaSVContainingIgnoreCase(
+                request, request, pageable);
+        return sinhVienPage.map(sinhVienMapper::toSinhVienResponse);
+    }
+
     private Map<String,Integer> headerIndex(Row header) {
         Map<String,Integer> m = new HashMap<>();
         for (int c = 0; c < header.getLastCellNum(); c++) {
