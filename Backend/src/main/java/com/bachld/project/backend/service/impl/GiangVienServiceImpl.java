@@ -2,17 +2,23 @@ package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
+import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
+import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
+import com.bachld.project.backend.entity.SinhVien;
 import com.bachld.project.backend.entity.TaiKhoan;
+import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.enums.Role;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.GiangVienMapper;
+import com.bachld.project.backend.mapper.SinhVienMapper;
 import com.bachld.project.backend.repository.BoMonRepository;
 import com.bachld.project.backend.repository.GiangVienRepository;
+import com.bachld.project.backend.repository.SinhVienRepository;
 import com.bachld.project.backend.repository.TaiKhoanRepository;
 import com.bachld.project.backend.service.GiangVienService;
 import jakarta.transaction.Transactional;
@@ -23,7 +29,10 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,6 +57,39 @@ public class GiangVienServiceImpl implements GiangVienService {
     private final PasswordEncoder passwordEncoder;
     private final BoMonRepository boMonRepository;
     private final GiangVienMapper giangVienMapper;
+    SinhVienRepository sinhVienRepository;
+    SinhVienMapper sinhVienMapper;
+
+    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @Override
+    public Page<SinhVienSupervisedResponse> getMySupervisedStudents(Pageable pageable) {
+        String email = currentEmail();
+
+        Long gvhdId = giangVienRepository.findByTaiKhoan_Email(email)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_A_GVHD))
+                .getId();
+
+        Page<SinhVien> page = sinhVienRepository.findByDeTai_Gvhd_Id(gvhdId, pageable);
+        return page.map(sinhVienMapper::toSinhVienSupervisedResponse);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @Override
+    public Page<DeTaiSinhVienApprovalResponse> getDeTaiSinhVienApproval(DeTaiState status, Pageable pageable) {
+        String email = currentEmail();
+
+        Long gvhdId = giangVienRepository.findByTaiKhoan_Email(email)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_A_GVHD))
+                .getId();
+
+        DeTaiState filter = (status == null) ? DeTaiState.PENDING : status;
+
+        Page<SinhVien> page = sinhVienRepository
+                .findByDeTai_Gvhd_IdAndDeTai_TrangThai(gvhdId, filter, pageable);
+
+        return page.map(sinhVienMapper::toDeTaiSinhVienApprovalResponse);
+    }
+
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
     public GiangVienCreationResponse createGiangVien(GiangVienCreationRequest giangVienCreationRequest) {
@@ -181,5 +223,12 @@ public class GiangVienServiceImpl implements GiangVienService {
     }
     private Long tryParseLong(String s) {
         try { return Long.valueOf(s); } catch (Exception e) { return null; }
+    }
+    private String currentEmail() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) {
+            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
+        }
+        return auth.getName();
     }
 }

@@ -31,7 +31,7 @@ export default function Header() {
   const navbarLinks = [
     { name: "Trang chủ", href: "/" },
     { name: "Đồ án", href: "/projects" },
-    { name: "Sinh viên", href: "/students" },
+    { name: "Sinh viên", href: "/sinh-vien" },
     { name: "Giảng viên", href: "/teachers" },
     { name: "Hội đồng", href: "/committees" },
     { name: "Tổ chức", href: "/to-chuc/khoa" },

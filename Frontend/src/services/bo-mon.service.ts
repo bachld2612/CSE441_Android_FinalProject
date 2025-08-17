@@ -16,7 +16,19 @@ interface BoMonResponse {
   khoaId: number;
 }
 
-// (Backend GET /bo-mon trả Page<BoMonResponse>, ta bóc content -> mảng)
+interface TruongBoMonCreationRequest {
+  giangVienId: number;
+  boMonId: number;
+}
+
+interface TruongBoMonCreationResponse {
+  maGV: string;
+  hoTen: string;
+  hocVi?: string;
+  hocHam?: string;
+  tenBoMon: string;
+}
+
 type Page<T> = {
   content: T[];
   totalElements: number;
@@ -27,10 +39,8 @@ type Page<T> = {
 
 // ====================
 // Service functions
-// (axios.ts đã return response.data, nên ở đây return thẳng `res`)
 // ====================
 
-// Lấy tất cả bộ môn dưới dạng mảng (đồng nhất với Khoa)
 async function getAllBoMon(): Promise<ApiResponse<BoMonResponse[]>> {
   const res: ApiResponse<Page<BoMonResponse>> = await api.get("/bo-mon", {
     params: { page: 0, size: 1000, sort: "updatedAt,DESC" },
@@ -63,6 +73,16 @@ async function deleteBoMon(id: number): Promise<ApiResponse<string>> {
   return res;
 }
 
+async function createTruongBoMon(
+  data: TruongBoMonCreationRequest
+): Promise<ApiResponse<TruongBoMonCreationResponse>> {
+  const res: ApiResponse<TruongBoMonCreationResponse> = await api.post(
+    "/bo-mon/truong-bo-mon",
+    data
+  );
+  return res;
+}
+
 // ====================
 // Export gọn
 // ====================
@@ -71,6 +91,9 @@ export {
   createBoMon,
   updateBoMon,
   deleteBoMon,
+  createTruongBoMon,
   type BoMonRequest,
   type BoMonResponse,
+  type TruongBoMonCreationRequest,
+  type TruongBoMonCreationResponse,
 };

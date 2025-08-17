@@ -4,6 +4,7 @@ import android.app.Application
 import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
 import com.bachld.android.data.remote.service.AuthApi
+import com.bachld.android.data.remote.service.DeTaiApi
 import com.bachld.android.data.remote.service.TaiKhoanApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -21,6 +22,9 @@ object ApiClient {
     lateinit var app: Application
         private set
 
+    lateinit var deTaiApi: DeTaiApi
+        private set
+
     fun init(app: Application) {
         this.app = app
 
@@ -34,6 +38,7 @@ object ApiClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .build()
 
+        // Khởi tạo Moshi với hỗ trợ Kotlin
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
@@ -46,5 +51,6 @@ object ApiClient {
 
         authApi = retrofit.create(AuthApi::class.java)
         taiKhoanApi = retrofit.create(TaiKhoanApi::class.java)
+        deTaiApi = retrofit.create(DeTaiApi::class.java)
     }
 }

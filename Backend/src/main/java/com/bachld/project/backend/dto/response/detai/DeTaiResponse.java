@@ -16,6 +16,7 @@ public class DeTaiResponse {
     String nhanXet;
 
     Long gvhdId;
+    String gvhdTen;
     Long sinhVienId;
 
     String tongQuanDeTaiUrl;

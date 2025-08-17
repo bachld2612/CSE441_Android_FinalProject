@@ -179,9 +179,8 @@ export default function KhoaPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[20%]">Mã khoa</TableHead>
               <TableHead className="w-[60%]">Tên khoa</TableHead>
-              <TableHead className="w-[20%] text-right">Hành động</TableHead>
+              <TableHead className="w-[40%] text-center">Hành động</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -197,9 +196,8 @@ export default function KhoaPage() {
             ) : (
               filtered.map((khoa) => (
                 <TableRow key={khoa.id}>
-                  <TableCell className="font-medium">{khoa.id}</TableCell>
                   <TableCell>{khoa.tenKhoa}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-center">
                     <Button
                       size="icon"
                       variant="outline"

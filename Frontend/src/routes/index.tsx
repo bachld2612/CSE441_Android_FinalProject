@@ -2,17 +2,26 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import ToChucLayout from "@/layouts/ToChucLayout";
 import Hello from "@/pages/Hello";
-import LoginPage from "@/pages/LoginPage";
 import NotFound from "@/pages/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
 import KhoaPage from "@/pages/KhoaPage";
 import BoMonPage from "@/pages/BoMonPage";
 import NganhPage from "@/pages/NganhPage";
 import LopPage from "@/pages/LopPage";
+import LoginPage from "@/pages/LoginPage";
+import SinhVienLayout from "@/layouts/SinhVienLayout";
+import StudentsEntry from "@/routes/SinhVienEntry";
 import DotBaoVePage from "@/pages/DotBaoVePage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
+  {
+    path: "/sinh-vien",
+    element: <SinhVienLayout />,
+    children: [
+      { index: true, element: <StudentsEntry /> },
+    ]
+  },
 
   {
     path: "/",
