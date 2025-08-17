@@ -4,10 +4,15 @@ import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
+import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
 import com.bachld.project.backend.service.SinhVienService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +43,19 @@ public class SinhVienController {
                 .result(sinhVienService.importSinhVien(file))
                 .build();
 
+    }
+
+    @GetMapping
+    public ApiResponse<Page<SinhVienResponse>> getAllSinhVien(
+            @PageableDefault(
+                page = 0,
+                size = 10,
+                sort = "updatedAt",
+                direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ApiResponse.<Page<SinhVienResponse>>builder()
+                .result(sinhVienService.getAllSinhVien(pageable))
+                .build();
     }
 
 }
