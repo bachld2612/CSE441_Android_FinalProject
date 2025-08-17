@@ -6,6 +6,6 @@ import com.bachld.android.data.dto.response.DeTaiResponse
 import retrofit2.http.GET
 
 interface DeTaiApi {
-    @GET("api/v1/de-tai/me")
+    @GET("api/v1/de-tai/chi-tiet")
     suspend fun getMyDeTai(): ApiResponse<DeTaiResponse>
 }

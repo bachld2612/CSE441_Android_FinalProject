@@ -6,7 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/pages/NotFound";
 import LoginPage from "@/pages/LoginPage";
 import SinhVienLayout from "@/layouts/SinhVienLayout";
-import SinhVienPage from "@/pages/SinhVienPage";
+import StudentsEntry from "@/routes/SinhVienEntry";
 
 
 export const router = createBrowserRouter([
@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
     path: "/students",
     element: <SinhVienLayout />,
     children: [
-      { index: true, element: <SinhVienPage /> },
+      { index: true, element: <StudentsEntry /> },
     ]
   },
   {

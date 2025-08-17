@@ -67,3 +67,23 @@ const createSinhVien = async (
 };
 
 export { getAllSinhVien, createSinhVien };
+
+export interface SinhVienOfGiangVien {
+  maSV: string;
+  hoTen: string;
+  tenLop: string;
+  soDienThoai?: string;
+  tenDeTai?: string;
+}
+
+const getSinhVienOfGiangVien = async (
+  pageable: PageableRequest
+): Promise<PageResponse<SinhVienOfGiangVien>> => {
+  const res: ApiResponse<PageResponse<SinhVienOfGiangVien>> = await api.get(
+    "/giang-vien/sinh-vien",
+    { params: { page: pageable.page, size: pageable.size, sort: pageable.sort } }
+  );
+  return res.result;
+};
+
+export { getSinhVienOfGiangVien };
