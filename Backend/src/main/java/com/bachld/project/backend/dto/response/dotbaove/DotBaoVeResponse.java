@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DotBaoVeResponse {
-
+    Long id;
     String tenDotBaoVe;
     int hocKi;
     LocalDate thoiGianBatDau;
