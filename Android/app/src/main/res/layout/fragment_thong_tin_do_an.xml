@@ -108,6 +108,7 @@
             android:id="@+id/tv_tien_do"
             android:text="Tiến độ hiện tại: Sinh viên chủ động liên hệ với giáo viên hướng dẫn cùng hướng nghiên cứu đề tài"
             android:layout_marginTop="6dp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
 

@@ -13,4 +13,6 @@ public interface DeTaiService {
     Page<DeTaiResponse> getDeTaiByLecturerAndStatus(DeTaiState trangThai, Pageable pageable);
 
     DeTaiResponse approveDeTai(Long deTaiId, DeTaiApprovalRequest request);
+
+    DeTaiResponse getMyDeTai();
 }

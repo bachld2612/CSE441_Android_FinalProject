@@ -51,4 +51,11 @@ public class DeTaiController {
                 .result(deTaiService.approveDeTai(deTaiId, request))
                 .build();
     }
+
+    @GetMapping("/chi-tiet")
+    public ApiResponse<DeTaiResponse> getMyDeTai() {
+        return ApiResponse.<DeTaiResponse>builder()
+                .result(deTaiService.getMyDeTai())
+                .build();
+    }
 }

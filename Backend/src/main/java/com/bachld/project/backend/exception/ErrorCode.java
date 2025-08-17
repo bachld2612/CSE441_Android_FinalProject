@@ -66,6 +66,7 @@ public enum ErrorCode {
     DON_HOAN_ALREADY_PENDING(1114, "Sinh vien has already submitted a DonHoanDoAn and it is still pending", HttpStatus.BAD_REQUEST),
     DON_HOAN_FILE_UPLOAD_FAILED(1115, "Failed to upload MinhChungFile for DonHoanDoAn", HttpStatus.INTERNAL_SERVER_ERROR),
     POSTPONE_NOT_ALLOWED_WHEN_HAS_DE_TAI(1116, "Sinh viên has a DeTai already; postpone request is not allowed", HttpStatus.BAD_REQUEST),
+    NOT_A_GVHD(2004, "Current account is not an GVHD", HttpStatus.FORBIDDEN),
 
     MA_SV_INVALID(1021, "Ma SV invalid", HttpStatus.BAD_REQUEST),
     HO_TEN_EMPTY(1022, "Ho ten cannot be empty", HttpStatus.BAD_REQUEST),
