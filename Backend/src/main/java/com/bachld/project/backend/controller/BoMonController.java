@@ -38,14 +38,14 @@ public class BoMonController {
                 .build();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping()
     public ApiResponse<BoMonResponse> createBoMon(@RequestBody BoMonRequest boMonRequest) {
         return ApiResponse.<BoMonResponse>builder()
                 .result(boMonService.createBoMon(boMonRequest))
                 .build();
     }
 
-    @PutMapping(value = "{boMonId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{boMonId}")
     public ApiResponse<BoMonResponse> updateBoMon(
             @RequestBody BoMonRequest boMonRequest,
             @PathVariable Long boMonId) {
@@ -54,9 +54,6 @@ public class BoMonController {
                 .build();
     }
 
-    // Hỗ trợ cả 2 kiểu:
-    //  - DELETE /api/v1/bo-mon/{boMonId}
-    //  - DELETE /api/v1/bo-mon?boMonId=...
     @DeleteMapping({ "", "/{boMonId}" })
     public ApiResponse<String> deleteBoMon(
             @RequestParam(value = "boMonId", required = false) Long boMonIdQuery,
@@ -73,7 +70,7 @@ public class BoMonController {
                 .build();
     }
 
-    @PostMapping(value = "truong-bo-mon", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "truong-bo-mon")
     public ApiResponse<TruongBoMonCreationResponse> createTruongBoMon(
             @RequestBody TruongBoMonCreationRequest truongBoMonCreationRequest) {
         return ApiResponse.<TruongBoMonCreationResponse>builder()
