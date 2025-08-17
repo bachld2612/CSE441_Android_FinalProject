@@ -34,7 +34,7 @@ export default function Header() {
     { name: "Sinh viên", href: "/sinh-vien" },
     { name: "Giảng viên", href: "/teachers" },
     { name: "Hội đồng", href: "/committees" },
-    { name: "Tổ chức", href: "/organizations" },
+    { name: "Tổ chức", href: "/to-chuc/khoa" },
   ];
 
   useEffect(() => {

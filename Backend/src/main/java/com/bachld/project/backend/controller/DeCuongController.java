@@ -15,11 +15,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/v1/de-cuong")
+@RequestMapping(value = "/api/v1/de-cuong")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DeCuongController {
@@ -30,51 +31,65 @@ public class DeCuongController {
     public ApiResponse<Page<DeCuongResponse>> getAll(
             @ParameterObject
             @PageableDefault(page = 0,
-                             size = 10,
-                             sort = "updatedAt",
-                             direction = Sort.Direction.DESC)
+                    size = 10,
+                    sort = "updatedAt",
+                    direction = Sort.Direction.DESC)
             Pageable pageable) {
         return ApiResponse.<Page<DeCuongResponse>>builder()
                 .result(deCuongService.getAllDeCuong(pageable))
                 .build();
     }
 
-    // Sinh viên nộp/cập nhật đề cương cho Đề tài của chính mình
-    @PostMapping("/sv/nop-de-cuong")
-    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    @PostMapping(value = "/sv/nop-de-cuong")
     public ApiResponse<DeCuongResponse> submitDeCuong(
-            @RequestParam Long deTaiId,
-            @RequestParam String fileUrl
+            @RequestParam(value = "deTaiId", required = false) Long deTaiId,
+            @RequestParam(value = "fileUrl", required = false) String fileUrl,
+            @RequestBody(required = false) Map<String, Object> body
     ) {
+        if (body != null) {
+            if (deTaiId == null) deTaiId = toLong(body.get("deTaiId"));
+            if (fileUrl == null) fileUrl = toStringVal(body.get("fileUrl"));
+        }
+        if (deTaiId == null || fileUrl == null || fileUrl.isBlank()) {
+            throw new IllegalArgumentException("Thiếu tham số 'deTaiId' hoặc 'fileUrl'");
+        }
         var res = deCuongService.submitDeCuong(deTaiId, fileUrl);
-        return ApiResponse.<DeCuongResponse>builder().result(res).message("Nộp đề cương thành công").build();
+        return ApiResponse.<DeCuongResponse>builder()
+                .result(res)
+                .message("Nộp đề cương thành công")
+                .build();
     }
 
     @GetMapping("/sv/log")
-    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     public ApiResponse<DeCuongLogResponse> viewDeCuongLog() {
         var res = deCuongService.viewDeCuongLog();
         return ApiResponse.<DeCuongLogResponse>builder().result(res).build();
     }
 
-
     @PutMapping("/{id}/duyet")
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
     public ApiResponse<DeCuongResponse> approveDeCuong(@PathVariable Long id) {
         var res = deCuongService.reviewDeCuong(id, true, null);
         return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã phê duyệt").build();
     }
 
-    @PutMapping("/{id}/tu-choi")
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
-    public ApiResponse<DeCuongResponse> rejectDeCuong(@PathVariable Long id, @RequestParam String reason) {
+    @PutMapping(value = "/{id}/tu-choi")
+    public ApiResponse<DeCuongResponse> rejectDeCuong(
+            @PathVariable Long id,
+            @RequestParam(value = "reason", required = false) String reason,
+            @RequestBody(required = false) Map<String, Object> body
+    ) {
+        if (body != null && (reason == null || reason.isBlank())) {
+            reason = toStringVal(body.get("reason"));
+        }
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException("Thiếu tham số 'reason'");
+        }
         var res = deCuongService.reviewDeCuong(id, false, reason);
         return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã từ chối").build();
     }
 
     @GetMapping("/tbm/danh-sach")
     public ApiResponse<Page<DeCuongResponse>> getAcceptedForTBM(
-//            @ParameterObject
             @PageableDefault(page = 0, size = 10, sort = "deTai.sinhVienThucHien.hoTen", direction = Sort.Direction.ASC)
             Pageable pageable) {
         return ApiResponse.<Page<DeCuongResponse>>builder()
@@ -82,8 +97,10 @@ public class DeCuongController {
                 .build();
     }
 
-    @GetMapping(value = "/tbm/danh-sach/excel",
-            produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @GetMapping(
+            value = "/tbm/danh-sach/excel",
+            produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
     public ResponseEntity<byte[]> exportAcceptedForTBMAsExcel() {
         byte[] xlsx = deCuongService.exportAcceptedForTBMAsExcel();
         return ResponseEntity.ok()
@@ -91,5 +108,21 @@ public class DeCuongController {
                 .contentType(MediaType.parseMediaType(
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(xlsx);
+    }
+
+    // ===== Helpers (chỉ trong controller, không ảnh hưởng nơi khác) =====
+    private Long toLong(Object v) {
+        if (v == null) return null;
+        if (v instanceof Number n) return n.longValue();
+        if (v instanceof String s) {
+            try {
+                return Long.parseLong(s.trim());
+            } catch (NumberFormatException ignored) { }
+        }
+        return null;
+    }
+
+    private String toStringVal(Object v) {
+        return v == null ? null : String.valueOf(v);
     }
 }
