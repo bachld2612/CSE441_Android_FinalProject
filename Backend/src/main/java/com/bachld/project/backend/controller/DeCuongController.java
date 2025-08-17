@@ -15,16 +15,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping(
-        value = "/api/v1/de-cuong",
-        produces = MediaType.APPLICATION_JSON_VALUE // đảm bảo default trả JSON
-)
+@RequestMapping(value = "/api/v1/de-cuong")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DeCuongController {
@@ -44,13 +40,7 @@ public class DeCuongController {
                 .build();
     }
 
-    // Sinh viên nộp/cập nhật đề cương cho Đề tài của chính mình
-    // NHẬN ĐƯỢC: JSON body ({"deTaiId":123,"fileUrl":"..."}) hoặc query (?deTaiId=&fileUrl=)
-    @PostMapping(
-            value = "/sv/nop-de-cuong",
-            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE }
-    )
-    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    @PostMapping(value = "/sv/nop-de-cuong")
     public ApiResponse<DeCuongResponse> submitDeCuong(
             @RequestParam(value = "deTaiId", required = false) Long deTaiId,
             @RequestParam(value = "fileUrl", required = false) String fileUrl,
@@ -71,25 +61,18 @@ public class DeCuongController {
     }
 
     @GetMapping("/sv/log")
-    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     public ApiResponse<DeCuongLogResponse> viewDeCuongLog() {
         var res = deCuongService.viewDeCuongLog();
         return ApiResponse.<DeCuongLogResponse>builder().result(res).build();
     }
 
     @PutMapping("/{id}/duyet")
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
     public ApiResponse<DeCuongResponse> approveDeCuong(@PathVariable Long id) {
         var res = deCuongService.reviewDeCuong(id, true, null);
         return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã phê duyệt").build();
     }
 
-    // Từ chối — NHẬN ĐƯỢC: JSON body ({"reason":"..."}) hoặc query (?reason=...)
-    @PutMapping(
-            value = "/{id}/tu-choi",
-            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE }
-    )
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
+    @PutMapping(value = "/{id}/tu-choi")
     public ApiResponse<DeCuongResponse> rejectDeCuong(
             @PathVariable Long id,
             @RequestParam(value = "reason", required = false) String reason,
@@ -114,7 +97,6 @@ public class DeCuongController {
                 .build();
     }
 
-    // Excel — override produces để trả về file xlsx
     @GetMapping(
             value = "/tbm/danh-sach/excel",
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
