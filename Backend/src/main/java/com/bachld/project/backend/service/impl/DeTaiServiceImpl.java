@@ -1,7 +1,9 @@
 package com.bachld.project.backend.service.impl;
 
+import com.bachld.project.backend.dto.request.detai.DeTaiGiangVienHuongDanRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiApprovalRequest;
+import com.bachld.project.backend.dto.response.detai.DeTaiGiangVienHuongDanResponse;
 import com.bachld.project.backend.dto.response.detai.DeTaiResponse;
 import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
@@ -18,12 +20,15 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.math3.analysis.function.Sinh;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -75,6 +80,27 @@ public class DeTaiServiceImpl implements DeTaiService {
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
         return deTaiMapper.toDeTaiResponse(deTai);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @Override
+    public DeTaiGiangVienHuongDanResponse addGiangVienHuongDan(DeTaiGiangVienHuongDanRequest request) {
+        SinhVien sv = sinhVienRepository.findByMaSV(request.getMaSv())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        GiangVien gv = giangVienRepository.findByMaGV(request.getMaGV()).
+                orElseThrow(() -> new ApplicationException(ErrorCode.GIANG_VIEN_NOT_FOUND));
+        Optional<DeTai> deTai = deTaiRepository.findBySinhVienThucHien_Id(sv.getId());
+        if(deTai.isPresent()) {
+            throw new ApplicationException(ErrorCode.SINH_VIEN_ALREADY_REGISTERED_DE_TAI);
+        }
+        DeTai newDeTai = DeTai.builder()
+                .sinhVienThucHien(sv)
+                .gvhd(gv)
+                .build();
+        deTaiRepository.save(newDeTai);
+        return DeTaiGiangVienHuongDanResponse.builder()
+                .success(true)
+                .build();
     }
 
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
