@@ -242,7 +242,6 @@ export default function GiangVienPage() {
             <Dialog open={openCreate} onOpenChange={setOpenCreate}>
               <DialogTrigger asChild>
                 <Button className="bg-[#457B9D] text-white hover:bg-[#35607a]">
-                  <UserPlus className="w-4 h-4 mr-2" />
                   Thêm giảng viên
                 </Button>
               </DialogTrigger>
@@ -388,7 +387,6 @@ export default function GiangVienPage() {
             <Dialog open={openImport} onOpenChange={setOpenImport}>
               <DialogTrigger asChild>
                 <Button className="bg-[#457B9D] text-white hover:bg-[#35607a]">
-                  <Upload className="w-4 h-4 mr-2" />
                   Import giảng viên
                 </Button>
               </DialogTrigger>
@@ -562,16 +560,6 @@ export default function GiangVienPage() {
           >
             <ChevronRight className="w-4 h-4" />
           </button>
-
-          <select
-            className="border border-gray-300 rounded px-2 py-1 ml-2"
-            value={size}
-            onChange={(e)=>{ setSize(Number(e.target.value)); setPage(0); }}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-          </select>
         </div>
       </div>
     </div>

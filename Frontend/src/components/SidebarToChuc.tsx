@@ -1,14 +1,30 @@
 import { NavLink } from "react-router-dom";
-
-const sidebarLinks = [
-  { name: "Quản lý khoa", href: "/to-chuc/khoa" },
-  { name: "Quản lý bộ môn", href: "/to-chuc/bo-mon" },
-  { name: "Quản lý ngành", href: "/to-chuc/nganh" },
-  { name: "Quản lý lớp", href: "/to-chuc/lop" },
-  { name: "Quản lý đợt đồ án", href: "/to-chuc/dot-do-an" },
-];
+import { useEffect, useState } from "react";
 
 export default function SidebarToChuc() {
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const currentRole = localStorage.getItem("myInfo");
+    if (currentRole) {
+      const parsedRole = JSON.parse(currentRole).role;
+      setRole(parsedRole);
+    }
+  }, []);
+
+  // danh sách link mặc định
+  const sidebarLinks = [
+    { name: "Quản lý khoa", href: "/to-chuc/khoa" },
+    { name: "Quản lý bộ môn", href: "/to-chuc/bo-mon" },
+    { name: "Quản lý ngành", href: "/to-chuc/nganh" },
+    { name: "Quản lý lớp", href: "/to-chuc/lop" },
+  ];
+
+  // chỉ TRO_LY_KHOA được thấy "Quản lý đợt đồ án"
+  if (role === "TRO_LY_KHOA") {
+    sidebarLinks.push({ name: "Quản lý đợt đồ án", href: "/to-chuc/dot-do-an" });
+  }
+
   return (
     <aside className="w-64 h-full fixed top-[64px] left-0 bg-[#F1F1F3] text-gray-900 border-r border-gray-200">
       <nav className="p-4 space-y-1">
