@@ -2,10 +2,12 @@ package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
+import com.bachld.project.backend.dto.request.giangvien.GiangVienUpdateRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.*;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.service.GiangVienService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -81,6 +83,26 @@ public class GiangVienController {
     public ApiResponse<List<GiangVienLiteResponse>> getByBoMon(@PathVariable Long boMonId) {
         return ApiResponse.<List<GiangVienLiteResponse>>builder()
                 .result(giangVienService.getGiangVienLiteByBoMon(boMonId))
+                .build();
+    }
+
+    @GetMapping("/list")
+    public ApiResponse<Page<GiangVienResponse>> listGiangVien(
+            @PageableDefault(size = 10, sort = "maGV", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        return ApiResponse.<Page<GiangVienResponse>>builder()
+                .result(giangVienService.getAllGiangVien(pageable))
+                .build();
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<GiangVienResponse> updateGiangVien(
+            @PathVariable Long id,
+            @RequestBody @Valid GiangVienUpdateRequest request) {
+
+        return ApiResponse.<GiangVienResponse>builder()
+                .result(giangVienService.updateGiangVien(id, request))
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
+import com.bachld.project.backend.dto.request.giangvien.GiangVienUpdateRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.*;
 import com.bachld.project.backend.entity.BoMon;
@@ -27,7 +28,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -238,6 +241,55 @@ public class GiangVienServiceImpl implements GiangVienService {
                 .stream()
                 .map(giangVienMapper::toLite)
                 .toList();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public Page<GiangVienResponse> getAllGiangVien(Pageable pageable) {
+        Page<GiangVien> page = giangVienRepository.findAll(pageable);
+        return page.map(giangVienMapper::toGiangVienResponse);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
+    @Override
+    public GiangVienResponse updateGiangVien(Long id, GiangVienUpdateRequest request) {
+        GiangVien existingGV = giangVienRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.GIANG_VIEN_NOT_FOUND));
+
+        TaiKhoan taiKhoan = existingGV.getTaiKhoan();
+
+        // Check email duplication
+        if (taiKhoanRepository.existsByEmail(request.getEmail())
+                && !taiKhoan.getEmail().equals(request.getEmail())) {
+            throw new ApplicationException(ErrorCode.EMAIL_EXISTED);
+        }
+
+        // Validate password
+        if (request.getMatKhau() != null && !request.getMatKhau().isBlank()
+                && request.getMatKhau().length() < 6) {
+            throw new ApplicationException(ErrorCode.PASSWORD_INVALID);
+        }
+
+        // Update tài khoản
+        taiKhoan.setEmail(request.getEmail());
+        if (request.getMatKhau() != null && !request.getMatKhau().isBlank()) {
+            taiKhoan.setMatKhau(passwordEncoder.encode(request.getMatKhau()));
+        }
+        taiKhoanRepository.save(taiKhoan);
+
+        // Update thông tin giảng viên
+        existingGV.setHoTen(request.getHoTen());
+        existingGV.setSoDienThoai(request.getSoDienThoai());
+        existingGV.setHocVi(request.getHocVi());
+        existingGV.setHocHam(request.getHocHam());
+
+        if (request.getBoMonId() != null) {
+            BoMon bm = boMonRepository.findById(request.getBoMonId())
+                    .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
+            existingGV.setBoMon(bm);
+        }
+
+        return giangVienMapper.toGiangVienResponse(giangVienRepository.save(existingGV));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.bachld.project.backend.service;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
+import com.bachld.project.backend.dto.request.giangvien.GiangVienUpdateRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.*;
 import com.bachld.project.backend.enums.DeTaiState;
@@ -18,4 +19,6 @@ public interface GiangVienService {
     Page<SinhVienSupervisedResponse> getMySupervisedStudents(Pageable pageable);
     Page<DeTaiSinhVienApprovalResponse> getDeTaiSinhVienApproval(DeTaiState status, Pageable pageable);
     List<GiangVienLiteResponse> getGiangVienLiteByBoMon(Long boMonId);
+    Page<GiangVienResponse> getAllGiangVien(Pageable pageable);
+    GiangVienResponse updateGiangVien(Long id, GiangVienUpdateRequest request);
 }
