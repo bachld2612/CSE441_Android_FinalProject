@@ -12,7 +12,7 @@ export default function SinhVienEntry() {
   if (!token) return <div className="p-6">Bạn chưa đăng nhập.</div>;
   if (!ready) return <div className="p-6">Đang tải thông tin...</div>;
 
-  if (user?.role === "ADMIN" || "TRO_LY_KHOA") return <SinhVienPage />;       // trợ lý khoa
+  if (user?.role === "ADMIN" || user?.role === "TRO_LY_KHOA") return <SinhVienPage />;       // trợ lý khoa
   if (user?.role === "GIANG_VIEN")  return <SinhVienOfGiangVienPage />; // giảng viên
 
   return <div className="p-6">Bạn không có quyền truy cập trang này.</div>;

@@ -2,6 +2,8 @@ package com.bachld.project.backend.mapper;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienLiteResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.enums.Role;
@@ -24,6 +26,13 @@ public interface GiangVienMapper {
     @Mapping(source = "taiKhoan.vaiTro", target = "vaiTro")
     @Mapping(source = "boMon", target = "boMonId")
     GiangVienCreationResponse toGiangVienCreationResponse(GiangVien entity);
+
+
+    GiangVienLiteResponse toLite(GiangVien entity);
+
+    @Mapping(source = "taiKhoan.email", target = "email")
+    @Mapping(source = "boMon.id",       target = "boMonId")
+    GiangVienResponse toGiangVienResponse(GiangVien entity);
 
     default BoMon map(Long boMonId) {
         if (boMonId == null) return null;

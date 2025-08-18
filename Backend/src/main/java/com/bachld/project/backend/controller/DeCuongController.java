@@ -1,6 +1,7 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.service.DeCuongService;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -40,25 +42,14 @@ public class DeCuongController {
                 .build();
     }
 
-    @PostMapping(value = "/sv/nop-de-cuong")
+    @PostMapping(value = "/sv/nop-de-cuong", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<DeCuongResponse> submitDeCuong(
-            @RequestParam(value = "deTaiId", required = false) Long deTaiId,
-            @RequestParam(value = "fileUrl", required = false) String fileUrl,
-            @RequestBody(required = false) Map<String, Object> body
-    ) {
-        if (body != null) {
-            if (deTaiId == null) deTaiId = toLong(body.get("deTaiId"));
-            if (fileUrl == null) fileUrl = toStringVal(body.get("fileUrl"));
-        }
-        if (deTaiId == null || fileUrl == null || fileUrl.isBlank()) {
-            throw new IllegalArgumentException("Thiếu tham số 'deTaiId' hoặc 'fileUrl'");
-        }
-        var res = deCuongService.submitDeCuong(deTaiId, fileUrl);
+            @ModelAttribute DeCuongUploadRequest request) throws IOException {
         return ApiResponse.<DeCuongResponse>builder()
-                .result(res)
-                .message("Nộp đề cương thành công")
+                .result(deCuongService.submitDeCuong(request))
                 .build();
     }
+
 
     @GetMapping("/sv/log")
     public ApiResponse<DeCuongLogResponse> viewDeCuongLog() {
