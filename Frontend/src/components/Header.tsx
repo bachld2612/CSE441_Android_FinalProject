@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
+import { DropdownMenuPortal } from "./ui/dropdown-menu";
 
 type MyInfo = {
   maSV?: string;
@@ -28,14 +29,30 @@ type MyInfo = {
 
 export default function Header() {
   const [myInfo, setMyInfo] = useState<MyInfo | null>(null);
+  
+  const [role, setRole] = useState(null);
+  
   const navbarLinks = [
-    { name: "Trang chủ", href: "/" },
-    { name: "Đồ án", href: "/projects" },
-    { name: "Sinh viên", href: "/sinh-vien" },
-    { name: "Giảng viên", href: "/giang-vien" },
-    { name: "Hội đồng", href: "/committees" },
-    { name: "Tổ chức", href: "/to-chuc/khoa" },
+    { name: "Trang chủ", href: "/", hidden: false },
+    { name: "Đồ án", href: "/do-an", hidden: role === "TRO_LY_KHOA" || role === "ADMIN" },
+    { name: "Sinh viên", href: role === "GIANG_VIEN" || role === "TRUONG_BO_MON" ? "/sinh-vien/huong-dan" : "/sinh-vien", hidden: false },
+    { name: "Giảng viên", href: "/giang-vien", hidden: false },
+    { name: "Hội đồng", href: "/hoi-dong", hidden: false },
+    { name: "Tổ chức", href: "/to-chuc/khoa", hidden: false },
   ];
+
+  useEffect(() => {
+    const storedInfo = localStorage.getItem("myInfo");
+    if (storedInfo) {
+      try {
+        const parsedInfo = JSON.parse(storedInfo);
+        setRole(parsedInfo.role || null);
+        console.log("Parsed role:", parsedInfo.role);
+      } catch (error) {
+        console.error("Lỗi parse myInfo:", error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const storedInfo = localStorage.getItem("myInfo");
@@ -72,7 +89,7 @@ export default function Header() {
                   location.pathname.startsWith(item.href) && item.href !== "/";
                 const isHome = item.href === "/" && location.pathname === "/";
 
-                return (
+                return !item.hidden && (
                   <Link
                     key={item.href}
                     to={item.href}
@@ -111,19 +128,21 @@ export default function Header() {
                   </span>
                   <ChevronDown className="w-4 h-4 text-gray-600" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className=" bg-gray-100 p-5 flex flex-col space-y-2">
-                  <DropdownMenuItem className="flex px-2 py-1 rounded-[4px] focus:outline-none focus:ring-0 hover:bg-gray-300 items-center gap-2">
-                    <SquarePen className="w-4" />
-                    Đổi mật khẩu
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="flex px-2 py-1 rounded-[4px] focus:outline-none focus:ring-0 hover:bg-gray-300 items-center gap-2"
-                  >
-                    <LogOut className="w-4" />
-                    Đăng xuất
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuContent className=" bg-gray-100 p-5 flex flex-col space-y-2">
+                    <DropdownMenuItem className="flex px-2 py-1 rounded-[4px] focus:outline-none focus:ring-0 hover:bg-gray-300 items-center gap-2">
+                      <SquarePen className="w-4" />
+                      Đổi mật khẩu
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="flex px-2 py-1 rounded-[4px] focus:outline-none focus:ring-0 hover:bg-gray-300 items-center gap-2"
+                    >
+                      <LogOut className="w-4" />
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenuPortal>
               </DropdownMenu>
             </div>
           </div>

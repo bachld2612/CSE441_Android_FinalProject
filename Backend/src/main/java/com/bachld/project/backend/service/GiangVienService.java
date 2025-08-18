@@ -17,7 +17,7 @@ public interface GiangVienService {
     GiangVienCreationResponse createGiangVien(GiangVienCreationRequest giangVienCreationRequest);
     void createTroLyKhoa(TroLyKhoaCreationRequest troLyKhoaCreationRequest);
     GiangVienImportResponse importGiangVien(MultipartFile file) throws IOException;
-    Page<SinhVienSupervisedResponse> getMySupervisedStudents(Pageable pageable);
+    Page<SinhVienSupervisedResponse> getMySinhVienSupervised(Pageable pageable);
     Page<DeTaiSinhVienApprovalResponse> getDeTaiSinhVienApproval(DeTaiState status, Pageable pageable);
     List<GiangVienLiteResponse> getGiangVienLiteByBoMon(Long boMonId);
     Page<GiangVienResponse> getAllGiangVien(Pageable pageable);
