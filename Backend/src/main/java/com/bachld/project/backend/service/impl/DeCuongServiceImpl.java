@@ -1,5 +1,7 @@
 package com.bachld.project.backend.service.impl;
 
+import com.bachld.project.backend.dto.request.decuong.DeCuongLogRequest;
+import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.entity.DeCuong;
@@ -26,6 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.bachld.project.backend.service.CloudinaryService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,13 +51,16 @@ public class DeCuongServiceImpl implements DeCuongService {
     TimeGatekeeper timeGatekeeper;
 
     private static final ZoneId ZONE_BKK = ZoneId.of("Asia/Bangkok");
+    private final CloudinaryService cloudinaryService;
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
-    public DeCuongResponse submitDeCuong(Long deTaiId, String fileUrl) {
-        DeTai deTai = deTaiRepository.findById(deTaiId)
+    public DeCuongResponse submitDeCuong(DeCuongUploadRequest request) {
+        // 1. Lấy đề tài
+        DeTai deTai = deTaiRepository.findById(request.getDeTaiId())
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
+        // 2. Kiểm tra trạng thái đề tài
         if (deTai.getTrangThai() != DeTaiState.ACCEPTED) {
             throw new ApplicationException(ErrorCode.DE_TAI_NOT_ACCEPTED);
         }
@@ -64,10 +70,10 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // Chỉ cho nộp trong mốc NỘP_ĐỀ_CƯƠNG của chính đợt của đề tài
+        // 3. Chỉ cho nộp trong mốc NỘP_ĐỀ_CƯƠNG
         timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, dot);
 
-        // Chỉ SV chủ sở hữu
+        // 4. Xác thực sinh viên chủ sở hữu
         String email = currentUsername();
         boolean isOwner = deTai.getSinhVienThucHien() != null
                 && deTai.getSinhVienThucHien().getTaiKhoan() != null
@@ -76,13 +82,27 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.ACCESS_DENIED);
         }
 
+        // 5. Xác định URL (upload hoặc dùng trực tiếp)
+        String tmpUrl;
+        if (request.getFile() != null && !request.getFile().isEmpty()) {
+            // Upload lên Cloudinary
+            tmpUrl = cloudinaryService.upload(request.getFile());
+        } else if (request.getFileUrl() != null && !request.getFileUrl().isBlank()) {
+            // Dùng URL có sẵn
+            tmpUrl = request.getFileUrl().trim();
+        } else {
+            throw new ApplicationException(ErrorCode.FILE_URL_EMPTY);
+        }
+
+        final String finalUrl = tmpUrl; // biến final để dùng trong lambda
+
+        // 6. Tạo mới hoặc cập nhật DeCuong
         DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
                 .map(existing -> {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
-                        // Đã duyệt thì không cho nộp nữa
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
                     }
-                    existing.setDeCuongUrl(fileUrl);
+                    existing.setDeCuongUrl(finalUrl);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
                     return existing;
@@ -90,14 +110,16 @@ public class DeCuongServiceImpl implements DeCuongService {
                 .orElseGet(() -> {
                     DeCuong created = new DeCuong();
                     created.setDeTai(deTai);
-                    created.setDeCuongUrl(fileUrl);
+                    created.setDeCuongUrl(finalUrl);
                     created.setTrangThai(DeCuongState.PENDING);
                     created.setSoLanNop(1);
                     return created;
                 });
 
+        // 7. Lưu DB và trả response
         return mapper.toResponse(deCuongRepository.save(dc));
     }
+
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override

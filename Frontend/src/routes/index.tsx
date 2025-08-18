@@ -12,6 +12,8 @@ import LoginPage from "@/pages/LoginPage";
 import SinhVienLayout from "@/layouts/SinhVienLayout";
 import StudentsEntry from "@/routes/SinhVienEntry";
 import DotBaoVePage from "@/pages/DotBaoVePage";
+import GiangVienLayout from "@/layouts/GiangVienLayout";
+import GiangVienPage from "@/pages/GiangVienPage";
 import DangKiGiangVienHuongDan from "@/pages/DangKiGiangVienHuongDan";
 
 export const router = createBrowserRouter([
@@ -32,6 +34,13 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Hello />, handle: { breadcrumb: "Tổng quan" } },
       { path: "*", element: <NotFound /> },
+    ],
+  },
+  {
+    path: "/giang-vien",
+    element: <GiangVienLayout />,
+    children: [
+      { index: true, element: <GiangVienPage /> },
     ],
   },
 

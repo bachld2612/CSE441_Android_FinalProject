@@ -32,7 +32,7 @@ export default function Header() {
     { name: "Trang chủ", href: "/" },
     { name: "Đồ án", href: "/projects" },
     { name: "Sinh viên", href: "/sinh-vien" },
-    { name: "Giảng viên", href: "/teachers" },
+    { name: "Giảng viên", href: "/giang-vien" },
     { name: "Hội đồng", href: "/committees" },
     { name: "Tổ chức", href: "/to-chuc/khoa" },
   ];

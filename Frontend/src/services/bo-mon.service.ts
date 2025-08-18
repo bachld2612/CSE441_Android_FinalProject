@@ -37,6 +37,14 @@ type Page<T> = {
   number: number;
 };
 
+export interface BoMonWithTruongBoMonResponse {
+  id: number;
+  tenBoMon: string;
+  khoaId: number;
+  tenKhoa?: string;
+  truongBoMonHoTen?: string | null; // có thể null nếu chưa gán
+}
+
 // ====================
 // Service functions
 // ====================
@@ -79,6 +87,25 @@ async function createTruongBoMon(
   const res: ApiResponse<TruongBoMonCreationResponse> = await api.post(
     "/bo-mon/truong-bo-mon",
     data
+  );
+  return res;
+}
+
+// GET /api/v1/bo-mon/with-truong-bo-mon
+export async function getBoMonWithTBMPage(params?: {
+  page?: number;
+  size?: number;
+  sort?: string;
+}): Promise<ApiResponse<Page<BoMonWithTruongBoMonResponse>>> {
+  const res: ApiResponse<Page<BoMonWithTruongBoMonResponse>> = await api.get(
+    "/bo-mon/with-truong-bo-mon",
+    {
+      params: {
+        page: params?.page ?? 0,
+        size: params?.size ?? 10, // lấy nhiều để dựng map nhanh
+        sort: params?.sort ?? "updatedAt,DESC",
+      },
+    }
   );
   return res;
 }
