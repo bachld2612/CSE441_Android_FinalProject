@@ -2,9 +2,7 @@ package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
-import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
-import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
-import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
+import com.bachld.project.backend.dto.response.sinhvien.*;
 import com.bachld.project.backend.entity.Lop;
 import com.bachld.project.backend.entity.SinhVien;
 import com.bachld.project.backend.entity.TaiKhoan;
@@ -204,6 +202,23 @@ public class SinhVienServiceImpl implements SinhVienService {
         existingSinhVien.setSoDienThoai(request.getSoDienThoai());
         existingSinhVien.setLop(lop);
         return sinhVienMapper.toSinhVienCreationResponse(sinhVienRepository.save(existingSinhVien));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public SinhVienInfoResponse getSinhVienInfo(String maSV) {
+        SinhVien sinhVien = sinhVienRepository.findByMaSV(maSV)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        return sinhVienMapper.toSinhVienInfoResponse(sinhVien);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public List<GetSinhVienWithoutDeTaiResponse> getSinhVienWithoutDeTai() {
+        List<SinhVien> sinhVienList = sinhVienRepository.findAllByDeTaiIsNullAndKichHoatTrue();
+        return sinhVienList.stream()
+                .map(sinhVienMapper::toGetSinhVienWithoutDeTaiResponse)
+                .toList();
     }
 
     private Map<String,Integer> headerIndex(Row header) {

@@ -2,10 +2,7 @@ package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
-import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
-import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
+import com.bachld.project.backend.dto.response.giangvien.*;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.SinhVien;
@@ -40,10 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -88,6 +83,17 @@ public class GiangVienServiceImpl implements GiangVienService {
                 .findByDeTai_Gvhd_IdAndDeTai_TrangThai(gvhdId, filter, pageable);
 
         return page.map(sinhVienMapper::toDeTaiSinhVienApprovalResponse);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public Set<GiangVienInfoResponse> getGiangVienByBoMon(Long boMonId) {
+        BoMon boMon = boMonRepository.findById(boMonId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
+        Set<GiangVien> giangVienList = boMon.getGiangVienSet();
+        return giangVienList.stream()
+                .map(giangVienMapper::toGiangVienInfoResponse)
+                .collect(Collectors.toSet());
     }
 
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
