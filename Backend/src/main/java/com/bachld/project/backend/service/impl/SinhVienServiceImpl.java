@@ -221,6 +221,26 @@ public class SinhVienServiceImpl implements SinhVienService {
                 .toList();
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
+    @Override
+    public void uploadCV(MultipartFile file) throws IOException {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        SinhVien sinhVien = sinhVienRepository.findByTaiKhoan_Email(auth.getName())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        if (file.isEmpty()) {
+            return;
+        }
+        if (!file.getContentType().equals("application/pdf")) {
+            throw new ApplicationException(ErrorCode.INVALID_FILE_TYPE);
+        }
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new ApplicationException(ErrorCode.FILE_TOO_LARGE);
+        }
+        String fileUrl = cloudinaryService.uploadRawFile(file);
+        sinhVien.setCvUrl(fileUrl);
+        sinhVienRepository.save(sinhVien);
+    }
+
     private Map<String,Integer> headerIndex(Row header) {
         Map<String,Integer> m = new HashMap<>();
         for (int c = 0; c < header.getLastCellNum(); c++) {

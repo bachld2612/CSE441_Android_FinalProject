@@ -20,4 +20,5 @@ public interface SinhVienService {
     SinhVienCreationResponse updateSinhVien(SinhVienUpdateRequest request, String maSV);
     SinhVienInfoResponse getSinhVienInfo(String maSV);
     List<GetSinhVienWithoutDeTaiResponse> getSinhVienWithoutDeTai();
+    void uploadCV(MultipartFile file) throws IOException;
 }

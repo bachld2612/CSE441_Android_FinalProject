@@ -85,7 +85,7 @@ public class DeTaiServiceImpl implements DeTaiService {
     @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
     @Override
     public DeTaiGiangVienHuongDanResponse addGiangVienHuongDan(DeTaiGiangVienHuongDanRequest request) {
-        SinhVien sv = sinhVienRepository.findByMaSV(request.getMaSv())
+        SinhVien sv = sinhVienRepository.findByMaSV(request.getMaSV())
                 .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
         GiangVien gv = giangVienRepository.findByMaGV(request.getMaGV()).
                 orElseThrow(() -> new ApplicationException(ErrorCode.GIANG_VIEN_NOT_FOUND));

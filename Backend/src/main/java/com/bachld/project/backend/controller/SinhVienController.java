@@ -104,4 +104,12 @@ public class SinhVienController {
                 .build();
     }
 
+    @PostMapping(value = "upload-cv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<String> uploadCV(@RequestParam("file") MultipartFile file) throws IOException {
+        sinhVienService.uploadCV(file);
+        return ApiResponse.<String>builder()
+                .result("Upload CV successfully!")
+                .build();
+    }
+
 }

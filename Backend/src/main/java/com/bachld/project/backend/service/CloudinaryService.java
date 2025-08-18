@@ -8,5 +8,5 @@ public interface CloudinaryService {
 
     String upload(MultipartFile file);
     String upload(File file);
-
+    String uploadRawFile(MultipartFile file);
 }

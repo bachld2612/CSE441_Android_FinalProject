@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeTaiGiangVienHuongDanRequest {
 
-    String maSv;
+    String maSV;
     String maGV;
 
 }
