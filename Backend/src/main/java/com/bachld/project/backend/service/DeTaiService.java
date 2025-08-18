@@ -15,4 +15,8 @@ public interface DeTaiService {
     DeTaiResponse approveDeTai(Long deTaiId, DeTaiApprovalRequest request);
 
     DeTaiResponse getMyDeTai();
+
+    DeTaiResponse approveByGiangVien(Long deTaiId, String nhanXet);
+
+    DeTaiResponse rejectByGiangVien(Long deTaiId, String nhanXet);
 }

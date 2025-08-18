@@ -62,7 +62,7 @@ public class GiangVienServiceImpl implements GiangVienService {
 
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
     @Override
-    public Page<SinhVienSupervisedResponse> getMySupervisedStudents(Pageable pageable) {
+    public Page<SinhVienSupervisedResponse> getMySinhVienSupervised(Pageable pageable) {
         String email = currentEmail();
 
         Long gvhdId = giangVienRepository.findByTaiKhoan_Email(email)
@@ -82,10 +82,9 @@ public class GiangVienServiceImpl implements GiangVienService {
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_A_GVHD))
                 .getId();
 
-        DeTaiState filter = (status == null) ? DeTaiState.PENDING : status;
-
-        Page<SinhVien> page = sinhVienRepository
-                .findByDeTai_Gvhd_IdAndDeTai_TrangThai(gvhdId, filter, pageable);
+        Page<SinhVien> page = (status == null)
+                ? sinhVienRepository.findByDeTai_Gvhd_Id(gvhdId, pageable)
+                : sinhVienRepository.findByDeTai_Gvhd_IdAndDeTai_TrangThai(gvhdId, status, pageable);
 
         return page.map(sinhVienMapper::toDeTaiSinhVienApprovalResponse);
     }

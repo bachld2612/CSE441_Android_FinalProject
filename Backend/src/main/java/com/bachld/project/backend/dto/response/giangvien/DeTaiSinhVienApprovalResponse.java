@@ -16,7 +16,7 @@ public class DeTaiSinhVienApprovalResponse {
     String tenLop;
     String soDienThoai;
     String tenDeTai;
-
+    String idDeTai;
     DeTaiState trangThai;
     String tongQuanDeTaiUrl;
 }

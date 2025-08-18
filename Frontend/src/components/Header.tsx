@@ -30,10 +30,10 @@ export default function Header() {
   const [myInfo, setMyInfo] = useState<MyInfo | null>(null);
   const navbarLinks = [
     { name: "Trang chủ", href: "/" },
-    { name: "Đồ án", href: "/projects" },
+    { name: "Đồ án", href: "/do-an" },
     { name: "Sinh viên", href: "/sinh-vien" },
-    { name: "Giảng viên", href: "/teachers" },
-    { name: "Hội đồng", href: "/committees" },
+    { name: "Giảng viên", href: "/giang-vien" },
+    { name: "Hội đồng", href: "/hoi-dong" },
     { name: "Tổ chức", href: "/to-chuc/khoa" },
   ];
 

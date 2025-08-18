@@ -1,0 +1,41 @@
+import api from "@/lib/axios";
+import type { ApiResponse, PageResponse, PageableRequest } from "@/types/api-response";
+
+export interface DeTai {
+  maSV: string;
+  hoTen: string;
+  tenLop: string;
+  soDienThoai?: string;
+  tenDeTai: string;
+  trangThai: "PENDING" | "ACCEPTED" | "REJECTED";
+  tongQuanDeTaiUrl?: string;
+  idDeTai: string;
+}
+
+const getDeTaiApproval = async (
+  pageable: PageableRequest
+): Promise<PageResponse<DeTai>> => {
+  const res: ApiResponse<PageResponse<DeTai>> = await api.get(
+    "/giang-vien/do-an/xet-duyet-de-tai",
+    { params: pageable }
+  );
+  return res.result!;
+};
+
+async function approveDeTai(idDeTai: string, nhanXet: string) {
+  const res = await api.put(
+    `/giang-vien/do-an/xet-duyet-de-tai/${idDeTai}/approve`,
+    { nhanXet }
+  );
+  return res.data;
+}
+
+async function rejectDeTai(idDeTai: string, nhanXet: string) {
+  const res = await api.put(
+    `/giang-vien/do-an/xet-duyet-de-tai/${idDeTai}/reject`,
+    { nhanXet }
+  );
+  return res.data;
+}
+
+export { getDeTaiApproval, approveDeTai, rejectDeTai };
