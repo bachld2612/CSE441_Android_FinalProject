@@ -4,6 +4,7 @@ import com.bachld.project.backend.dto.request.bomon.BoMonRequest;
 import com.bachld.project.backend.dto.request.bomon.TruongBoMonCreationRequest;
 import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienLite;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.Khoa;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -99,5 +102,23 @@ public class BoMonServiceImpl implements BoMonService {
         giangVienRepository.save(truongBoMon);
         return boMonMapper.toTruongBoMonCreationResponse(boMonRepository.save(boMon));
 
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @Override
+    public List<GiangVienLite> getGiangVienByBoMon(Long boMonId) {
+        // Có thể ném lỗi nếu boMon không tồn tại, giúp FE báo sớm:
+        boMonRepository.findById(boMonId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
+
+        return giangVienRepository.findByBoMon_Id(boMonId)
+                .stream()
+                .map(gv -> GiangVienLite.builder()
+                        .id(gv.getId())
+                        .maGV(gv.getMaGV())
+                        .hoTen(gv.getHoTen())
+                        .build()
+                )
+                .toList();
     }
 }

@@ -19,10 +19,11 @@ public interface BoMonMapper {
     @Mapping(source = "khoa", target = "khoaId")
     BoMonResponse toBoMonResponse(BoMon boMon);
 
-    @Mapping(target = "hoTen", source = "truongBoMon.hoTen")
-    @Mapping(target = "hocVi", source = "truongBoMon.hocVi")
+    @Mapping(target = "maGV",   source = "truongBoMon.maGV")
+    @Mapping(target = "hoTen",  source = "truongBoMon.hoTen")
+    @Mapping(target = "hocVi",  source = "truongBoMon.hocVi")
     @Mapping(target = "hocHam", source = "truongBoMon.hocHam")
-    @Mapping(target = "maGV", source = "truongBoMon.maGV")
+    @Mapping(target = "tenBoMon", source = "tenBoMon")
     TruongBoMonCreationResponse toTruongBoMonCreationResponse(BoMon boMon);
 
     default Long toId(Khoa khoa) {
