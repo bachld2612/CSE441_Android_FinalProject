@@ -40,10 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -88,6 +86,22 @@ public class GiangVienServiceImpl implements GiangVienService {
                 .findByDeTai_Gvhd_IdAndDeTai_TrangThai(gvhdId, filter, pageable);
 
         return page.map(sinhVienMapper::toDeTaiSinhVienApprovalResponse);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public Set<GiangVienInfoResponse> getGiangVienByBoMonAndSoLuongDeTai(Long boMonId) {
+        BoMon boMon = boMonRepository.findById(boMonId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
+        Set<GiangVien> giangVienSet = giangVienRepository.findAvailableGiangVienByBoMon(boMonId);
+        Set<GiangVienInfoResponse> responses = giangVienSet.stream()
+                .map(giangVienMapper::toGiangVienInfoResponse)
+                .collect(Collectors.toSet());
+        responses.forEach(response -> {
+            int soLuongDeTai = giangVienRepository.countDeTaiByGiangVienAndSinhVienActive(response.getMaGV());
+            response.setSoLuongDeTai(soLuongDeTai);
+        });
+        return responses;
     }
 
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")

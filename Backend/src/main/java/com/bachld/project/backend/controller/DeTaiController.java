@@ -1,8 +1,10 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.detai.DeTaiGiangVienHuongDanRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiApprovalRequest;
+import com.bachld.project.backend.dto.response.detai.DeTaiGiangVienHuongDanResponse;
 import com.bachld.project.backend.dto.response.detai.DeTaiResponse;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.service.DeTaiService;
@@ -56,6 +58,13 @@ public class DeTaiController {
     public ApiResponse<DeTaiResponse> getMyDeTai() {
         return ApiResponse.<DeTaiResponse>builder()
                 .result(deTaiService.getMyDeTai())
+                .build();
+    }
+
+    @PostMapping("/gan-de-tai")
+    public ApiResponse<DeTaiGiangVienHuongDanResponse> addGiangVienHuongDan(@RequestBody DeTaiGiangVienHuongDanRequest request) {
+        return ApiResponse.<DeTaiGiangVienHuongDanResponse>builder()
+                .result(deTaiService.addGiangVienHuongDan(request))
                 .build();
     }
 }

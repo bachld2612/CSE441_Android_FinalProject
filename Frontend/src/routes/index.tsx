@@ -14,6 +14,7 @@ import StudentsEntry from "@/routes/SinhVienEntry";
 import DotBaoVePage from "@/pages/DotBaoVePage";
 import GiangVienLayout from "@/layouts/GiangVienLayout";
 import GiangVienPage from "@/pages/GiangVienPage";
+import DangKiGiangVienHuongDan from "@/pages/DangKiGiangVienHuongDan";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
     element: <SinhVienLayout />,
     children: [
       { index: true, element: <StudentsEntry /> },
+      { path: "gvhd", element: <DangKiGiangVienHuongDan /> },
     ]
   },
 

@@ -15,7 +15,6 @@ public interface DeTaiMapper {
 
     // Request -> Entity
     @Mapping(source = "gvhdId", target = "gvhd")
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "trangThai", ignore = true)
     @Mapping(target = "nhanXet", ignore = true)
     @Mapping(target = "sinhVienThucHien", ignore = true)

@@ -69,7 +69,9 @@ export default function DotBaoVePage() {
       try {
         const parsed = JSON.parse(info);
         setRole(parsed?.role ?? null);
-      } catch {}
+      } catch (e) {
+        console.error("Failed to parse myInfo:", e);
+      }
     }
   }, []);
 

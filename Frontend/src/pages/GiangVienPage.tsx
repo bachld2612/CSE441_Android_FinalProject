@@ -20,7 +20,7 @@ import {
   importGiangVien,
   createTroLyKhoa,
   updateGiangVien,                  // NEW
-  type TGiangVienUpdateRequest,     // NEW (optional, dùng cho payload)
+  type GiangVienUpdateRequest,     // NEW (optional, dùng cho payload)
 } from "@/services/giang-vien.service";
 import {
   getBoMonWithTBMPage,
@@ -278,7 +278,7 @@ export default function GiangVienPage() {
       toast.error("Không xác định được giảng viên cần sửa", { autoClose: 3000 });
       return;
     }
-    const payload: TGiangVienUpdateRequest = {
+    const payload: GiangVienUpdateRequest = {
       hoTen: values.hoTen,
       soDienThoai: values.soDienThoai,
       email: values.email,

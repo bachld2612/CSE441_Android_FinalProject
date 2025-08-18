@@ -1,7 +1,9 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.dotbaove.AddSinhVienToDotBaoVeRequest;
 import com.bachld.project.backend.dto.request.dotbaove.DotBaoVeRequest;
+import com.bachld.project.backend.dto.response.dotbaove.AddSinhVienToDotBaoVeResponse;
 import com.bachld.project.backend.dto.response.dotbaove.DotBaoVeResponse;
 import com.bachld.project.backend.service.DotBaoVeService;
 import lombok.AccessLevel;
@@ -11,7 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/dot-bao-ve")
@@ -60,6 +66,24 @@ public class DotBaoVeController {
                 .result("Delete dot bao ve successfully")
                 .build();
 
+    }
+
+    @PostMapping(value = "/import-sinh-vien", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<AddSinhVienToDotBaoVeResponse> importSinhVien(
+            @RequestParam("dataFile") MultipartFile file,
+            @RequestParam("namBatDau") int namBatDau,
+            @RequestParam("namKetThuc") int namKetThuc,
+            @RequestParam("hocKi") int hocKi
+    ) throws IOException {
+        var request = AddSinhVienToDotBaoVeRequest.builder()
+                .dataFile(file)
+                .namBatDau(namBatDau)
+                .namKetThuc(namKetThuc)
+                .hocKi(hocKi)
+                .build();
+        return ApiResponse.<AddSinhVienToDotBaoVeResponse>builder()
+                .result(dotBaoVeService.addSinhVienToDotBaoVe(request))
+                .build();
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.List;
 
 public interface GiangVienService {
@@ -21,4 +22,5 @@ public interface GiangVienService {
     List<GiangVienLiteResponse> getGiangVienLiteByBoMon(Long boMonId);
     Page<GiangVienResponse> getAllGiangVien(Pageable pageable);
     GiangVienResponse updateGiangVien(Long id, GiangVienUpdateRequest request);
+    Set<GiangVienInfoResponse> getGiangVienByBoMonAndSoLuongDeTai(Long boMonId);
 }

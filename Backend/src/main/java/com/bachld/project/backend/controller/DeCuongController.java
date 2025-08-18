@@ -1,6 +1,7 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.decuong.DeCuongLogRequest;
 import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;

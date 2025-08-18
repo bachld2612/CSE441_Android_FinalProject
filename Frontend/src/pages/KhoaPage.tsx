@@ -5,7 +5,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogDescription,
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +46,9 @@ export default function KhoaPage() {
       try {
         const parsed = JSON.parse(info);
         setRole(parsed?.role ?? null);
-      } catch {}
+      } catch (e){
+        console.error("Failed to parse myInfo:", e);
+      }
     }
   }, []);
 

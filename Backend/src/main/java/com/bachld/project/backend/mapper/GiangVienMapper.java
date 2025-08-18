@@ -2,6 +2,7 @@ package com.bachld.project.backend.mapper;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienInfoResponse;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienLiteResponse;
 import com.bachld.project.backend.dto.response.giangvien.GiangVienResponse;
 import com.bachld.project.backend.entity.BoMon;
@@ -27,6 +28,7 @@ public interface GiangVienMapper {
     @Mapping(source = "boMon", target = "boMonId")
     GiangVienCreationResponse toGiangVienCreationResponse(GiangVien entity);
 
+    GiangVienInfoResponse toGiangVienInfoResponse(GiangVien entity);
 
     GiangVienLiteResponse toLite(GiangVien entity);
 
