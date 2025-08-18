@@ -5,7 +5,7 @@ import {
   Dialog, DialogClose, DialogContent, DialogDescription,
   DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChevronLeft, ChevronRight, Search, UserPlus, Upload, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, ShieldCheck, Pencil } from "lucide-react";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -19,6 +19,8 @@ import {
   createGiangVien,
   importGiangVien,
   createTroLyKhoa,
+  updateGiangVien,                  // NEW
+  type TGiangVienUpdateRequest,     // NEW (optional, dùng cho payload)
 } from "@/services/giang-vien.service";
 import {
   getBoMonWithTBMPage,
@@ -27,7 +29,7 @@ import {
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
-// ====== Form schema (tạo giảng viên) — bám gần regex BE ======
+/* ================== Schema tạo giảng viên ================== */
 const createSchema = z.object({
   maGV: z.string().regex(/^[0-9]{10}$/, "Mã GV phải gồm 10 chữ số"),
   hoTen: z.string().min(2, "Họ tên không được bỏ trống"),
@@ -38,38 +40,53 @@ const createSchema = z.object({
   hocHam: z.string().optional(),
   boMonId: z.string().nonempty("Bạn phải chọn bộ môn"),
 });
-
 type CreateFormValues = z.infer<typeof createSchema>;
 
+/* ================== Schema sửa giảng viên (Edit) ================== */
+const updateSchema = z.object({
+  hoTen: z.string().min(2, "Họ tên không được bỏ trống"),
+  soDienThoai: z.string().regex(/^[0-9]{10}$/, "Số điện thoại phải đủ 10 số"),
+  email: z.string().email("Email không hợp lệ"),
+  matKhau: z.string().optional(), // để trống nếu không đổi
+  hocVi: z.string().optional(),
+  hocHam: z.string().optional(),
+  boMonId: z.string().nonempty("Bạn phải chọn bộ môn"),
+});
+type UpdateFormValues = z.infer<typeof updateSchema>;
+
 export default function GiangVienPage() {
-  // ====== Role từ localStorage.myInfo.role ======
+  /* ================== Role ================== */
   const [role, setRole] = useState<string | null>(null);
 
-  // ====== Dữ liệu GV (server-side) ======
+  /* ================== Dữ liệu GV ================== */
   const [data, setData] = useState<GiangVien[]>([]);
   const [page, setPage] = useState(0); // 0-based
   const [size, setSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // sort server-side
+  /* ================== Sort server-side ================== */
   const [sort, setSort] =
     useState<"maGV,asc" | "maGV,desc" | "hoTen,asc" | "hoTen,desc">("maGV,asc");
 
-  // search client-side
+  /* ================== Search client-side ================== */
   const [q, setQ] = useState("");
 
-  // ====== Bộ môn map (id -> tên) ======
+  /* ================== Bộ môn map (id -> tên) ================== */
   const [boMonMap, setBoMonMap] = useState<Record<number, string>>({});
   const [boMonOptions, setBoMonOptions] = useState<{ id: number; tenBoMon: string }[]>([]);
   const [loadingBoMon, setLoadingBoMon] = useState(false);
 
-  // ====== Dialogs: Create + Import ======
+  /* ================== Dialogs: Create + Import ================== */
   const [openCreate, setOpenCreate] = useState(false);
   const [openImport, setOpenImport] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
-  // ====== Form tạo giảng viên ======
+  /* ================== Edit state ================== */
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editing, setEditing] = useState<GiangVien | null>(null);
+
+  /* ================== Form tạo ================== */
   const createForm = useForm<CreateFormValues>({
     resolver: zodResolver(createSchema),
     defaultValues: {
@@ -84,17 +101,32 @@ export default function GiangVienPage() {
     },
   });
 
-  // ====== mount: role + bo mon ======
+  /* ================== Form sửa ================== */
+  const editForm = useForm<UpdateFormValues>({
+    resolver: zodResolver(updateSchema),
+    defaultValues: {
+      hoTen: "",
+      soDienThoai: "",
+      email: "",
+      matKhau: "",
+      hocVi: "",
+      hocHam: "",
+      boMonId: "",
+    },
+  });
+
+  /* ================== Mount: role ================== */
   useEffect(() => {
     const info = localStorage.getItem("myInfo");
     if (info) {
       try {
         const parsed = JSON.parse(info);
         setRole(parsed?.role ?? null);
-      } catch {}
+      } catch { /* ignore */ }
     }
   }, []);
 
+  /* ================== Load bộ môn ================== */
   const loadBoMonMap = async () => {
     setLoadingBoMon(true);
     try {
@@ -113,7 +145,7 @@ export default function GiangVienPage() {
     }
   };
 
-  // ====== load GV ======
+  /* ================== Load GV ================== */
   const loadData = async () => {
     setLoading(true);
     try {
@@ -125,15 +157,10 @@ export default function GiangVienPage() {
     }
   };
 
-  useEffect(() => {
-    loadBoMonMap();
-  }, []);
+  useEffect(() => { loadBoMonMap(); }, []);
+  useEffect(() => { loadData(); }, [page, size, sort]);
 
-  useEffect(() => {
-    loadData();
-  }, [page, size, sort]);
-
-  // ====== filter client-side theo mã/tên/email/tên bộ môn ======
+  /* ================== Filter client-side ================== */
   const filtered = useMemo(() => {
     const kw = q.trim().toLowerCase();
     if (!kw) return data;
@@ -148,7 +175,7 @@ export default function GiangVienPage() {
     });
   }, [data, q, boMonMap]);
 
-  // ====== handlers ======
+  /* ================== Handlers: Create ================== */
   const onSubmitCreate = async (values: CreateFormValues) => {
     try {
       const payload = {
@@ -166,7 +193,6 @@ export default function GiangVienPage() {
         toast.success("Thêm giảng viên thành công", { autoClose: 3000 });
         setOpenCreate(false);
         createForm.reset();
-        // reload current page
         loadData();
       }
     } catch (err) {
@@ -185,6 +211,7 @@ export default function GiangVienPage() {
     }
   };
 
+  /* ================== Handlers: Import ================== */
   const onImport = async () => {
     if (!file) {
       toast.error("Vui lòng chọn file Excel trước khi import", { autoClose: 3000 });
@@ -207,6 +234,7 @@ export default function GiangVienPage() {
     }
   };
 
+  /* ================== Handlers: Set Trợ lý khoa ================== */
   const onSetTroLyKhoa = async (gv: GiangVien) => {
     if (!gv.id) {
       toast.error("Không xác định được giảng viên", { autoClose: 3000 });
@@ -229,6 +257,65 @@ export default function GiangVienPage() {
       }
     }
   };
+
+  /* ================== Handlers: Edit ================== */
+  const openEditDialog = (gv: GiangVien) => {
+    setEditing(gv);
+    editForm.reset({
+      hoTen: gv.hoTen ?? "",
+      soDienThoai: gv.soDienThoai ?? "",
+      email: gv.email ?? "",
+      matKhau: "",
+      hocVi: gv.hocVi ?? "",
+      hocHam: gv.hocHam ?? "",
+      boMonId: gv.boMonId != null ? String(gv.boMonId) : "",
+    });
+    setOpenEdit(true);
+  };
+
+  const onSubmitUpdate = async (values: UpdateFormValues) => {
+    if (!editing?.id) {
+      toast.error("Không xác định được giảng viên cần sửa", { autoClose: 3000 });
+      return;
+    }
+    const payload: TGiangVienUpdateRequest = {
+      hoTen: values.hoTen,
+      soDienThoai: values.soDienThoai,
+      email: values.email,
+      matKhau: values.matKhau || undefined,
+      hocVi: values.hocVi || undefined,
+      hocHam: values.hocHam || undefined,
+      boMonId: parseInt(values.boMonId, 10),
+    };
+
+    try {
+      const res = await updateGiangVien(editing.id, payload);
+      if (res.code === 1000) {
+        toast.success("Cập nhật giảng viên thành công", { autoClose: 3000 });
+        setOpenEdit(false);
+        setEditing(null);
+        loadData();
+      } else {
+        toast.error(res.message ?? "Cập nhật giảng viên thất bại", { autoClose: 3000 });
+      }
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const code = err.response?.data?.code;
+        if (code === 1024) {
+          toast.error("Email đã được sử dụng", { autoClose: 3000 });
+        } else {
+          toast.error(`Cập nhật thất bại: ${err.message}`, { autoClose: 3000 });
+        }
+      } else {
+        toast.error("Cập nhật thất bại", { autoClose: 3000 });
+      }
+    }
+  };
+
+  /* ================== Cột hành động có hiển thị? ================== */
+  const showActionCol = role === "ADMIN" || role === "TRO_LY_KHOA";
+  const baseCols = 8; // STT, Mã, Họ tên, Bộ môn, SĐT, Học vị, Học hàm, Email
+  const totalCols = baseCols + (showActionCol ? 1 : 0);
 
   return (
     <div>
@@ -471,7 +558,7 @@ export default function GiangVienPage() {
             <TableHead className="text-center font-semibold border border-gray-300">Học vị</TableHead>
             <TableHead className="text-center font-semibold border border-gray-300">Học hàm</TableHead>
             <TableHead className="text-center font-semibold border border-gray-300">Email</TableHead>
-            {role === "ADMIN" && (
+            {showActionCol && (
               <TableHead className="text-center font-semibold border border-gray-300">Hành động</TableHead>
             )}
           </TableRow>
@@ -480,7 +567,7 @@ export default function GiangVienPage() {
         <TableBody>
           {!loading && filtered.length === 0 && (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={role === "ADMIN" ? 9 : 8}>
+              <TableCell className="text-center border border-gray-300" colSpan={totalCols}>
                 Không có dữ liệu
               </TableCell>
             </TableRow>
@@ -488,7 +575,7 @@ export default function GiangVienPage() {
 
           {loading && (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={role === "ADMIN" ? 9 : 8}>
+              <TableCell className="text-center border border-gray-300" colSpan={totalCols}>
                 Đang tải dữ liệu...
               </TableCell>
             </TableRow>
@@ -509,18 +596,32 @@ export default function GiangVienPage() {
               <TableCell className="text-center border border-gray-300">{gv.hocHam ?? "-"}</TableCell>
               <TableCell className="text-center border border-gray-300">{gv.email ?? "-"}</TableCell>
 
-              {role === "ADMIN" && (
+              {showActionCol && (
                 <TableCell className="text-center border border-gray-300">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border border-gray-300"
-                    onClick={() => onSetTroLyKhoa(gv)}
-                    title="Đặt Trợ lý khoa"
-                  >
-                    <ShieldCheck className="w-4 h-4 mr-1" />
-                    Đặt Trợ lý khoa
-                  </Button>
+                  <div className="flex items-center justify-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border border-gray-300"
+                      onClick={() => openEditDialog(gv)}
+                      title="Sửa thông tin"
+                    >
+                      <Pencil className="w-4 h-4 mr-1" />
+                    </Button>
+
+                    {role === "ADMIN" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border border-gray-300"
+                        onClick={() => onSetTroLyKhoa(gv)}
+                        title="Đặt Trợ lý khoa"
+                      >
+                        <ShieldCheck className="w-4 h-4 mr-1" />
+                        TLK
+                      </Button>
+                    )}
+                  </div>
                 </TableCell>
               )}
             </TableRow>
@@ -562,6 +663,121 @@ export default function GiangVienPage() {
           </button>
         </div>
       </div>
+
+      {/* ============== Edit Dialog ============== */}
+      <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+        <DialogContent className="sm:max-w-[520px] bg-white border-none rounded-lg shadow-lg">
+          <DialogHeader>
+            <DialogTitle className="text-center">Sửa giảng viên</DialogTitle>
+            <DialogDescription className="text-center">
+              Cập nhật thông tin giảng viên. Để trống mật khẩu nếu không muốn đổi.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={editForm.handleSubmit(onSubmitUpdate)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-3"
+          >
+            <div>
+              <label className="text-sm font-medium">Họ tên</label>
+              <Input
+                {...editForm.register("hoTen")}
+                className="mt-1 border border-gray-300"
+              />
+              {editForm.formState.errors.hoTen && (
+                <p className="text-red-500 text-sm mt-1">
+                  {editForm.formState.errors.hoTen.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Số điện thoại</label>
+              <Input
+                {...editForm.register("soDienThoai")}
+                className="mt-1 border border-gray-300"
+              />
+              {editForm.formState.errors.soDienThoai && (
+                <p className="text-red-500 text-sm mt-1">
+                  {editForm.formState.errors.soDienThoai.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <Input
+                type="email"
+                {...editForm.register("email")}
+                className="mt-1 border border-gray-300"
+              />
+              {editForm.formState.errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {editForm.formState.errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Mật khẩu mới</label>
+              <Input
+                type="password"
+                placeholder="(để trống nếu không đổi)"
+                {...editForm.register("matKhau")}
+                className="mt-1 border border-gray-300"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Bộ môn</label>
+              <select
+                {...editForm.register("boMonId")}
+                className="mt-1 w-full border border-gray-300 rounded px-2 py-2"
+                disabled={loadingBoMon}
+              >
+                <option value="">-- Chọn bộ môn --</option>
+                {boMonOptions.map((bm) => (
+                  <option key={bm.id} value={bm.id}>
+                    {bm.tenBoMon}
+                  </option>
+                ))}
+              </select>
+              {editForm.formState.errors.boMonId && (
+                <p className="text-red-500 text-sm mt-1">
+                  {editForm.formState.errors.boMonId.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Học vị</label>
+              <Input
+                {...editForm.register("hocVi")}
+                className="mt-1 border border-gray-300"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Học hàm</label>
+              <Input
+                {...editForm.register("hocHam")}
+                className="mt-1 border border-gray-300"
+              />
+            </div>
+
+            <DialogFooter className="col-span-1 md:col-span-2 mt-2 flex gap-2">
+              <DialogClose asChild>
+                <Button className="bg-[#BFBFBF] text-white hover:bg-[#a6a6a6]">
+                  Trở về
+                </Button>
+              </DialogClose>
+              <Button type="submit" className="bg-[#457B9D] text-white hover:bg-[#35607a]">
+                Lưu thay đổi
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

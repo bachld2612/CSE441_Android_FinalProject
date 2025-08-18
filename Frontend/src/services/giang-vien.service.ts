@@ -189,3 +189,25 @@ export {
   type SinhVienSupervisedResponse as TSinhVienSupervisedResponse,
   type DeTaiSinhVienApprovalResponse as TDeTaiSinhVienApprovalResponse,
 };
+
+export interface GiangVienUpdateRequest {
+  hoTen: string;
+  soDienThoai: string;
+  email: string;
+  matKhau?: string;      // optional
+  hocVi?: string;        // optional
+  hocHam?: string;       // optional
+  boMonId: number;       // yêu cầu chọn lại BM rõ ràng
+}
+
+// PUT /api/v1/giang-vien/{id}
+export async function updateGiangVien(
+  id: number,
+  data: GiangVienUpdateRequest
+): Promise<ApiResponse<GiangVienResponse>> {
+  const res: ApiResponse<GiangVienResponse> = await api.put(
+    `/giang-vien/${id}`,
+    data
+  );
+  return res;
+}
