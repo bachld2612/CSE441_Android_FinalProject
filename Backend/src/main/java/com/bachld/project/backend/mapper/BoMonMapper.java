@@ -2,6 +2,7 @@ package com.bachld.project.backend.mapper;
 
 import com.bachld.project.backend.dto.request.bomon.BoMonRequest;
 import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
+import com.bachld.project.backend.dto.response.bomon.BoMonWithTruongBoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.Khoa;
@@ -25,6 +26,12 @@ public interface BoMonMapper {
     @Mapping(target = "hocHam", source = "truongBoMon.hocHam")
     @Mapping(target = "tenBoMon", source = "tenBoMon")
     TruongBoMonCreationResponse toTruongBoMonCreationResponse(BoMon boMon);
+
+    @Mapping(target = "khoaId", source = "khoa.id")
+    @Mapping(target = "tenKhoa", source = "khoa.tenKhoa")
+    @Mapping(target = "truongBoMonHoTen",
+            expression = "java(boMon.getTruongBoMon() != null ? boMon.getTruongBoMon().getHoTen() : null)")
+    BoMonWithTruongBoMonResponse toWithTruongBoMon(BoMon boMon);
 
     default Long toId(Khoa khoa) {
         return (khoa != null) ? khoa.getId() : null;

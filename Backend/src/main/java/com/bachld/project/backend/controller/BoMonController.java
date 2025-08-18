@@ -4,8 +4,8 @@ import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.bomon.BoMonRequest;
 import com.bachld.project.backend.dto.request.bomon.TruongBoMonCreationRequest;
 import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
+import com.bachld.project.backend.dto.response.bomon.BoMonWithTruongBoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienLite;
 import com.bachld.project.backend.service.BoMonService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,10 +80,13 @@ public class BoMonController {
                 .build();
     }
 
-    @GetMapping("/{boMonId}/giang-vien")
-    public ApiResponse<List<GiangVienLite>> getGiangVienByBoMon(@PathVariable Long boMonId) {
-        return ApiResponse.<List<GiangVienLite>>builder()
-                .result(boMonService.getGiangVienByBoMon(boMonId))
+    @GetMapping("/with-truong-bo-mon")
+    public ApiResponse<Page<BoMonWithTruongBoMonResponse>> getAllWithTBM(
+            @PageableDefault(page = 0, size = 10, sort = "updatedAt", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        return ApiResponse.<Page<BoMonWithTruongBoMonResponse>>builder()
+                .result(boMonService.findAllWithTruongBoMon(pageable))
                 .build();
     }
 }

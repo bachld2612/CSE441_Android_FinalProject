@@ -3,8 +3,9 @@ package com.bachld.project.backend.service.impl;
 import com.bachld.project.backend.dto.request.bomon.BoMonRequest;
 import com.bachld.project.backend.dto.request.bomon.TruongBoMonCreationRequest;
 import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
+import com.bachld.project.backend.dto.response.bomon.BoMonWithTruongBoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienLite;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienLiteResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.Khoa;
@@ -12,6 +13,7 @@ import com.bachld.project.backend.enums.Role;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.BoMonMapper;
+import com.bachld.project.backend.mapper.GiangVienMapper;
 import com.bachld.project.backend.repository.BoMonRepository;
 import com.bachld.project.backend.repository.GiangVienRepository;
 import com.bachld.project.backend.repository.KhoaRepository;
@@ -37,6 +39,7 @@ public class BoMonServiceImpl implements BoMonService {
     BoMonMapper boMonMapper;
     KhoaRepository khoaRepository;
     private final GiangVienRepository giangVienRepository;
+    GiangVienMapper giangVienMapper;
 
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
@@ -104,21 +107,10 @@ public class BoMonServiceImpl implements BoMonService {
 
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @PreAuthorize("isAuthenticated()")
     @Override
-    public List<GiangVienLite> getGiangVienByBoMon(Long boMonId) {
-        // Có thể ném lỗi nếu boMon không tồn tại, giúp FE báo sớm:
-        boMonRepository.findById(boMonId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
-
-        return giangVienRepository.findByBoMon_Id(boMonId)
-                .stream()
-                .map(gv -> GiangVienLite.builder()
-                        .id(gv.getId())
-                        .maGV(gv.getMaGV())
-                        .hoTen(gv.getHoTen())
-                        .build()
-                )
-                .toList();
+    public Page<BoMonWithTruongBoMonResponse> findAllWithTruongBoMon(Pageable pageable) {
+        return boMonRepository.findAll(pageable)
+                .map(boMonMapper::toWithTruongBoMon);
     }
 }

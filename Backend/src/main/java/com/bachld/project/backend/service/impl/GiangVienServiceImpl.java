@@ -2,10 +2,7 @@ package com.bachld.project.backend.service.impl;
 
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
-import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
-import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
+import com.bachld.project.backend.dto.response.giangvien.*;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.SinhVien;
@@ -231,4 +228,16 @@ public class GiangVienServiceImpl implements GiangVienService {
         }
         return auth.getName();
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public List<GiangVienLiteResponse> getGiangVienLiteByBoMon(Long boMonId) {
+        BoMon bm = boMonRepository.findById(boMonId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
+        return giangVienRepository.findByBoMon_IdOrderByHoTenAsc(bm.getId())
+                .stream()
+                .map(giangVienMapper::toLite)
+                .toList();
+    }
+
 }

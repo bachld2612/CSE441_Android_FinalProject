@@ -3,10 +3,7 @@ package com.bachld.project.backend.controller;
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
-import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
-import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
-import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
+import com.bachld.project.backend.dto.response.giangvien.*;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.service.GiangVienService;
 import lombok.AccessLevel;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/giang-vien")
@@ -76,6 +74,13 @@ public class GiangVienController {
 
         return ApiResponse.<Page<DeTaiSinhVienApprovalResponse>>builder()
                 .result(giangVienService.getDeTaiSinhVienApproval(status, pageable))
+                .build();
+    }
+
+    @GetMapping("/by-bo-mon/{boMonId}")
+    public ApiResponse<List<GiangVienLiteResponse>> getByBoMon(@PathVariable Long boMonId) {
+        return ApiResponse.<List<GiangVienLiteResponse>>builder()
+                .result(giangVienService.getGiangVienLiteByBoMon(boMonId))
                 .build();
     }
 
