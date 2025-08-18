@@ -17,5 +17,6 @@ public class GiangVienInfoResponse {
     String hoTen;
     String hocVi;
     String hocHam;
+    int soLuongDeTai;
 
 }

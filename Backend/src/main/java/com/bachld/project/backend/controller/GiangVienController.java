@@ -81,7 +81,7 @@ public class GiangVienController {
     public ApiResponse<Set<GiangVienInfoResponse>> getGiangVienByBoMon(@PathVariable("boMonId") Long boMonId) {
 
         return ApiResponse.<Set<GiangVienInfoResponse>>builder()
-                .result(giangVienService.getGiangVienByBoMon(boMonId))
+                .result(giangVienService.getGiangVienByBoMonAndSoLuongDeTai(boMonId))
                 .build();
 
     }

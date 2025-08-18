@@ -87,13 +87,18 @@ public class GiangVienServiceImpl implements GiangVienService {
 
     @PreAuthorize("isAuthenticated()")
     @Override
-    public Set<GiangVienInfoResponse> getGiangVienByBoMon(Long boMonId) {
+    public Set<GiangVienInfoResponse> getGiangVienByBoMonAndSoLuongDeTai(Long boMonId) {
         BoMon boMon = boMonRepository.findById(boMonId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.BO_MON_NOT_FOUND));
-        Set<GiangVien> giangVienList = boMon.getGiangVienSet();
-        return giangVienList.stream()
+        Set<GiangVien> giangVienSet = giangVienRepository.findAvailableGiangVienByBoMon(boMonId);
+        Set<GiangVienInfoResponse> responses = giangVienSet.stream()
                 .map(giangVienMapper::toGiangVienInfoResponse)
                 .collect(Collectors.toSet());
+        responses.forEach(response -> {
+            int soLuongDeTai = giangVienRepository.countDeTaiByGiangVienAndSinhVienActive(response.getMaGV());
+            response.setSoLuongDeTai(soLuongDeTai);
+        });
+        return responses;
     }
 
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")

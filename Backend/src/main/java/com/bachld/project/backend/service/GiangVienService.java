@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 public interface GiangVienService {
@@ -18,5 +17,5 @@ public interface GiangVienService {
     GiangVienImportResponse importGiangVien(MultipartFile file) throws IOException;
     Page<SinhVienSupervisedResponse> getMySupervisedStudents(Pageable pageable);
     Page<DeTaiSinhVienApprovalResponse> getDeTaiSinhVienApproval(DeTaiState status, Pageable pageable);
-    Set<GiangVienInfoResponse> getGiangVienByBoMon(Long boMonId);
+    Set<GiangVienInfoResponse> getGiangVienByBoMonAndSoLuongDeTai(Long boMonId);
 }
