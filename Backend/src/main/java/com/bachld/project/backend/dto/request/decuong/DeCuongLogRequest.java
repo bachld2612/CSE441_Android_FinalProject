@@ -1,6 +1,8 @@
 package com.bachld.project.backend.dto.request.decuong;
 
-import lombok.Data;
+
+import lombok.*;
+
 
 @Data
 public class DeCuongLogRequest {

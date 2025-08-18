@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/giang-vien")
@@ -77,6 +78,15 @@ public class GiangVienController {
         return ApiResponse.<Page<DeTaiSinhVienApprovalResponse>>builder()
                 .result(giangVienService.getDeTaiSinhVienApproval(status, pageable))
                 .build();
+    }
+
+    @GetMapping("/{boMonId}")
+    public ApiResponse<Set<GiangVienInfoResponse>> getGiangVienByBoMon(@PathVariable("boMonId") Long boMonId) {
+
+        return ApiResponse.<Set<GiangVienInfoResponse>>builder()
+                .result(giangVienService.getGiangVienByBoMonAndSoLuongDeTai(boMonId))
+                .build();
+
     }
 
     @GetMapping("/by-bo-mon/{boMonId}")

@@ -76,7 +76,9 @@ export default function NganhPage() {
       try {
         const parsed = JSON.parse(info);
         setRole(parsed?.role ?? null);
-      } catch {}
+      } catch (e) {
+        console.error("Failed to parse myInfo:", e);
+      }
     }
   }, []);
 

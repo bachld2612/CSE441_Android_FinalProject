@@ -1,10 +1,11 @@
 package com.bachld.project.backend.service;
 
-import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
+import com.bachld.project.backend.dto.request.decuong.DeCuongLogRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 
 public interface DeCuongService {
     // DeCuongService.java

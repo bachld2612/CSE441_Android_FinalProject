@@ -9,6 +9,22 @@ export interface SinhVien {
   kichHoat: boolean;
 }
 
+export interface SinhVienInfoResponse{
+  maSV?: string;
+  hoTen?: string;
+  soDienThoai?: string;
+  email?: string;
+  tenLop?: string;
+  tenKhoa?: string;
+  tenNganh?: string;
+  cvUrl?: string;
+}
+
+export interface SinhVienWihtoutDeTai {
+  maSV: string;
+  hoTen: string;
+}
+
 export type SinhVienCreationRequest = {
   maSV: string;
   hoTen: string;
@@ -37,6 +53,8 @@ export interface ApiResponse<T> {
   result: T;
   message?: string;
 }
+
+
 
 export interface PageableRequest {
   page: number;
@@ -155,6 +173,28 @@ const getSinhVienOfGiangVien = async (
   return res.result;
 };
 
+const getSinhVienWithoutDeTai = async (): Promise<ApiResponse<SinhVienWihtoutDeTai[]>> => {
+  try{
+    const res: ApiResponse<SinhVienWihtoutDeTai[]> = await api.get(
+    "/sinh-vien/without-de-tai"
+  );
+  return res;
+  }catch (error) {
+    console.error("SinhVienService - getSinhVienWithoutDeTai error:", error);
+    throw error; 
+  }
+};
+
+const getSinhVienByMaSV = async (maSV: string): Promise<ApiResponse<SinhVienInfoResponse>> => {
+  try {
+    const res: ApiResponse<SinhVienInfoResponse> = await api.get(`/sinh-vien/${maSV}`);
+    return res;
+  } catch (error) {
+    console.error("SinhVienService - getSinhVienByMaSV error:", error);
+    throw error;
+  }
+};
+
 export {
   getAllSinhVien,
   createSinhVien,
@@ -162,5 +202,7 @@ export {
   findSinhVienByInfo,
   changeSinhVienStatus,
   updateSinhVien,
-  getSinhVienOfGiangVien
+  getSinhVienOfGiangVien,
+  getSinhVienWithoutDeTai,
+  getSinhVienByMaSV
 };

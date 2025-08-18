@@ -3,7 +3,9 @@ package com.bachld.project.backend.mapper;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
 import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
+import com.bachld.project.backend.dto.response.sinhvien.GetSinhVienWithoutDeTaiResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
+import com.bachld.project.backend.dto.response.sinhvien.SinhVienInfoResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
 import com.bachld.project.backend.entity.Lop;
 import com.bachld.project.backend.entity.SinhVien;
@@ -38,6 +40,14 @@ public interface SinhVienMapper {
     @Mapping(source = "deTai.trangThai", target = "trangThai")
     @Mapping(source = "deTai.tongQuanDeTaiUrl", target = "tongQuanDeTaiUrl")
     DeTaiSinhVienApprovalResponse toDeTaiSinhVienApprovalResponse(SinhVien sv);
+
+    @Mapping(source = "lop.tenLop", target = "tenLop")
+    @Mapping(source = "taiKhoan.email", target = "email")
+    @Mapping(source = "lop.nganh.khoa.tenKhoa", target = "tenKhoa")
+    @Mapping(source = "lop.nganh.tenNganh", target = "tenNganh")
+    SinhVienInfoResponse toSinhVienInfoResponse(SinhVien sv);
+
+    GetSinhVienWithoutDeTaiResponse toGetSinhVienWithoutDeTaiResponse(SinhVien sv);
 
     default Lop map(Long lopId) {
         if (lopId == null) return null;

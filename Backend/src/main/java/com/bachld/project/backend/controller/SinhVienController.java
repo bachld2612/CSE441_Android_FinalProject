@@ -3,9 +3,7 @@ package com.bachld.project.backend.controller;
 import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
-import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
-import com.bachld.project.backend.dto.response.sinhvien.SinhVienImportResponse;
-import com.bachld.project.backend.dto.response.sinhvien.SinhVienResponse;
+import com.bachld.project.backend.dto.response.sinhvien.*;
 import com.bachld.project.backend.service.SinhVienService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/sinh-vien")
@@ -88,6 +87,28 @@ public class SinhVienController {
     ) {
         return ApiResponse.<SinhVienCreationResponse>builder()
                 .result(sinhVienService.updateSinhVien(request, maSV))
+                .build();
+    }
+
+    @GetMapping("{maSV}")
+    public ApiResponse<SinhVienInfoResponse> getSinhVienInfo(@PathVariable String maSV) {
+        return ApiResponse.<SinhVienInfoResponse>builder()
+                .result(sinhVienService.getSinhVienInfo(maSV))
+                .build();
+    }
+
+    @GetMapping("without-de-tai")
+    public ApiResponse<List<GetSinhVienWithoutDeTaiResponse>> getSinhVienWithoutDeTai() {
+        return ApiResponse.<List<GetSinhVienWithoutDeTaiResponse>>builder()
+                .result(sinhVienService.getSinhVienWithoutDeTai())
+                .build();
+    }
+
+    @PostMapping(value = "upload-cv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<String> uploadCV(@RequestParam("file") MultipartFile file) throws IOException {
+        sinhVienService.uploadCV(file);
+        return ApiResponse.<String>builder()
+                .result("Upload CV successfully!")
                 .build();
     }
 

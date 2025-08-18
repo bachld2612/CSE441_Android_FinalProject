@@ -1,7 +1,9 @@
 package com.bachld.project.backend.service;
 
+import com.bachld.project.backend.dto.request.detai.DeTaiGiangVienHuongDanRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiApprovalRequest;
+import com.bachld.project.backend.dto.response.detai.DeTaiGiangVienHuongDanResponse;
 import com.bachld.project.backend.dto.response.detai.DeTaiResponse;
 import com.bachld.project.backend.enums.DeTaiState;
 import org.springframework.data.domain.Page;
@@ -15,4 +17,5 @@ public interface DeTaiService {
     DeTaiResponse approveDeTai(Long deTaiId, DeTaiApprovalRequest request);
 
     DeTaiResponse getMyDeTai();
+    DeTaiGiangVienHuongDanResponse addGiangVienHuongDan(DeTaiGiangVienHuongDanRequest request);
 }

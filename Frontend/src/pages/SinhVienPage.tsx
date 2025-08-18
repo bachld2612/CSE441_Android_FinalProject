@@ -412,7 +412,7 @@ export default function SinhVienPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbPage>
-            <BreadcrumbLink className="font-bold" href="/students">
+            <BreadcrumbLink className="font-bold" href="/sinh-vien">
               Sinh viên
             </BreadcrumbLink>
           </BreadcrumbPage>

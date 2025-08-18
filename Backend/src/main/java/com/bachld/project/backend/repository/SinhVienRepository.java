@@ -1,5 +1,6 @@
 package com.bachld.project.backend.repository;
 
+import com.bachld.project.backend.entity.DeTai;
 import com.bachld.project.backend.entity.SinhVien;
 import com.bachld.project.backend.enums.DeTaiState;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface SinhVienRepository extends JpaRepository<SinhVien, Long> {
@@ -20,4 +23,7 @@ public interface SinhVienRepository extends JpaRepository<SinhVien, Long> {
     Page<SinhVien> findAllByHoTenContainingIgnoreCaseOrMaSVContainingIgnoreCase(String hoTen, String maSV, Pageable pageable);
 
     Optional<SinhVien> findByMaSV(String maSV);
+
+
+    List<SinhVien> findAllByDeTaiIsNullAndKichHoatTrue();
 }
