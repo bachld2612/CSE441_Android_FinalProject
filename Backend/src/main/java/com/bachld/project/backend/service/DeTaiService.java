@@ -18,4 +18,8 @@ public interface DeTaiService {
 
     DeTaiResponse getMyDeTai();
     DeTaiGiangVienHuongDanResponse addGiangVienHuongDan(DeTaiGiangVienHuongDanRequest request);
+
+    DeTaiResponse approveByGiangVien(Long deTaiId, String nhanXet);
+
+    DeTaiResponse rejectByGiangVien(Long deTaiId, String nhanXet);
 }
