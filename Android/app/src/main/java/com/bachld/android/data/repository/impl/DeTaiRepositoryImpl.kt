@@ -6,7 +6,7 @@ import com.bachld.android.data.dto.response.DeTaiResponse
 import com.bachld.android.data.dto.response.unwrapOrThrow
 import com.bachld.android.data.remote.service.DeTaiApi
 
-class DeTaiRepositoryImpl(
+class   DeTaiRepositoryImpl(
     private val api: DeTaiApi,
     private val prefs: UserPrefs
 ) {
