@@ -102,7 +102,6 @@ public class DeCuongController {
                 .body(xlsx);
     }
 
-    // ===== Helpers (chỉ trong controller, không ảnh hưởng nơi khác) =====
     private Long toLong(Object v) {
         if (v == null) return null;
         if (v instanceof Number n) return n.longValue();

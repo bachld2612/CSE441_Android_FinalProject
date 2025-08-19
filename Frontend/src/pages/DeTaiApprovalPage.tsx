@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   getDeTaiApproval,
   approveDeTai,
   rejectDeTai,
   type DeTai,
-} from "@/services/deTai.service";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+} from '@/services/deTai.service';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -15,39 +15,39 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-
-import { toast } from "react-toastify";
+} from '@/components/ui/dialog';
+import { downloadFile } from '@/lib/downloadFile';
+import { toast } from 'react-toastify';
 
 export default function DeTaiApprovalPage() {
   const [data, setData] = useState<DeTai[]>([]);
   const [page, setPage] = useState(0);
-  const size = 10;
+  const size = 7;
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const [q, setQ] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [q, setQ] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
 
   const [selectedDeTai, setSelectedDeTai] = useState<DeTai | null>(null);
 
   // Dialog lý do
-  const [reason, setReason] = useState("");
-  const [actionType, setActionType] = useState<"APPROVE" | "REJECT" | null>(
-    null
+  const [reason, setReason] = useState('');
+  const [actionType, setActionType] = useState<'APPROVE' | 'REJECT' | null>(
+    null,
   );
 
   const loadData = async () => {
@@ -56,18 +56,18 @@ export default function DeTaiApprovalPage() {
       const res = await getDeTaiApproval({
         page,
         size,
-        sort: "maSV,asc",
+        sort: 'maSV,asc',
       });
 
       let filtered = res.content;
-      if (statusFilter !== "ALL") {
+      if (statusFilter !== 'ALL') {
         filtered = filtered.filter((dt) => dt.trangThai === statusFilter);
       }
 
       setData(filtered);
       setTotalPages(res.totalPages);
     } catch (e: any) {
-      toast.error("Không thể tải danh sách đề tài");
+      toast.error('Không thể tải danh sách đề tài');
     } finally {
       setLoading(false);
     }
@@ -79,20 +79,20 @@ export default function DeTaiApprovalPage() {
 
   const renderStatus = (status: string) => {
     switch (status) {
-      case "ACCEPTED":
+      case 'ACCEPTED':
         return (
           <span className="px-2 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
             Đã duyệt
           </span>
         );
-      case "PENDING":
+      case 'PENDING':
         return (
           <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">
             Chờ xét duyệt
           </span>
         );
-      case "CANCELED":
-      case "REJECTED":
+      case 'CANCELED':
+      case 'REJECTED':
         return (
           <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 text-sm font-medium">
             Đã từ chối
@@ -106,19 +106,19 @@ export default function DeTaiApprovalPage() {
   const handleConfirm = async () => {
     if (!selectedDeTai || !actionType) return;
     try {
-      if (actionType === "APPROVE") {
+      if (actionType === 'APPROVE') {
         await approveDeTai(selectedDeTai.idDeTai, reason);
-        toast.success("Duyệt đề tài thành công");
+        toast.success('Duyệt đề tài thành công');
       } else {
         await rejectDeTai(selectedDeTai.idDeTai, reason);
-        toast.success("Từ chối đề tài thành công");
+        toast.success('Từ chối đề tài thành công');
       }
-      setReason("");
+      setReason('');
       setActionType(null);
       setSelectedDeTai(null);
       loadData();
     } catch (e: any) {
-      toast.error("Thao tác thất bại");
+      toast.error('Thao tác thất bại');
     }
   };
 
@@ -128,8 +128,22 @@ export default function DeTaiApprovalPage() {
         Danh sách đề tài
       </h1>
 
-      {/* Tìm kiếm + Lọc */}
-      <div className="flex items-center justify-between gap-4">
+      {/* 🔹 Lọc bên trái, tìm kiếm bên phải */}
+      <div className="flex justify-between items-center mb-4">
+        {/* Bộ lọc trạng thái (trái) */}
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px] border border-gray-400 bg-white text-gray-800 font-medium">
+            <SelectValue placeholder="Chọn trạng thái" />
+          </SelectTrigger>
+          <SelectContent className="bg-white border border-gray-400">
+            <SelectItem value="ALL">Tất cả</SelectItem>
+            <SelectItem value="PENDING">Chờ xét duyệt</SelectItem>
+            <SelectItem value="ACCEPTED">Đã duyệt</SelectItem>
+            <SelectItem value="CANCELED">Đã từ chối</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Form tìm kiếm (phải) */}
         <form
           className="flex items-center gap-1"
           onSubmit={(e) => {
@@ -141,7 +155,7 @@ export default function DeTaiApprovalPage() {
           <Input
             type="text"
             placeholder="Tìm kiếm đề tài..."
-            className="w-[300px] border-gray-300 h-10"
+            className="w-[240px] border-gray-300 h-10"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -153,23 +167,10 @@ export default function DeTaiApprovalPage() {
             <Search />
           </Button>
         </form>
-
-        {/* Bộ lọc trạng thái */}
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[200px] border border-gray-400 bg-white text-gray-800 font-medium">
-            <SelectValue placeholder="Chọn trạng thái" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-400">
-            <SelectItem value="ALL">Tất cả</SelectItem>
-            <SelectItem value="PENDING">Chờ xét duyệt</SelectItem>
-            <SelectItem value="ACCEPTED">Đã duyệt</SelectItem>
-            <SelectItem value="CANCELED">Đã từ chối</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Bảng dữ liệu */}
-      <Table className="mt-6 rounded-lg overflow-hidden shadow-sm border border-gray-300">
+      <Table className="mt-2 rounded-lg overflow-hidden shadow-sm border border-gray-300">
         <TableHeader>
           <TableRow className="bg-gray-100">
             <TableHead className="text-center font-semibold border border-gray-300">
@@ -224,7 +225,7 @@ export default function DeTaiApprovalPage() {
                 {dt.tenLop}
               </TableCell>
               <TableCell className="text-center border border-gray-300">
-                {dt.soDienThoai ?? "-"}
+                {dt.soDienThoai ?? '-'}
               </TableCell>
               <TableCell className="text-center border border-gray-300">
                 {dt.tenDeTai}
@@ -234,14 +235,14 @@ export default function DeTaiApprovalPage() {
               </TableCell>
               <TableCell className="text-center border border-gray-300">
                 <div className="flex gap-2 justify-center">
-                  {dt.trangThai === "PENDING" && (
+                  {dt.trangThai === 'PENDING' && (
                     <>
                       <Button
                         size="sm"
                         className="bg-green-500 hover:bg-green-600 text-white rounded-md"
                         onClick={() => {
                           setSelectedDeTai(dt);
-                          setActionType("APPROVE");
+                          setActionType('APPROVE');
                         }}
                       >
                         Duyệt
@@ -251,7 +252,7 @@ export default function DeTaiApprovalPage() {
                         className="bg-red-500 hover:bg-red-600 text-white rounded-md"
                         onClick={() => {
                           setSelectedDeTai(dt);
-                          setActionType("REJECT");
+                          setActionType('REJECT');
                         }}
                       >
                         Từ chối
@@ -273,56 +274,54 @@ export default function DeTaiApprovalPage() {
       </Table>
 
       {/* Phân trang */}
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-6">
-          <div className="flex items-center gap-2">
+      <div className="flex justify-end mt-6">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (page > 0) setPage(page - 1);
+            }}
+            className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
+              page === 0
+                ? 'pointer-events-none opacity-50'
+                : 'hover:bg-gray-200'
+            }`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => (
             <button
+              key={i}
               onClick={(e) => {
                 e.preventDefault();
-                if (page > 0) setPage(page - 1);
+                setPage(i);
               }}
-              className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
-                page === 0
-                  ? "pointer-events-none opacity-50"
-                  : "hover:bg-gray-200"
+              className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 ${
+                page === i
+                  ? 'bg-[#2F80ED] text-white font-semibold'
+                  : 'bg-gray-100 hover:bg-gray-200'
               }`}
             >
-              <ChevronLeft className="w-4 h-4" />
+              {i + 1}
             </button>
+          ))}
 
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPage(i);
-                }}
-                className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 ${
-                  page === i
-                    ? "bg-[#2F80ED] text-white font-semibold"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (page + 1 < totalPages) setPage(page + 1);
-              }}
-              className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
-                page + 1 >= totalPages
-                  ? "pointer-events-none opacity-50"
-                  : "hover:bg-gray-200"
-              }`}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (page + 1 < totalPages) setPage(page + 1);
+            }}
+            className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
+              page + 1 >= totalPages
+                ? 'pointer-events-none opacity-50'
+                : 'hover:bg-gray-200'
+            }`}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Modal chi tiết */}
       <Dialog
@@ -353,24 +352,28 @@ export default function DeTaiApprovalPage() {
                 <strong>Tên đề tài:</strong> {selectedDeTai.tenDeTai}
               </p>
               <p>
-                <strong>Tổng quan:</strong>{" "}
+                <strong>Tổng quan:</strong>{' '}
                 {selectedDeTai.tongQuanDeTaiUrl ? (
-                  <a
-                    href={selectedDeTai.tongQuanDeTaiUrl.replace(
-                      "/image/upload/",
-                      "/raw/upload/"
-                    )}
-                    download
+                  <button
+                    onClick={() =>
+                      downloadFile(
+                        selectedDeTai.tongQuanDeTaiUrl?.replace(
+                          '/image/upload/',
+                          '/raw/upload/',
+                        ) || '',
+                        selectedDeTai.tongQuanFilename || 'TongQuanDeTai.pdf',
+                      )
+                    }
                     className="text-blue-600 underline font-medium"
                   >
-                    File tổng quan
-                  </a>
+                    {selectedDeTai.tongQuanFilename || 'File tổng quan'}
+                  </button>
                 ) : (
                   <span className="text-gray-500 italic">Không có file</span>
                 )}
               </p>
               <p>
-                <strong>Trạng thái:</strong>{" "}
+                <strong>Trạng thái:</strong>{' '}
                 {renderStatus(selectedDeTai.trangThai)}
               </p>
             </div>
@@ -389,7 +392,7 @@ export default function DeTaiApprovalPage() {
         <DialogContent className="max-w-md bg-white border border-gray-400 shadow-md">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-gray-900">
-              {actionType === "APPROVE" ? "Duyệt đề tài" : "Từ chối đề tài"}
+              {actionType === 'APPROVE' ? 'Duyệt đề tài' : 'Từ chối đề tài'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -403,7 +406,7 @@ export default function DeTaiApprovalPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setReason("");
+                  setReason('');
                   setActionType(null);
                   setSelectedDeTai(null);
                 }}
@@ -412,9 +415,9 @@ export default function DeTaiApprovalPage() {
               </Button>
               <Button
                 className={
-                  actionType === "APPROVE"
-                    ? "bg-green-500 hover:bg-green-600 text-white"
-                    : "bg-red-500 hover:bg-red-600 text-white"
+                  actionType === 'APPROVE'
+                    ? 'bg-green-500 hover:bg-green-600 text-white'
+                    : 'bg-red-500 hover:bg-red-600 text-white'
                 }
                 onClick={handleConfirm}
               >
