@@ -86,7 +86,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         String tmpUrl;
         if (request.getFile() != null && !request.getFile().isEmpty()) {
             // Upload lên Cloudinary
-            tmpUrl = cloudinaryService.upload(request.getFile());
+            tmpUrl = cloudinaryService.uploadRawFile(request.getFile());
         } else if (request.getFileUrl() != null && !request.getFileUrl().isBlank()) {
             // Dùng URL có sẵn
             tmpUrl = request.getFileUrl().trim();
