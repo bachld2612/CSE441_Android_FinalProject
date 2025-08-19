@@ -88,6 +88,7 @@ public enum ErrorCode {
     HOC_KI_EMPTY(1039, "Hoc ki cannot be empty", HttpStatus.BAD_REQUEST),
     INVALID_FILE_TYPE(1040, "Invalid file type", HttpStatus.BAD_REQUEST),
     FILE_TOO_LARGE(1041, "File size exceeds the limit", HttpStatus.BAD_REQUEST),
+    THONG_BAO_NOT_FOUND(1042, "Thong bao not found", HttpStatus.NOT_FOUND),
     ;
     int code;
     String message;
