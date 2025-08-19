@@ -14,4 +14,8 @@
     <color name="blue">#2196F3</color>
     <color name="link_blue">#1976D2</color>
     <color name="light_yellow">#F0E78B</color>
+    <color name="brand_457b9d">#457B9D</color>
+    <color name="file_border">#DADFE6</color>
+    <color name="outlined_box_border">#9E9E9E</color>
+
 </resources>

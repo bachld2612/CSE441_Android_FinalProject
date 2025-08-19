@@ -34,4 +34,30 @@
         android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"
         android:label="Thông tin"
         tools:layout="@layout/fragment_thong_tin" />
+
+   <fragment
+       android:id="@+id/navigation_do_an"
+       android:name="com.bachld.android.ui.view.doan.DoAnFragment"
+       android:label="Đồ án"
+       tools:layout="@layout/fragment_do_an">
+
+      <!-- NEW: action từ DoAnFragment sang DeCuongFragment -->
+      <action
+          android:id="@+id/action_navigation_do_an_to_de_cuong"
+          app:destination="@id/de_cuong" />
+   </fragment>
+
+   <!-- NEW: Thông tin đồ án (destination riêng, để bạn điều hướng tới khi cần) -->
+   <fragment
+       android:id="@+id/thong_tin_do_an"
+       android:name="com.bachld.android.ui.view.doan.ThongTinDoAnFragment"
+       android:label="Thông tin đồ án"
+       tools:layout="@layout/fragment_thong_tin_do_an" />
+
+   <!-- NEW: De cương (container TabLayout + ViewPager2) -->
+   <fragment
+       android:id="@+id/de_cuong"
+       android:name="com.bachld.android.ui.view.decuong.DeCuongFragment"
+       android:label="Đề cương"
+       tools:layout="@layout/fragment_de_cuong" />
 </navigation>
