@@ -266,11 +266,12 @@ export default function DangKiGiangVienHuongDan() {
             <p>
               <span className="font-semibold">CV:</span>{" "}
               {(sinhVienDetail.cvUrl && (
-                <a href={sinhVienDetail.cvUrl ?? "#"} download>
+                <a className="text-blue-700 underline" href={sinhVienDetail.cvUrl  ?? "#"} download>
                   CV sinh viên
                 </a>
               )) ||
                 "Chưa có"}
+                <span> (để định dạng pdf khi tải)</span>
             </p>
           </div>
 
