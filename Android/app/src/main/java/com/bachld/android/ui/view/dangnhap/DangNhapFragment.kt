@@ -61,7 +61,7 @@ class DangNhapFragment : Fragment() {
                     vm.loginState.collect { st ->
                         binding.btnDangNhap.isEnabled = st !is UiState.Loading
                         when (st) {
-                            is UiState.Error -> toast(st.message ?: "Đăng nhập thất bại")
+                            is UiState.Error -> toast( "Tài khoản hoặc mật khẩu không chính xác")
                             else -> Unit
                         }
                     }
@@ -73,7 +73,7 @@ class DangNhapFragment : Fragment() {
                         binding.btnDangNhap.isEnabled = st !is UiState.Loading
                         when (st) {
                             is UiState.Error -> {
-                                toast(st.message ?: "Lấy thông tin người dùng thất bại")
+                                toast( "Lấy thông tin người dùng thất bại")
                             }
                             is UiState.Success -> {
                                 val res = st.data
@@ -87,7 +87,7 @@ class DangNhapFragment : Fragment() {
                                         else -> toast("Role không hợp lệ: $role")
                                     }
                                 } else {
-                                    toast(res.message ?: "Có lỗi xảy ra")
+                                    toast( "Có lỗi xảy ra")
                                 }
                             }
                             else -> Unit

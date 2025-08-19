@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="45dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -102,182 +103,13 @@
             android:layout_marginEnd="18dp"
             android:background="#2196F3"/>
 
-        <!-- Danh sách thông báo (Fake, dùng LinearLayout thay cho ListView/RecyclerView) -->
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingTop="4dp"
-            android:paddingBottom="16dp">
-
-            <!-- Item 1: PDF -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:orientation="horizontal"
-                android:background="@android:color/white"
-                android:layout_marginTop="8dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:src="@mipmap/ic_pdf"
-                    android:contentDescription="PDF"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="30/12/2024 15:30"
-                        android:textColor="#888888"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kế hoạch thu đồ án tốt nghiệp ngành kỹ thuật phần mềm"
-                        android:textColor="#232323"
-                        android:textSize="15sp"
-                        android:layout_marginTop="2dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Item 2: Word -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:orientation="horizontal"
-                android:background="@android:color/white"
-                android:layout_marginTop="8dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:src="@mipmap/ic_word"
-                    android:contentDescription="WORD"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="15/10/2025 14:30"
-                        android:textColor="#888888"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mẫu đề cương đồ án tốt nghiệp ngành CNTT"
-                        android:textColor="#232323"
-                        android:textSize="15sp"
-                        android:layout_marginTop="2dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Item 3: Excel -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:orientation="horizontal"
-                android:background="@android:color/white"
-                android:layout_marginTop="8dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:src="@mipmap/ic_excel"
-                    android:contentDescription="EXCEL"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="21/09/2024 15:00"
-                        android:textColor="#888888"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Danh sách phân công GVHD ngành hệ thống thông tin"
-                        android:textColor="#232323"
-                        android:textSize="15sp"
-                        android:layout_marginTop="2dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Item 4: Excel -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:orientation="horizontal"
-                android:background="@android:color/white"
-                android:layout_marginTop="8dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:src="@mipmap/ic_excel"
-                    android:contentDescription="EXCEL"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="14dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="21/09/2024 14:30"
-                        android:textColor="#888888"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Danh sách phân công GVHD ngành kỹ thuật phần mềm"
-                        android:textColor="#232323"
-                        android:textSize="15sp"
-                        android:layout_marginTop="2dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
+            android:paddingBottom="16dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
     </LinearLayout>
 </ScrollView>
