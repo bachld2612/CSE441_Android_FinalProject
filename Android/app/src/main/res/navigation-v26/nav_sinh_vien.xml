@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_navigation_do_an_to_de_cuong"
             app:destination="@id/de_cuong" />
+        <action
+            android:id="@+id/action_navigation_do_an_to_hoan_do_an"
+            app:destination="@id/hoan_do_an" />
     </fragment>
 
 
@@ -81,8 +84,6 @@
         android:name="com.bachld.android.ui.view.doan.HoanDoAnFragment"
         android:label="Đề nghị hoãn đồ án"
         tools:layout="@layout/fragment_hoan_do_an" />
-
-    <!-- action từ màn Thông tin đồ án (hoặc DoAnFragment) -->
 
 
 </navigation>

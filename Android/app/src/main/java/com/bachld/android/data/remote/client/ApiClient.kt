@@ -1,14 +1,11 @@
+// app/src/main/java/com/bachld/android/data/remote/client/ApiClient.kt
 package com.bachld.android.data.remote.client
 
 import android.app.Application
 import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
-import com.bachld.android.data.remote.service.AuthApi
-import com.bachld.android.data.remote.service.DeTaiApi
-import com.bachld.android.data.remote.service.TaiKhoanApi
-import com.bachld.android.data.remote.service.DeCuongApi
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.bachld.android.core.MoshiDateTimeConfig
+import com.bachld.android.data.remote.service.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -22,10 +19,13 @@ object ApiClient {
         private set
     lateinit var app: Application
         private set
-
     lateinit var deTaiApi: DeTaiApi
         private set
     lateinit var deCuongApi: DeCuongApi
+        private set
+    lateinit var thongBaoApi: ThongBaoApi
+    lateinit var sinhVienApi: SinhVienApi
+    lateinit var donHoanDoAnApi: DonHoanDoAnApi
         private set
 
     fun init(app: Application) {
@@ -34,6 +34,7 @@ object ApiClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+
         val okHttp = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(app.applicationContext))
             .addInterceptor(logging)
@@ -41,10 +42,8 @@ object ApiClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .build()
 
-        // Khởi tạo Moshi với hỗ trợ Kotlin
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        // Dùng module cấu hình Moshi đã tách
+        val moshi = MoshiDateTimeConfig.build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl(ApiConfig.BASE_URL)
@@ -55,6 +54,9 @@ object ApiClient {
         authApi = retrofit.create(AuthApi::class.java)
         taiKhoanApi = retrofit.create(TaiKhoanApi::class.java)
         deTaiApi = retrofit.create(DeTaiApi::class.java)
+        thongBaoApi = retrofit.create(ThongBaoApi::class.java)
+        sinhVienApi = retrofit.create(SinhVienApi::class.java)
         deCuongApi = retrofit.create(DeCuongApi::class.java)
+        donHoanDoAnApi = retrofit.create(DonHoanDoAnApi::class.java)
     }
 }

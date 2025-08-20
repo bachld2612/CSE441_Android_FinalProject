@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,7 +14,7 @@ import okio.source
 
 /** Tạo RequestBody text/plain từ String */
 fun String.toPlainRequestBody(): RequestBody =
-    this.toRequestBody("text/plain".toMediaTypeOrNull())
+    this.toRequestBody("text/plain".toMediaType())
 
 /** Lấy tên hiển thị của file từ Uri */
 private fun getDisplayName(context: Context, uri: Uri): String {

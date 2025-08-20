@@ -19,4 +19,16 @@
     <string name="empty_rejected_notes">Chưa có nhận xét từ chối.</string>
     <string name="note_date_sample">Ngày: %1$s</string>
     <string name="reject_reason_sample">Lý do từ chối...</string>
+    <!-- Hoãn đồ án -->
+    <string name="sending">Đang gửi…</string>
+    <string name="gui_de_nghi">Gửi đề nghị</string>
+    <string name="chon_file_de_upload">Chọn file để upload</string>
+    <string name="submit_success">Gửi thành công!</string>
+    <string name="submit_failed">Gửi thất bại</string>
+    <string name="error_please_input_reason">Vui lòng nhập lý do</string>
+    <string name="error_no_file_picker">Không tìm thấy ứng dụng chọn file</string>
+    <string name="only_pdf_allowed">Chỉ chấp nhận file PDF (.pdf).</string>
+    <string name="confirm_postpone_dialog">Bạn có chắc chắn muốn gửi đề nghị hoãn đồ án không?</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="back">Quay lại</string>
 </resources>

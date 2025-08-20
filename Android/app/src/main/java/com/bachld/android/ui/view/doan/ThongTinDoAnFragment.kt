@@ -66,6 +66,12 @@ class ThongTinDoAnFragment : Fragment() {
             }
         }
 
+        binding.btnDeNghiHoan.setOnClickListener {
+            findNavController().navigate(
+                com.bachld.android.R.id.action_navigation_do_an_to_hoan_do_an
+            )
+        }
+
         binding.btnNopDeCuong.setOnClickListener {
             findNavController().navigate(
                 com.bachld.android.R.id.action_navigation_do_an_to_de_cuong
