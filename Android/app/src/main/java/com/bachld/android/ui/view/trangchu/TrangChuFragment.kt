@@ -45,7 +45,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
         super.onViewCreated(view, savedInstanceState)
 
         val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
-        val isGV = role == "giang_vien" || role == "truong_bo_mon"
+        val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
         if(isGV){
             binding.layoutTopState.visibility = View.GONE
             binding.tvThongBao.updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -97,7 +97,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
                 is UiState.Success -> {
                     val detail = state.data
                     val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
-                    val isGV = role == "giang_vien" || role == "truong_bo_mon"
+                    val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
 
                     // Dùng Bundle để tái sử dụng cùng một set args
                     val args = Bundle().apply {

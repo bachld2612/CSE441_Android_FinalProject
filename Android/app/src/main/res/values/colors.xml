@@ -14,4 +14,7 @@
     <color name="blue">#2196F3</color>
     <color name="link_blue">#1976D2</color>
     <color name="light_yellow">#F0E78B</color>
+    <color name="state_success">#D4F8D3</color>
+    <color name="state_pending">#FFF0BB</color>
+    <color name="state_reject">#FFC300</color>
 </resources>
