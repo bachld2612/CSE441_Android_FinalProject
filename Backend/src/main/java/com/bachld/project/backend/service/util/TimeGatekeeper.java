@@ -39,4 +39,11 @@ public class TimeGatekeeper {
         }
         return window;
     }
+
+    public ThoiGianThucHien validateThoiGianDangKy(){
+        LocalDate today = LocalDate.now(ZONE_BKK);
+        return thoiGianThucHienRepository
+                .findTopByCongViecAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqualOrderByThoiGianBatDauDesc(CongViec.DANG_KY_DE_TAI, today, today)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DANG_KY_TIME_INVALID));
+    }
 }
