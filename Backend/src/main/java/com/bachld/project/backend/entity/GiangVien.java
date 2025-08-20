@@ -37,4 +37,7 @@ public class GiangVien extends BaseEntity {
     @OneToOne(mappedBy = "truongBoMon")
     BoMon boMonQuanLy;
 
+    @OneToMany(mappedBy = "giangVien")
+    Set<DotBaoVeGiangVien> dotBaoVeGiangVienSet;
+
 }

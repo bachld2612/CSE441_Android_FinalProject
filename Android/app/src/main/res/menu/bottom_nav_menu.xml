@@ -11,10 +11,6 @@
         android:icon="@drawable/ic_university"
         android:title="Đồ án"/>
 
-    <item
-        android:id="@+id/navigation_sinh_vien"
-        android:icon="@drawable/ic_student"
-        android:title="Sinh viên"/>
 
     <item
         android:id="@+id/navigation_hoi_dong"

@@ -3,10 +3,13 @@ package com.bachld.android.data.remote.client
 import android.app.Application
 import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
+import com.bachld.android.core.LocalDateJsonAdapter
 import com.bachld.android.data.remote.service.AuthApi
 import com.bachld.android.data.remote.service.DeTaiApi
+import com.bachld.android.data.remote.service.SinhVienApi
 import com.bachld.android.data.remote.service.TaiKhoanApi
 import com.bachld.android.data.remote.service.DeCuongApi
+import com.bachld.android.data.remote.service.ThongBaoApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -28,6 +31,11 @@ object ApiClient {
     lateinit var deCuongApi: DeCuongApi
         private set
 
+    lateinit var thongBaoApi: ThongBaoApi
+
+    lateinit var sinhVienApi: SinhVienApi
+
+
     fun init(app: Application) {
         this.app = app
 
@@ -43,6 +51,7 @@ object ApiClient {
 
         // Khởi tạo Moshi với hỗ trợ Kotlin
         val moshi = Moshi.Builder()
+            .add(LocalDateJsonAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 
@@ -55,6 +64,8 @@ object ApiClient {
         authApi = retrofit.create(AuthApi::class.java)
         taiKhoanApi = retrofit.create(TaiKhoanApi::class.java)
         deTaiApi = retrofit.create(DeTaiApi::class.java)
+        thongBaoApi = retrofit.create(ThongBaoApi::class.java)
+        sinhVienApi = retrofit.create(SinhVienApi::class.java)
         deCuongApi = retrofit.create(DeCuongApi::class.java)
     }
 }

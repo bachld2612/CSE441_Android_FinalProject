@@ -6,23 +6,24 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "dot_bao_ve_giang_vien_hoi_dong")
+@Table(name = "thanh_vien_hoi_dong")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DotBaoVeGiangVienHoiDong extends BaseEntity {
-
-    @ManyToOne
-    @JoinColumn
-    DotBaoVeGiangVien dotBaoVeGiangVien;
-
-    @ManyToOne
-    @JoinColumn
-    HoiDong hoiDong;
+public class ThanhVienHoiDong extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     HoiDongRole chucVu;
+
+    @ManyToOne
+    @JoinColumn(name = "hoi_dong_id")
+    HoiDong hoiDong;
+
+    @ManyToOne
+    @JoinColumn(name = "dot_bao_ve_giang_vien_id")
+    DotBaoVeGiangVien dotBaoVeGiangVien;
 
 }

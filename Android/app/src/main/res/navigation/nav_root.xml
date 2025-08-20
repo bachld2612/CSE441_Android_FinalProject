@@ -3,26 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_root">
 
-    <include app:graph="@navigation/nav_sinh_vien" />
+    <!-- Include 3 graph -->
     <include app:graph="@navigation/nav_auth" />
+    <include app:graph="@navigation/nav_sinh_vien" />
+    <include app:graph="@navigation/nav_giang_vien" />
 
+    <!-- Global actions: đến đâu cũng được, dọn stack bằng popUpTo nav_root -->
     <action
-        android:id="@+id/action_global_graph_student"
-        app:destination="@id/nav_auth" />
-
-    <action
-        android:id="@+id/action_global_graph_auth"
-        app:destination="@id/nav_sinh_vien" />
+        android:id="@+id/action_global_nav_auth"
+        app:destination="@id/nav_auth"
+        app:popUpTo="@id/nav_root"
+        app:popUpToInclusive="false" />
 
     <action
         android:id="@+id/action_global_nav_sinh_vien"
         app:destination="@id/nav_sinh_vien"
-        app:popUpTo="@id/nav_auth"
-        app:popUpToInclusive="true" />
+        app:popUpTo="@id/nav_root"
+        app:popUpToInclusive="false" />
 
     <action
-        android:id="@+id/action_global_nav_auth"
-        app:destination="@id/nav_auth"
-        app:popUpTo="@id/nav_sinh_vien"
-        app:popUpToInclusive="true" />
+        android:id="@+id/action_global_nav_giang_vien"
+        app:destination="@id/nav_giang_vien"
+        app:popUpTo="@id/nav_root"
+        app:popUpToInclusive="false" />
 </navigation>

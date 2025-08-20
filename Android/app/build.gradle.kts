@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -58,6 +59,8 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.gson)
     implementation(libs.converter.moshi)
     implementation(libs.okhttp)
     implementation(libs.kotlinx.coroutines.android)

@@ -26,5 +26,10 @@ public class DotBaoVe extends BaseEntity {
     Set<ThoiGianThucHien> thoiGianThucHien;
     @OneToMany(mappedBy = "dotBaoVe")
     Set<DeTai> deTaiSet;
+    @OneToMany(mappedBy = "dotBaoVe")
+    Set<HoiDong> hoiDongSet;
+
+    @OneToMany(mappedBy = "dotBaoVe")
+    Set<DotBaoVeGiangVien> dotBaoVeGiangVien;
 
 }
