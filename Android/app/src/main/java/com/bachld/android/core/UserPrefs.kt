@@ -78,4 +78,12 @@ class UserPrefs(context: Context) {
         val ts = sp.getLong(keyProjectCachedAt(userId), 0L)
         return ts == 0L || (System.currentTimeMillis() - ts) > maxAgeMillis
     }
+
+    /** XÓA cache đề tài (fix lỗi Unresolved reference 'clearProject') */
+    fun clearProject(userId: Long) {
+        sp.edit {
+            remove(keyProject(userId))
+            remove(keyProjectCachedAt(userId))
+        }
+    }
 }

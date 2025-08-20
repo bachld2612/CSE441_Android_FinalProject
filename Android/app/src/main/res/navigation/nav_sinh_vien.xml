@@ -15,7 +15,13 @@
         android:id="@+id/navigation_do_an"
         android:name="com.bachld.android.ui.view.doan.DoAnFragment"
         android:label="Đồ án"
-        tools:layout="@layout/fragment_do_an" />
+        tools:layout="@layout/fragment_do_an">
+
+        <!-- NEW: action từ DoAnFragment sang DeCuongFragment -->
+        <action
+            android:id="@+id/action_navigation_do_an_to_de_cuong"
+            app:destination="@id/de_cuong" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_sinh_vien"
@@ -34,18 +40,6 @@
         android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"
         android:label="Thông tin"
         tools:layout="@layout/fragment_thong_tin" />
-
-   <fragment
-       android:id="@+id/navigation_do_an"
-       android:name="com.bachld.android.ui.view.doan.DoAnFragment"
-       android:label="Đồ án"
-       tools:layout="@layout/fragment_do_an">
-
-      <!-- NEW: action từ DoAnFragment sang DeCuongFragment -->
-      <action
-          android:id="@+id/action_navigation_do_an_to_de_cuong"
-          app:destination="@id/de_cuong" />
-   </fragment>
 
    <!-- NEW: Thông tin đồ án (destination riêng, để bạn điều hướng tới khi cần) -->
    <fragment

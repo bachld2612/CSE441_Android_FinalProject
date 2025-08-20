@@ -5,6 +5,7 @@ import com.bachld.android.core.UserPrefs
 import com.bachld.android.data.dto.response.DeTaiResponse
 import com.bachld.android.data.dto.response.unwrapOrThrow
 import com.bachld.android.data.remote.service.DeTaiApi
+import retrofit2.HttpException
 
 class   DeTaiRepositoryImpl(
     private val api: DeTaiApi,
@@ -22,14 +23,21 @@ class   DeTaiRepositoryImpl(
             if (cacheOk) return cached
         }
 
-        // LUÔN gọi API (kể cả khi uid null)
-        val remote = api.getMyDeTai().unwrapOrThrow()
-
-        // nếu có uid thì mới lưu cache
-        if (uid != null) {
-            prefs.saveProject(uid, remote)
+        // Luôn thử gọi remote
+        return try {
+            val remote = api.getMyDeTai().unwrapOrThrow()
+            if (uid != null) prefs.saveProject(uid, remote)
+            remote
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                // Không có đề tài -> clear cache và trả null
+                if (uid != null) prefs.clearProject(uid)  // tạo hàm này nếu chưa có
+                null
+            } else {
+                // Có thể fallback cache khi lỗi khác (mạng…), hoặc ném lỗi
+                if (uid != null) prefs.getProject(uid) ?: throw e
+                else throw e
+            }
         }
-
-        return remote
     }
 }

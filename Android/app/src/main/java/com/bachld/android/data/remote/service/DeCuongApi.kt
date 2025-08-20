@@ -10,15 +10,13 @@ import retrofit2.http.*
 interface DeCuongApi {
 
     // Xem log cho SV
-    @GET("api/v1/de-cuong/sv/log")
+    @GET("api/v1/de-cuong/sinh-vien/log")
     suspend fun viewLog(): ApiResponse<DeCuongLogResponse>
 
     // Nộp đề cương: file đa phương tiện hoặc URL
     @Multipart
-    @POST("api/v1/de-cuong/sv/nop-de-cuong")
+    @POST("api/v1/de-cuong/sinh-vien/nop-de-cuong")
     suspend fun submitDeCuong(
-        @Part("deTaiId") deTaiId: RequestBody,
-        @Part file: MultipartBody.Part? = null,
-        @Part("fileUrl") fileUrl: RequestBody? = null
+        @Part("fileUrl") fileUrl: RequestBody
     ): ApiResponse<DeCuongResponse>
 }
