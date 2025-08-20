@@ -49,8 +49,8 @@ public enum ErrorCode {
     NO_ACTIVE_SUBMISSION_WINDOW(1216, "Chưa tới thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
     NO_ACTIVE_REVIEW_LIST(1217, "Chưa đến thời gian thực hiện xét duyệt đề cương", HttpStatus.BAD_REQUEST),
     ACCESS_DENIED(1218, "Access Denied", HttpStatus.FORBIDDEN),
-
-
+    FILE_EMPTY(1219, "File is empty", HttpStatus.BAD_REQUEST),
+    FILE_TYPE_NOT_ALLOWED(1220, "File type not allowed", HttpStatus.BAD_REQUEST),
     //Duc
     DE_TAI_EMPTY(1101, "Ten de tai cannot be empty", HttpStatus.BAD_REQUEST),
     DE_TAI_GVHD_REQUIRED(1102, "GVHD is required", HttpStatus.BAD_REQUEST),
@@ -87,8 +87,8 @@ public enum ErrorCode {
     NAM_KET_THUC_EMPTY(1038, "Nam ket thuc cannot be empty", HttpStatus.BAD_REQUEST),
     HOC_KI_EMPTY(1039, "Hoc ki cannot be empty", HttpStatus.BAD_REQUEST),
     INVALID_FILE_TYPE(1040, "Invalid file type", HttpStatus.BAD_REQUEST),
-    FILE_TOO_LARGE(1041, "File size exceeds the limit", HttpStatus.BAD_REQUEST),
-    ;
+    FILE_TOO_LARGE(1041, "File size exceeds the limit", HttpStatus.BAD_REQUEST);
+
     int code;
     String message;
     HttpStatusCode httpStatusCode;
