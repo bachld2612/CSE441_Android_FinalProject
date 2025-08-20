@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.unit.dp
+import androidx.core.view.marginTop
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bachld.android.R
 import com.bachld.android.core.UiState
+import com.bachld.android.core.UserPrefs
 import com.bachld.android.databinding.FragmentTrangChuScrollingBinding
 import com.bachld.android.ui.adapter.ThongBaoAdapter
 import com.bachld.android.ui.view.thongbao.ThongBaoDetailFragment
@@ -39,6 +43,17 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
+        val isGV = role == "giang_vien" || role == "truong_bo_mon"
+        if(isGV){
+            binding.layoutTopState.visibility = View.GONE
+            binding.tvThongBao.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = 20
+            }
+        }else{
+            binding.layoutTopState.visibility = View.VISIBLE
+        }
 
         setupRecyclerView()
         observeUiState()
@@ -81,23 +96,31 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
             when (state) {
                 is UiState.Success -> {
                     val detail = state.data
-                    val action = TrangChuFragmentDirections
-                        .actionTrangChuToThongBaoDetail(
-                            id = detail.id,
-                            title = detail.tieuDe,
-                            content = detail.noiDung,
-                            fileUrl = detail.fileUrl,
-                            createdAt = detail.createdAt.toString()
-                        )
-                    findNavController().navigate(action)
+                    val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
+                    val isGV = role == "giang_vien" || role == "truong_bo_mon"
 
-                    // 🔑 Quan trọng: reset để khi quay lại không tự navigate nữa
+                    // Dùng Bundle để tái sử dụng cùng một set args
+                    val args = Bundle().apply {
+                        putLong("id", detail.id)
+                        putString("title", detail.tieuDe)
+                        putString("content", detail.noiDung)
+                        putString("fileUrl", detail.fileUrl)
+                        putString("createdAt", detail.createdAt.toString())
+                    }
+
+                    val actionId = if (isGV)
+                        R.id.action_gv_trang_chu_to_thong_bao_detail
+                    else
+                        R.id.action_trang_chu_to_thong_bao_detail
+
+                    findNavController().navigate(actionId, args)
+
                     viewModel.clearDetailState()
                 }
                 is UiState.Error -> {
                     Toast.makeText(requireContext(), state.message ?: "Lỗi tải chi tiết", Toast.LENGTH_SHORT).show()
                 }
-                else -> { /* Idle/Loading: bỏ qua */ }
+                else -> Unit
             }
         }
     }

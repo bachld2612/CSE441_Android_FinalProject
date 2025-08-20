@@ -40,11 +40,6 @@
         android:label="Đồ án"
         tools:layout="@layout/fragment_do_an" />
 
-    <fragment
-        android:id="@+id/navigation_sinh_vien"
-        android:name="com.bachld.android.ui.view.sinhvien.SinhVienFragment"
-        android:label="Sinh viên"
-        tools:layout="@layout/fragment_sinh_vien" />
 
     <fragment
         android:id="@+id/navigation_hoi_dong"

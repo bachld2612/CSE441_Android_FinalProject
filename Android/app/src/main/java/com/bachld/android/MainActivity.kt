@@ -12,6 +12,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bachld.android.core.Session
+import com.bachld.android.core.UserPrefs   // ✅ thêm: để lấy role từ cache
 import com.bachld.android.databinding.ActivityMainBinding
 import com.bachld.android.ui.view.doan.DoAnFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,13 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("token", "token: ${Session.getTokenSync()}")
 
-        // Khai báo các destination top-level (các tab + auth)
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_auth,
                 R.id.navigation_trang_chu,
                 R.id.navigation_do_an,
-                R.id.navigation_sinh_vien,
                 R.id.navigation_hoi_dong,
                 R.id.navigation_thong_tin
             )
@@ -53,38 +52,49 @@ class MainActivity : AppCompatActivity() {
                 graph.setStartDestination(if (loggedIn) R.id.nav_sinh_vien else R.id.nav_auth)
                 navController.graph = graph
 
-                // Bind sau khi set graph để Up button/back stack hoạt động chính xác
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
+
+                val role = UserPrefs(this@MainActivity).getCached()?.role?.lowercase()
+                Log.d("MainActivity", "Role: $role")
+                val isGiangVien = role == "giang_vien" || role == "truong_bo_mon"
+                if (loggedIn) {
+                    applyRoleUI(isGiangVien)
+                }
             }
         } else {
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
         }
 
-        val topLevelTabs = setOf(
+        val topLevelTabsSV = setOf(
             R.id.navigation_trang_chu,
             R.id.navigation_do_an,
-            R.id.navigation_sinh_vien,
             R.id.navigation_hoi_dong,
             R.id.navigation_thong_tin
         )
-
-        // Những màn con của Trang chủ cần giữ BottomNav và highlight Trang chủ
-        val homeChildren = setOf(
-            R.id.navigation_thong_bao_detail
+        val topLevelTabsGV = setOf(
+            R.id.gv_navigation_trang_chu,
+            R.id.gv_navigation_de_tai,
+            R.id.gv_navigation_thong_tin
         )
+        val homeChildrenSV = setOf(R.id.navigation_thong_bao_detail)
+        val homeChildrenGV = setOf(R.id.navigation_thong_bao_detail)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            // Hiển thị BottomNav khi ở tab top-level hoặc màn con của Trang chủ
-            binding.navView.isVisible = destination.id in topLevelTabs || destination.id in homeChildren
+            binding.navView.isVisible =
+                destination.id in topLevelTabsSV ||
+                        destination.id in topLevelTabsGV ||
+                        destination.id in homeChildrenSV ||
+                        destination.id in homeChildrenGV
 
-            // Giữ tab Trang chủ được chọn khi ở màn con
-            if (destination.id in homeChildren) {
+            if (destination.id in homeChildrenSV) {
                 binding.navView.menu.findItem(R.id.navigation_trang_chu)?.isChecked = true
             }
+            if (destination.id in homeChildrenGV) {
+                binding.navView.menu.findItem(R.id.gv_navigation_trang_chu)?.isChecked = true
+            }
 
-            // Ẩn/hiện ActionBar cho màn auth
             if (destination.id == R.id.dangNhapFragment || destination.id == R.id.nav_auth) {
                 supportActionBar?.hide()
             } else {
@@ -100,6 +110,28 @@ class MainActivity : AppCompatActivity() {
                 doAnFragment?.resetToThongTinDoAn()
             }
         }
+    }
+
+    fun applyRoleUI(isGiangVien: Boolean) {
+        val navView = binding.navView
+        val graph = navController.navInflater.inflate(R.navigation.nav_root)
+        graph.setStartDestination(if (isGiangVien) R.id.nav_giang_vien else R.id.nav_sinh_vien)
+        navController.setGraph(graph, null)
+
+        val topLevelSV = setOf(
+            R.id.navigation_trang_chu, R.id.navigation_do_an,
+            R.id.navigation_hoi_dong, R.id.navigation_thong_tin
+        )
+        val topLevelGV = setOf(
+            R.id.gv_navigation_trang_chu, R.id.gv_navigation_de_tai,
+            R.id.gv_navigation_thong_tin
+        )
+        appBarConfiguration = AppBarConfiguration(if (isGiangVien) topLevelGV else topLevelSV)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        navView.menu.clear()
+        navView.inflateMenu(if (isGiangVien) R.menu.bottom_nav_giang_vien else R.menu.bottom_nav_menu)
+        navView.setupWithNavController(navController)
     }
 
     // Bảo đảm nút Up trên ActionBar popBackStack đúng

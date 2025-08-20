@@ -56,6 +56,16 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentThongTinBinding.bind(view)
 
+
+        val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
+        val isGV = role == "giang_vien" || role == "truong_bo_mon"
+        if (isGV) {
+            // Giảng viên không cần upload CV
+            binding.btnUploadCv.visibility = View.GONE
+        } else {
+            // Sinh viên mới có nút upload CV
+            binding.btnUploadCv.visibility = View.VISIBLE
+        }
         // Recycler
         binding.rvProfile.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProfile.adapter = adapter
