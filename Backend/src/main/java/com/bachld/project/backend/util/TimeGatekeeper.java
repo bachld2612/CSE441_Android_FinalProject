@@ -1,4 +1,4 @@
-package com.bachld.project.backend.service.util;
+package com.bachld.project.backend.util;
 
 import com.bachld.project.backend.entity.DotBaoVe;
 import com.bachld.project.backend.entity.ThoiGianThucHien;
