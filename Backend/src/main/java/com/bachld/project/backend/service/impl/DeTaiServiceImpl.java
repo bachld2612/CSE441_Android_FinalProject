@@ -41,14 +41,14 @@ public class DeTaiServiceImpl implements DeTaiService {
     TimeGatekeeper timeGatekeeper;
 
     @Override
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
     public DeTaiResponse approveByGiangVien(Long deTaiId, String nhanXet) {
         DeTaiApprovalRequest req = new DeTaiApprovalRequest(true, nhanXet);
         return approveDeTai(deTaiId, req);
     }
 
     @Override
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
     public DeTaiResponse rejectByGiangVien(Long deTaiId, String nhanXet) {
         DeTaiApprovalRequest req = new DeTaiApprovalRequest(false, nhanXet);
         return approveDeTai(deTaiId, req);

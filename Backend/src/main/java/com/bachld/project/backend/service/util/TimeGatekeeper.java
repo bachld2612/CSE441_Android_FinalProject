@@ -5,6 +5,7 @@ import com.bachld.project.backend.entity.ThoiGianThucHien;
 import com.bachld.project.backend.enums.CongViec;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
+import com.bachld.project.backend.repository.DotBaoVeRepository;
 import com.bachld.project.backend.repository.ThoiGianThucHienRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class TimeGatekeeper {
     private final ThoiGianThucHienRepository thoiGianThucHienRepository;
 
     private static final ZoneId ZONE_BKK = ZoneId.of("Asia/Bangkok");
+    private final DotBaoVeRepository dotBaoVeRepository;
 
     /**
      * Ném lỗi nếu hôm nay KHÔNG thuộc khoảng thời gian của công việc cv đối với đợt dot.
@@ -45,5 +47,12 @@ public class TimeGatekeeper {
         return thoiGianThucHienRepository
                 .findTopByCongViecAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqualOrderByThoiGianBatDauDesc(CongViec.DANG_KY_DE_TAI, today, today)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DANG_KY_TIME_INVALID));
+    }
+
+    public DotBaoVe getCurrentDotBaoVe(){
+        LocalDate today = LocalDate.now(ZONE_BKK);
+        return dotBaoVeRepository.
+                findTopByThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqualOrderByThoiGianBatDauDesc(today, today)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_IN_DOT_BAO_VE));
     }
 }
