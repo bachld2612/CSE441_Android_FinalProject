@@ -6,6 +6,7 @@ import com.bachld.android.core.AuthInterceptor
 import com.bachld.android.core.LocalDateJsonAdapter
 import com.bachld.android.data.remote.service.AuthApi
 import com.bachld.android.data.remote.service.DeTaiApi
+import com.bachld.android.data.remote.service.SinhVienApi
 import com.bachld.android.data.remote.service.TaiKhoanApi
 import com.bachld.android.data.remote.service.ThongBaoApi
 import com.squareup.moshi.Moshi
@@ -28,6 +29,8 @@ object ApiClient {
         private set
 
     lateinit var thongBaoApi: ThongBaoApi
+
+    lateinit var sinhVienApi: SinhVienApi
 
 
     fun init(app: Application) {
@@ -59,5 +62,6 @@ object ApiClient {
         taiKhoanApi = retrofit.create(TaiKhoanApi::class.java)
         deTaiApi = retrofit.create(DeTaiApi::class.java)
         thongBaoApi = retrofit.create(ThongBaoApi::class.java)
+        sinhVienApi = retrofit.create(SinhVienApi::class.java)
     }
 }
