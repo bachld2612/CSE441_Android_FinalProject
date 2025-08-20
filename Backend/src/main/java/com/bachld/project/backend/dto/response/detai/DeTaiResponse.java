@@ -20,5 +20,5 @@ public class DeTaiResponse {
     Long sinhVienId;
 
     String tongQuanDeTaiUrl;
-    private String tongQuanFilename;
+    String tongQuanFilename;
 }

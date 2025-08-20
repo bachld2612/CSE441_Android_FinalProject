@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CheckCircle, XCircle, Eye } from 'lucide-react';
 import {
   getDeTaiApproval,
   approveDeTai,
@@ -234,38 +235,34 @@ export default function DeTaiApprovalPage() {
                 {renderStatus(dt.trangThai)}
               </TableCell>
               <TableCell className="text-center border border-gray-300">
-                <div className="flex gap-2 justify-center">
+                <div className="flex gap-3 justify-center">
                   {dt.trangThai === 'PENDING' && (
                     <>
-                      <Button
-                        size="sm"
-                        className="bg-green-500 hover:bg-green-600 text-white rounded-md"
+                      {/* Duyệt */}
+                      <CheckCircle
+                        className="w-5 h-5 text-green-500 cursor-pointer hover:scale-110 transition-transform"
                         onClick={() => {
                           setSelectedDeTai(dt);
                           setActionType('APPROVE');
                         }}
-                      >
-                        Duyệt
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="bg-red-500 hover:bg-red-600 text-white rounded-md"
+                      />
+
+                      {/* Từ chối */}
+                      <XCircle
+                        className="w-5 h-5 text-red-500 cursor-pointer hover:scale-110 transition-transform"
                         onClick={() => {
                           setSelectedDeTai(dt);
                           setActionType('REJECT');
                         }}
-                      >
-                        Từ chối
-                      </Button>
+                      />
                     </>
                   )}
-                  <Button
-                    size="sm"
-                    variant="outline"
+
+                  {/* Xem chi tiết */}
+                  <Eye
+                    className="w-5 h-5 text-blue-500 cursor-pointer hover:scale-110 transition-transform"
                     onClick={() => setSelectedDeTai(dt)}
-                  >
-                    Chi tiết
-                  </Button>
+                  />
                 </div>
               </TableCell>
             </TableRow>
@@ -357,10 +354,7 @@ export default function DeTaiApprovalPage() {
                   <button
                     onClick={() =>
                       downloadFile(
-                        selectedDeTai.tongQuanDeTaiUrl?.replace(
-                          '/image/upload/',
-                          '/raw/upload/',
-                        ) || '',
+                        selectedDeTai.tongQuanDeTaiUrl || '',
                         selectedDeTai.tongQuanFilename || 'TongQuanDeTai.pdf',
                       )
                     }
@@ -376,6 +370,21 @@ export default function DeTaiApprovalPage() {
                 <strong>Trạng thái:</strong>{' '}
                 {renderStatus(selectedDeTai.trangThai)}
               </p>
+
+              {/* 🔹 Nhận xét (chỉ hiển thị khi đã duyệt hoặc từ chối) */}
+              {(selectedDeTai.trangThai === 'ACCEPTED' ||
+                selectedDeTai.trangThai === 'REJECTED') && (
+                <p>
+                  <strong>Nhận xét:</strong>{' '}
+                  {selectedDeTai.nhanXet ? (
+                    <span className="text-gray-700">{selectedDeTai.nhanXet}</span>
+                  ) : (
+                    <span className="text-gray-500 italic">
+                      Không có nhận xét
+                    </span>
+                  )}
+                </p>
+              )}
             </div>
           )}
         </DialogContent>

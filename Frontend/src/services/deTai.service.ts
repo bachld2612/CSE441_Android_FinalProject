@@ -11,6 +11,7 @@ export interface DeTai {
   tongQuanDeTaiUrl?: string;
   tongQuanFilename?: string;
   idDeTai: string;
+  nhanXet?: string;
 }
 
 export interface DeTaiGiangVienHuongDanResponse {
