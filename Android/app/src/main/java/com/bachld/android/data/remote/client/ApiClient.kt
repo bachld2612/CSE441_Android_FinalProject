@@ -9,6 +9,7 @@ import com.bachld.android.data.remote.service.DeTaiApi
 import com.bachld.android.data.remote.service.SinhVienApi
 import com.bachld.android.data.remote.service.TaiKhoanApi
 import com.bachld.android.data.remote.service.DeCuongApi
+import com.bachld.android.data.remote.service.HoiDongApi
 import com.bachld.android.data.remote.service.ThongBaoApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -34,6 +35,9 @@ object ApiClient {
     lateinit var thongBaoApi: ThongBaoApi
 
     lateinit var sinhVienApi: SinhVienApi
+
+    lateinit var hoiDongApi: HoiDongApi
+        private set
 
 
     fun init(app: Application) {
@@ -67,5 +71,6 @@ object ApiClient {
         thongBaoApi = retrofit.create(ThongBaoApi::class.java)
         sinhVienApi = retrofit.create(SinhVienApi::class.java)
         deCuongApi = retrofit.create(DeCuongApi::class.java)
+        hoiDongApi = retrofit.create(HoiDongApi::class.java)
     }
 }
