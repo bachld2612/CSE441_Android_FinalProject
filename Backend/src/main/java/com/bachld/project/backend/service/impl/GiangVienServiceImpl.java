@@ -4,10 +4,7 @@ import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest
 import com.bachld.project.backend.dto.request.giangvien.GiangVienUpdateRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.*;
-import com.bachld.project.backend.entity.BoMon;
-import com.bachld.project.backend.entity.GiangVien;
-import com.bachld.project.backend.entity.SinhVien;
-import com.bachld.project.backend.entity.TaiKhoan;
+import com.bachld.project.backend.entity.*;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.enums.Role;
 import com.bachld.project.backend.exception.ApplicationException;
@@ -19,6 +16,7 @@ import com.bachld.project.backend.repository.GiangVienRepository;
 import com.bachld.project.backend.repository.SinhVienRepository;
 import com.bachld.project.backend.repository.TaiKhoanRepository;
 import com.bachld.project.backend.service.GiangVienService;
+import com.bachld.project.backend.service.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +55,7 @@ public class GiangVienServiceImpl implements GiangVienService {
     private final GiangVienMapper giangVienMapper;
     SinhVienRepository sinhVienRepository;
     SinhVienMapper sinhVienMapper;
+    private final TimeGatekeeper timeGatekeeper;
 
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
     @Override
@@ -67,11 +66,12 @@ public class GiangVienServiceImpl implements GiangVienService {
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_A_GVHD))
                 .getId();
 
-        Page<SinhVien> page = sinhVienRepository.findByDeTai_Gvhd_Id(gvhdId, pageable);
+        DotBaoVe dotBaoVe = timeGatekeeper.getCurrentDotBaoVe();
+        Page<SinhVien> page = sinhVienRepository.findByDeTai_Gvhd_IdAndDeTai_DotBaoVe(gvhdId, dotBaoVe, pageable);
         return page.map(sinhVienMapper::toSinhVienSupervisedResponse);
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
     @Override
     public Page<DeTaiSinhVienApprovalResponse> getDeTaiSinhVienApproval(DeTaiState status, Pageable pageable) {
         String email = currentEmail();
@@ -80,9 +80,11 @@ public class GiangVienServiceImpl implements GiangVienService {
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_A_GVHD))
                 .getId();
 
+        DotBaoVe dotBaoVe = timeGatekeeper.getCurrentDotBaoVe();
+
         Page<SinhVien> page = (status == null)
-                ? sinhVienRepository.findByDeTai_Gvhd_Id(gvhdId, pageable)
-                : sinhVienRepository.findByDeTai_Gvhd_IdAndDeTai_TrangThai(gvhdId, status, pageable);
+                ? sinhVienRepository.findByDeTai_Gvhd_IdAndDeTai_DotBaoVe(gvhdId,dotBaoVe, pageable)
+                : sinhVienRepository.findByDeTai_Gvhd_IdAndDeTai_TrangThaiAndDeTai_DotBaoVe(gvhdId, status, dotBaoVe, pageable);
 
         return page.map(sinhVienMapper::toDeTaiSinhVienApprovalResponse);
     }

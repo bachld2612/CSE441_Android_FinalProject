@@ -33,9 +33,9 @@
 
     <fragment
         android:id="@+id/gv_navigation_de_tai"
-        android:name="com.bachld.android.ui.view.hoidong.HoiDongFragment"
+        android:name="com.bachld.android.ui.view.giangvien.GVDeTaiXetDuyetFragment"
         android:label="Đề tài"
-        tools:layout="@layout/fragment_hoi_dong" />
+        tools:layout="@layout/fragment_xet_duyet_detai_list" />
 
     <fragment
         android:id="@+id/gv_navigation_thong_tin"

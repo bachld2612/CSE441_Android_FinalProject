@@ -6,6 +6,7 @@ import com.bachld.android.core.AuthInterceptor
 import com.bachld.android.core.LocalDateJsonAdapter
 import com.bachld.android.data.remote.service.AuthApi
 import com.bachld.android.data.remote.service.DeTaiApi
+import com.bachld.android.data.remote.service.GiangVienApi
 import com.bachld.android.data.remote.service.SinhVienApi
 import com.bachld.android.data.remote.service.TaiKhoanApi
 import com.bachld.android.data.remote.service.DeCuongApi
@@ -35,6 +36,7 @@ object ApiClient {
     lateinit var thongBaoApi: ThongBaoApi
 
     lateinit var sinhVienApi: SinhVienApi
+    lateinit var giangVienApi: GiangVienApi
 
     lateinit var hoiDongApi: HoiDongApi
         private set
@@ -72,5 +74,6 @@ object ApiClient {
         sinhVienApi = retrofit.create(SinhVienApi::class.java)
         deCuongApi = retrofit.create(DeCuongApi::class.java)
         hoiDongApi = retrofit.create(HoiDongApi::class.java)
+        giangVienApi = retrofit.create(GiangVienApi::class.java)
     }
 }

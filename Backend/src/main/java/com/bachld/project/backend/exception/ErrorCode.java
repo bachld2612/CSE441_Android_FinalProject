@@ -90,6 +90,9 @@ public enum ErrorCode {
     INVALID_FILE_TYPE(1040, "Invalid file type", HttpStatus.BAD_REQUEST),
     FILE_TOO_LARGE(1041, "File size exceeds the limit", HttpStatus.BAD_REQUEST),
     THONG_BAO_NOT_FOUND(1042, "Thong bao not found", HttpStatus.NOT_FOUND),
+    DANG_KY_TIME_INVALID(1043, "Not in thoi gian dang ki", HttpStatus.BAD_REQUEST),
+    DE_TAI_ALREADY_ACCEPTED(1044, "De tai already accepted", HttpStatus.BAD_REQUEST),
+    NOT_IN_DOT_BAO_VE(1045, "Not in dot bao ve", HttpStatus.BAD_REQUEST),
     ;
     int code;
     String message;

@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
                 val role = UserPrefs(this@MainActivity).getCached()?.role?.lowercase()
                 Log.d("MainActivity", "Role: $role")
-                val isGiangVien = role == "giang_vien" || role == "truong_bo_mon"
+                val isGiangVien = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
                 if (loggedIn) {
                     applyRoleUI(isGiangVien)
                 }
