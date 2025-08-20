@@ -40,7 +40,7 @@ export default function BoMonPage() {
 
   // Dialog bộ môn (thêm/sửa)
   const [open, setOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [, setSubmitting] = useState(false);
   const [editing, setEditing] = useState<BoMonResponse | null>(null);
   const [tenBoMon, setTenBoMon] = useState("");
   const [khoaId, setKhoaId] = useState<number | null>(null);
