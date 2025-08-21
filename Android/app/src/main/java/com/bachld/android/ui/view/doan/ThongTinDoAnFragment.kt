@@ -22,6 +22,7 @@ import com.bachld.android.databinding.FragmentThongTinDoAnBinding
 import com.bachld.android.ui.viewmodel.DoAnDetailViewModel
 import com.bachld.android.ui.viewmodel.SharedDeTaiViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class ThongTinDoAnFragment : Fragment() {
 
@@ -65,6 +66,12 @@ class ThongTinDoAnFragment : Fragment() {
             }
         }
 
+        binding.btnDeNghiHoan.setOnClickListener {
+            findNavController().navigate(
+                com.bachld.android.R.id.action_navigation_do_an_to_hoan_do_an
+            )
+        }
+
         binding.btnNopDeCuong.setOnClickListener {
             findNavController().navigate(
                 com.bachld.android.R.id.action_navigation_do_an_to_de_cuong
@@ -76,12 +83,24 @@ class ThongTinDoAnFragment : Fragment() {
 
     private fun render(p: DeTaiResponse?) = with(binding) {
         if (p == null) {
+            // CHƯA CÓ ĐỀ TÀI
             layoutDaDangKy.visibility = View.GONE
             layoutChuaDangKy.visibility = View.VISIBLE
+
+            // ✅ Quan trọng: bật lại hai nút khi chưa có đề tài
+            layoutTopState.visibility   = View.VISIBLE
+            btnDangKyDeTai.visibility   = View.VISIBLE
+            btnDeNghiHoan.visibility    = View.VISIBLE
+
+            // (tuỳ chọn) dọn text/ẩn GVHD
+            tvTrangThai.text = ""
+            tvDeTai.text = ""
+            tvGvhd.visibility = View.GONE
+
             return@with
         }
 
-        //TRUYỀN deTaiId SANG TOÀN BỘ CÁC MÀN KHÁC
+        // ĐÃ CÓ ĐỀ TÀI
         shared.setDeTaiId(p.id)
 
         layoutDaDangKy.visibility = View.VISIBLE
@@ -97,8 +116,25 @@ class ThongTinDoAnFragment : Fragment() {
             tvGvhd.text = "GVHD: $name"
         }
 
+        val statusUpper = p.status?.toString()?.uppercase(Locale.ROOT)
+        val isAccepted = statusUpper == "ACCEPTED" || statusUpper == "ĐÃ DUYỆT"
+
+        if (isAccepted) {
+            // ✅ Đã duyệt → ẩn 2 nút
+            btnDangKyDeTai.visibility = View.GONE
+            btnDeNghiHoan.visibility  = View.GONE
+            // (tuỳ chọn) ẩn dải thông tin trên cùng:
+            // layoutTopState.visibility = View.GONE
+        } else {
+            // ✅ Chưa duyệt → hiện 2 nút
+            btnDangKyDeTai.visibility = View.VISIBLE
+            btnDeNghiHoan.visibility  = View.VISIBLE
+            layoutTopState.visibility = View.VISIBLE
+        }
+
         tvTrangThai.text = "Trạng thái: ${p.status}"
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -30,7 +30,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
 
     private val viewModel: ThongBaoViewModel by viewModels()
     private lateinit var adapter: ThongBaoAdapter
-    
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

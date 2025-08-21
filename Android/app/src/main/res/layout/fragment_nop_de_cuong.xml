@@ -35,40 +35,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="File đề cương (URL hoặc PDF/Zip/...):"
+            android:text="File đề cương(URL):"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/tv_lan_nop_value"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <LinearLayout
-            android:id="@+id/pick_zone"
-            android:layout_width="0dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="@drawable/bg_file_drop_zone"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintTop_toBottomOf="@id/tv_file_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@android:drawable/ic_menu_upload"
-                app:tint="#BDBDBD" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Kéo và thả tệp tại đây\n(hoặc chạm để chọn)"
-                android:textAlignment="center"
-                android:textColor="#9E9E9E"/>
-        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_picked_file"
@@ -78,7 +50,7 @@
             android:textStyle="italic"
             android:textColor="#616161"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/pick_zone"
+            app:layout_constraintTop_toBottomOf="@id/tv_file_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -95,7 +67,7 @@
                 android:id="@+id/et_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Hoặc nhập URL file (tùy chọn)"
+                android:hint="Nhập URL(Link google drive)..."
                 android:inputType="textUri" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,14 +75,14 @@
             android:id="@+id/btn_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="56dp"
+            android:enabled="false"
             android:text="Nộp đề cương"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             app:backgroundTint="@color/brand_457b9d"
-            android:enabled="false"
-            app:layout_constraintTop_toBottomOf="@id/til_url"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/til_url" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

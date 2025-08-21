@@ -1,6 +1,6 @@
+// app/src/main/java/com/bachld/android/ui/viewmodel/DeCuongViewModel.kt
 package com.bachld.android.ui.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,18 +35,14 @@ class DeCuongViewModel(
         }
     }
 
-    fun submit(deTaiId: Long, fileUri: Uri?, fileUrl: String?) {
+    fun submit(fileUrl: String) {
         _submitState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val req = DeCuongUploadRequest(
-                    deTaiId = deTaiId,
-                    fileUrl = fileUrl?.trim().takeUnless { it.isNullOrBlank() },
-                    fileUri = fileUri
-                )
-                val res = repository.submit(req)
+                val request = DeCuongUploadRequest(fileUrl.trim())
+                val res = repository.submit(request)
                 _submitState.value = UiState.Success(res.result)
-                // Refresh log cho lần nộp & ngày nộp gần nhất
+                // Sau khi nộp -> làm tươi log
                 loadLog()
             } catch (e: Exception) {
                 _submitState.value = UiState.Error(e.message)

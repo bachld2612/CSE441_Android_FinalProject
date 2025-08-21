@@ -16,7 +16,7 @@ import com.bachld.project.backend.mapper.DeTaiMapper;
 import com.bachld.project.backend.repository.*;
 import com.bachld.project.backend.service.CloudinaryService;
 import com.bachld.project.backend.service.DeTaiService;
-import com.bachld.project.backend.service.util.TimeGatekeeper;
+import com.bachld.project.backend.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

@@ -45,4 +45,5 @@ public interface DeCuongRepository extends JpaRepository<DeCuong, Long> {
             DeCuongState trangThai, Long boMonId, List<Long> dotIds);
 
     Optional<DeCuong> findByDeTai_SinhVienThucHien_TaiKhoan_EmailIgnoreCase(String email);
+
 }

@@ -1,7 +1,5 @@
 package com.bachld.android.data.repository.impl
 
-import android.app.Application
-import android.net.Uri
 import com.bachld.android.data.dto.request.decuong.DeCuongUploadRequest
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongLogResponse
@@ -9,14 +7,11 @@ import com.bachld.android.data.dto.response.decuong.DeCuongResponse
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.data.remote.service.DeCuongApi
 import com.bachld.android.data.repository.DeCuongRepository
-import com.bachld.android.util.toPlainRequestBody
-import com.bachld.android.util.uriToMultipart
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class DeCuongRepositoryImpl(
-    private val api: DeCuongApi = ApiClient.deCuongApi,
-    private val app: Application = ApiClient.app
+    private val api: DeCuongApi = ApiClient.deCuongApi
 ) : DeCuongRepository {
 
     override suspend fun viewLog(): ApiResponse<DeCuongLogResponse> {
@@ -24,23 +19,13 @@ class DeCuongRepositoryImpl(
     }
 
     override suspend fun submit(request: DeCuongUploadRequest): ApiResponse<DeCuongResponse> {
-        val deTaiIdBody: RequestBody = request.deTaiId.toString().toPlainRequestBody()
+        val url = request.fileUrl.trim()
+        require(url.isNotEmpty()) { "Bạn cần nhập URL đề cương." }
 
-        val filePart: MultipartBody.Part? = request.fileUri?.let { uri: Uri ->
-            uriToMultipart(app, uri, "file") // tên part phải là "file"
-        }
-
-        val fileUrlBody: RequestBody? = request.fileUrl
-            ?.takeIf { it.isNotBlank() }
-            ?.toPlainRequestBody() // tên part "fileUrl"
-
-        if (filePart == null && fileUrlBody == null) {
-            throw IllegalArgumentException("Bạn cần chọn tệp hoặc nhập URL đề cương.")
-        }
+        // Không cần extension: tạo RequestBody text/plain trực tiếp
+        val fileUrlBody = url.toRequestBody("text/plain".toMediaType())
 
         return api.submitDeCuong(
-            deTaiId = deTaiIdBody,
-            file = filePart,
             fileUrl = fileUrlBody
         )
     }

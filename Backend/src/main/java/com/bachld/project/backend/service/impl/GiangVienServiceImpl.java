@@ -16,7 +16,7 @@ import com.bachld.project.backend.repository.GiangVienRepository;
 import com.bachld.project.backend.repository.SinhVienRepository;
 import com.bachld.project.backend.repository.TaiKhoanRepository;
 import com.bachld.project.backend.service.GiangVienService;
-import com.bachld.project.backend.service.util.TimeGatekeeper;
+import com.bachld.project.backend.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

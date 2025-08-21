@@ -43,12 +43,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/de_cuong"
-        android:name="com.bachld.android.ui.view.decuong.DeCuongFragment"
-        android:label="Đề cương"
-        tools:layout="@layout/fragment_de_cuong" />
-
-    <fragment
         android:id="@+id/navigation_hoi_dong"
         android:name="com.bachld.android.ui.view.hoidong.HoiDongFragment"
         android:label="Hội đồng"
@@ -73,4 +67,33 @@
         android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"
         android:label="Thông tin"
         tools:layout="@layout/fragment_thong_tin" />
+
+
+    <!-- NEW: Thông tin đồ án (destination riêng, để bạn điều hướng tới khi cần) -->
+    <fragment
+        android:id="@+id/thong_tin_do_an"
+        android:name="com.bachld.android.ui.view.doan.ThongTinDoAnFragment"
+        android:label="Thông tin đồ án"
+        tools:layout="@layout/fragment_thong_tin_do_an" >
+        <action
+            android:id="@+id/action_thong_tin_do_an_to_hoan_do_an2"
+            app:destination="@id/hoan_do_an" />
+    </fragment>
+
+    <!-- NEW: De cương (container TabLayout + ViewPager2) -->
+    <fragment
+        android:id="@+id/de_cuong"
+        android:name="com.bachld.android.ui.view.decuong.DeCuongFragment"
+        android:label="Đề cương"
+        tools:layout="@layout/fragment_de_cuong" />
+
+    <fragment
+        android:id="@+id/hoan_do_an"
+        android:name="com.bachld.android.ui.view.doan.HoanDoAnFragment"
+        android:label="Đề nghị hoãn đồ án"
+        tools:layout="@layout/fragment_hoan_do_an" />
+
+    <!-- action từ màn Thông tin đồ án (hoặc DoAnFragment) -->
+
+
 </navigation>

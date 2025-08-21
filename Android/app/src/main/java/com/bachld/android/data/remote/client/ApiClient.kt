@@ -3,6 +3,8 @@ package com.bachld.android.data.remote.client
 import android.app.Application
 import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
+import com.bachld.android.core.MoshiDateTimeConfig
+import com.bachld.android.data.remote.service.*
 import com.bachld.android.core.LocalDateJsonAdapter
 import com.bachld.android.data.remote.service.AuthApi
 import com.bachld.android.data.remote.service.DeTaiApi
@@ -27,15 +29,15 @@ object ApiClient {
         private set
     lateinit var app: Application
         private set
-
     lateinit var deTaiApi: DeTaiApi
         private set
     lateinit var deCuongApi: DeCuongApi
         private set
-
     lateinit var thongBaoApi: ThongBaoApi
-
     lateinit var sinhVienApi: SinhVienApi
+    lateinit var donHoanDoAnApi: DonHoanDoAnApi
+        private set
+
     lateinit var giangVienApi: GiangVienApi
 
     lateinit var hoiDongApi: HoiDongApi
@@ -48,6 +50,7 @@ object ApiClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+
         val okHttp = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(app.applicationContext))
             .addInterceptor(logging)
@@ -55,11 +58,8 @@ object ApiClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .build()
 
-        // Khởi tạo Moshi với hỗ trợ Kotlin
-        val moshi = Moshi.Builder()
-            .add(LocalDateJsonAdapter())
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        // Dùng module cấu hình Moshi đã tách
+        val moshi = MoshiDateTimeConfig.build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl(ApiConfig.BASE_URL)
@@ -73,6 +73,7 @@ object ApiClient {
         thongBaoApi = retrofit.create(ThongBaoApi::class.java)
         sinhVienApi = retrofit.create(SinhVienApi::class.java)
         deCuongApi = retrofit.create(DeCuongApi::class.java)
+        donHoanDoAnApi = retrofit.create(DonHoanDoAnApi::class.java)
         hoiDongApi = retrofit.create(HoiDongApi::class.java)
         giangVienApi = retrofit.create(GiangVienApi::class.java)
     }
