@@ -105,6 +105,27 @@ public class GiangVienServiceImpl implements GiangVienService {
         return responses;
     }
 
+    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @Override
+    public List<SinhVienSupervisedResponse> getMySinhVienSupervisedAll(String q) {
+        String email = currentEmail();
+
+        Long gvhdId = giangVienRepository.findByTaiKhoan_Email(email)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_A_GVHD))
+                .getId();
+
+        DotBaoVe dotBaoVe = timeGatekeeper.getCurrentDotBaoVe();
+
+        final List<SinhVien> list = (q == null || q.isBlank())
+                ? sinhVienRepository.findByDeTai_Gvhd_IdAndDeTai_DotBaoVeOrderByHoTenAsc(gvhdId, dotBaoVe)
+                : sinhVienRepository.searchMySupervisedAll(gvhdId, dotBaoVe, q.trim());
+
+        // map sang DTO response
+        return list.stream()
+                .map(sinhVienMapper::toSinhVienSupervisedResponse)
+                .toList();
+    }
+
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
     public GiangVienCreationResponse createGiangVien(GiangVienCreationRequest giangVienCreationRequest) {

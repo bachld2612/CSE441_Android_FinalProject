@@ -157,4 +157,14 @@ public class GiangVienController {
                 .build();
     }
 
+    @GetMapping("/sinh-vien/all")
+    public ApiResponse<List<SinhVienSupervisedResponse>> getMySupervisedStudentsAll(
+            @RequestParam(required = false) String q) {
+
+        return ApiResponse.<List<SinhVienSupervisedResponse>>builder()
+                .result(giangVienService.getMySinhVienSupervisedAll(q))
+                .build();
+    }
+
+
 }
