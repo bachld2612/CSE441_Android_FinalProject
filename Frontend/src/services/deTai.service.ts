@@ -1,9 +1,5 @@
 import api from "@/lib/axios";
-import type {
-  ApiResponse,
-  PageResponse,
-  PageableRequest,
-} from "@/types/api-response";
+import type { ApiResponse, PageResponse, PageableRequest } from "@/types/api-response";
 
 export interface DeTai {
   maSV: string;
@@ -13,6 +9,7 @@ export interface DeTai {
   tenDeTai: string;
   trangThai: "PENDING" | "ACCEPTED" | "REJECTED";
   tongQuanDeTaiUrl?: string;
+  idDeTai: string;
 }
 
 export interface DeTaiGiangVienHuongDanResponse {
@@ -34,13 +31,21 @@ const getDeTaiApproval = async (
   return res.result!;
 };
 
-const approveDeTai = async (maSV: string): Promise<ApiResponse<string>> => {
-  return await api.post(`/giang-vien/do-an/xet-duyet-de-tai/${maSV}/approve`);
-};
+async function approveDeTai(idDeTai: string, nhanXet: string) {
+  const res = await api.put(
+    `/giang-vien/do-an/xet-duyet-de-tai/${idDeTai}/approve`,
+    { nhanXet }
+  );
+  return res.data;
+}
 
-const rejectDeTai = async (maSV: string): Promise<ApiResponse<string>> => {
-  return await api.post(`/giang-vien/do-an/xet-duyet-de-tai/${maSV}/reject`);
-};
+async function rejectDeTai(idDeTai: string, nhanXet: string) {
+  const res = await api.put(
+    `/giang-vien/do-an/xet-duyet-de-tai/${idDeTai}/reject`,
+    { nhanXet }
+  );
+  return res.data;
+}
 
 const addGiangVienHuongDan = async (
   data: DeTaiGiangVienHuongDanRequest
@@ -56,7 +61,7 @@ const addGiangVienHuongDan = async (
       "DeTaiService - addGiangVienHuongDan error:",
       error
     );
-    throw error; 
+    throw error;
   }
 };
 

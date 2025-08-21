@@ -76,7 +76,9 @@ export default function BoMonPage() {
     try {
       const res = await getAllKhoa();
       setKhoas(res.result ?? []);
-    } catch {}
+    } catch (e){
+      console.error("Error fetching khoa:", e);
+    }
   };
 
   // tải 1 trang bộ môn (kèm tên TBM trong content)
