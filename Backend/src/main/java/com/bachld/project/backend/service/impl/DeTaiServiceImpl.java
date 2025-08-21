@@ -57,19 +57,6 @@ public class DeTaiServiceImpl implements DeTaiService {
         return approveDeTai(deTaiId, req);
     }
 
-    @Override
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
-    public DeTaiResponse approveByGiangVien(Long deTaiId, String nhanXet) {
-        DeTaiApprovalRequest req = new DeTaiApprovalRequest(true, nhanXet);
-        return approveDeTai(deTaiId, req);
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
-    public DeTaiResponse rejectByGiangVien(Long deTaiId, String nhanXet) {
-        DeTaiApprovalRequest req = new DeTaiApprovalRequest(false, nhanXet);
-        return approveDeTai(deTaiId, req);
-    }
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override

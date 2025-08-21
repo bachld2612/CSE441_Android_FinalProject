@@ -130,7 +130,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         return res;
     }
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON', 'SCOPE_TRO_LY_KHOA')")
     @Override
     public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason) {
         String email = currentUsername();
@@ -188,7 +188,7 @@ public class DeCuongServiceImpl implements DeCuongService {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON', 'SCOPE_TRO_LY_KHOA')")
     @Override
     public Page<DeCuongResponse> getAllDeCuong(Pageable pageable) {
         // 1) Lấy danh sách dot đang mở NOP_DE_CUONG hôm nay
