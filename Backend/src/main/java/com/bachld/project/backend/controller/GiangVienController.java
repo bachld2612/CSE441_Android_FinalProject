@@ -1,13 +1,22 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.detai.DeTaiApprovalRequest;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienCreationRequest;
 import com.bachld.project.backend.dto.request.giangvien.GiangVienUpdateRequest;
 import com.bachld.project.backend.dto.request.giangvien.TroLyKhoaCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.*;
+import com.bachld.project.backend.dto.response.detai.DeTaiResponse;
+import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienCreationResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienImportResponse;
+import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.service.GiangVienService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +27,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.bachld.project.backend.service.DeTaiService;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,6 +40,7 @@ import java.util.Set;
 public class GiangVienController {
 
     GiangVienService giangVienService;
+    DeTaiService deTaiService;
 
     @PostMapping
     public ApiResponse<GiangVienCreationResponse> createGiangVien(@RequestBody GiangVienCreationRequest giangVienCreationRequest) {
@@ -65,13 +76,13 @@ public class GiangVienController {
             Pageable pageable) {
 
         return ApiResponse.<Page<SinhVienSupervisedResponse>>builder()
-                .result(giangVienService.getMySupervisedStudents(pageable))
+                .result(giangVienService.getMySinhVienSupervised(pageable))
                 .build();
     }
 
-    @GetMapping("/xet-duyet/sinh-vien")
+    @GetMapping("/do-an/xet-duyet-de-tai")
     public ApiResponse<Page<DeTaiSinhVienApprovalResponse>> getDeTaiSinhVienApproval(
-            @RequestParam(name = "status", defaultValue = "ACCEPTED") DeTaiState status,
+            @RequestParam(name = "status", required = false) DeTaiState status,
             @PageableDefault(page = 0, size = 10, sort = "hoTen", direction = Sort.Direction.ASC)
             Pageable pageable) {
 
@@ -113,6 +124,36 @@ public class GiangVienController {
 
         return ApiResponse.<GiangVienResponse>builder()
                 .result(giangVienService.updateGiangVien(id, request))
+                .build();
+    }
+
+    @PutMapping("/do-an/xet-duyet-de-tai/{deTaiId}/approve")
+    public ApiResponse<DeTaiResponse> approveDeTaiByLecturer(
+            @PathVariable Long deTaiId,
+            @RequestBody(required = false) DeTaiApprovalRequest request) {
+
+        if (request == null) request = new DeTaiApprovalRequest();
+        request.setApproved(true);
+
+        return ApiResponse.<DeTaiResponse>builder()
+                .result(deTaiService.approveByGiangVien(deTaiId, request.getNhanXet()))
+                .build();
+    }
+
+    @PutMapping("/do-an/xet-duyet-de-tai/{deTaiId}/reject")
+    @Operation(requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = false,
+            content = @Content(examples = @ExampleObject(
+                    name = "Reject body", value = "{ \"approved\": false, \"nhanXet\": \"Lý do từ chối\" }"
+            ))
+    ))
+    public ApiResponse<DeTaiResponse> rejectDeTaiByLecturer(
+            @PathVariable Long deTaiId,
+            @RequestBody(required = false) DeTaiApprovalRequest request) {
+        if (request == null) request = new DeTaiApprovalRequest();
+        request.setApproved(false); // ép false bất kể client gửi gì
+        return ApiResponse.<DeTaiResponse>builder()
+                .result(deTaiService.rejectByGiangVien(deTaiId, request.getNhanXet()))
                 .build();
     }
 

@@ -26,7 +26,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -146,8 +145,13 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // Chỉ trong mốc NỘP_ĐỀ_CƯƠNG của đúng đợt của đề tài
-        timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, deTai.getDotBaoVe());
+        // Lấy đợt bảo vệ hiện hành (nếu không có -> NOT_IN_DOT_BAO_VE)
+        var currentDot = timeGatekeeper.getCurrentDotBaoVe();
+
+        // Đảm bảo đề tài thuộc đúng đợt hiện hành
+        if (!currentDot.getId().equals(deTai.getDotBaoVe().getId())) {
+            throw new ApplicationException(ErrorCode.NOT_IN_DOT_BAO_VE);
+        }
 
         // Chỉ GVHD
         if (deTai.getGvhd() == null || !deTai.getGvhd().getId().equals(gv.getId())) {
@@ -188,7 +192,8 @@ public class DeCuongServiceImpl implements DeCuongService {
     @Override
     public Page<DeCuongResponse> getAllDeCuong(Pageable pageable) {
         // 1) Lấy danh sách dot đang mở NOP_DE_CUONG hôm nay
-        List<Long> activeDotIds = activeSubmissionDotIdsToday();
+        Long activeDotId = timeGatekeeper.getCurrentDotBaoVe().getId(); // ném NOT_IN_DOT_BAO_VE nếu không có
+        List<Long> activeDotIds = java.util.List.of(activeDotId);
 
         // 2) Phân quyền: GV chỉ xem SV mình hướng dẫn
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -210,8 +215,9 @@ public class DeCuongServiceImpl implements DeCuongService {
     @PreAuthorize("hasAuthority('SCOPE_TRUONG_BO_MON')")
     @Override
     public Page<DeCuongResponse> getAcceptedForTBM(Pageable pageable) {
-        // 1) Lấy danh sách dot đang mở NOP_DE_CUONG hôm nay
-        List<Long> activeDotIds = activeSubmissionDotIdsToday();
+        // 1) Lấy danh sách dot đang mở
+        Long activeDotId = timeGatekeeper.getCurrentDotBaoVe().getId();
+        List<Long> activeDotIds = java.util.List.of(activeDotId);
 
         // 2) Lấy bộ môn của TBM
         Long bmId = currentTBMBoMonId();
@@ -226,8 +232,9 @@ public class DeCuongServiceImpl implements DeCuongService {
     @PreAuthorize("hasAuthority('SCOPE_TRUONG_BO_MON')")
     @Override
     public byte[] exportAcceptedForTBMAsExcel() {
-        // 1) Lấy danh sách dot đang mở trong NOP_DE_CUONG
-        List<Long> activeDotIds = activeSubmissionDotIdsToday();
+        // 1) Lấy danh sách dot đang mở
+        Long activeDotId = timeGatekeeper.getCurrentDotBaoVe().getId();
+        List<Long> activeDotIds = java.util.List.of(activeDotId);
 
         // 2) Lấy bộ môn của TBM
         Long bmId = currentTBMBoMonId();

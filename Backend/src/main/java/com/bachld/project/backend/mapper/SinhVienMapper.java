@@ -38,6 +38,7 @@ public interface SinhVienMapper {
     @Mapping(source = "lop.tenLop", target = "tenLop")
     @Mapping(source = "deTai.tenDeTai", target = "tenDeTai")
     @Mapping(source = "deTai.trangThai", target = "trangThai")
+    @Mapping(source = "deTai.id", target = "idDeTai")
     @Mapping(source = "deTai.tongQuanDeTaiUrl", target = "tongQuanDeTaiUrl")
     DeTaiSinhVienApprovalResponse toDeTaiSinhVienApprovalResponse(SinhVien sv);
 

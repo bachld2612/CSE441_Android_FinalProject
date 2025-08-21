@@ -43,7 +43,7 @@ public class DeCuongController {
                 .build();
     }
 
-    @PostMapping(value = "/sv/nop-de-cuong", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/sinh-vien/nop-de-cuong", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<DeCuongResponse> submitDeCuong(
             @ModelAttribute DeCuongUploadRequest request) throws IOException {
         return ApiResponse.<DeCuongResponse>builder()
@@ -52,7 +52,7 @@ public class DeCuongController {
     }
 
 
-    @GetMapping("/sv/log")
+    @GetMapping("/sinh-vien/log")
     public ApiResponse<DeCuongLogResponse> viewDeCuongLog() {
         var res = deCuongService.viewDeCuongLog();
         return ApiResponse.<DeCuongLogResponse>builder().result(res).build();
@@ -80,7 +80,7 @@ public class DeCuongController {
         return ApiResponse.<DeCuongResponse>builder().result(res).message("Đã từ chối").build();
     }
 
-    @GetMapping("/tbm/danh-sach")
+    @GetMapping("/truong-bo-mon/danh-sach")
     public ApiResponse<Page<DeCuongResponse>> getAcceptedForTBM(
             @PageableDefault(page = 0, size = 10, sort = "deTai.sinhVienThucHien.hoTen", direction = Sort.Direction.ASC)
             Pageable pageable) {
@@ -90,7 +90,7 @@ public class DeCuongController {
     }
 
     @GetMapping(
-            value = "/tbm/danh-sach/excel",
+            value = "/truong-bo-mon/danh-sach/excel",
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     public ResponseEntity<byte[]> exportAcceptedForTBMAsExcel() {
