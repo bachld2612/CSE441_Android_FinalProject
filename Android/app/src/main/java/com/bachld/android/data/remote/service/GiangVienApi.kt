@@ -3,6 +3,7 @@ package com.bachld.android.data.remote.service
 import com.bachld.android.data.dto.request.giangvien.RejectDeTaiRequest
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.common.PageDto
 import com.bachld.android.data.dto.response.giangvien.*
 import retrofit2.http.*
 
@@ -24,4 +25,9 @@ interface GiangVienApi {
         @Path("id") idDeTai: Long,
         @Body body: RejectDeTaiRequest
     ): ApiResponse<DeTaiResponse>
+
+    @GET("/api/v1/giang-vien/sinh-vien/all") // nếu server không có context-path thì đổi thành "api/giang-vien/sinh-vien/all"
+    suspend fun get_sinh_vien_huong_dan_all(
+        @Query("q") q: String? = null
+    ): ApiResponse<List<SinhVienSupervisedDto>>
 }
