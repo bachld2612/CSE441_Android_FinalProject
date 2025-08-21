@@ -20,4 +20,5 @@ public class DeTaiResponse {
     Long sinhVienId;
 
     String tongQuanDeTaiUrl;
+    String tongQuanFilename;
 }

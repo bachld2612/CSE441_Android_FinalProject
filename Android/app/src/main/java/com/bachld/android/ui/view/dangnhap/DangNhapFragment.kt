@@ -85,7 +85,7 @@ class DangNhapFragment : Fragment() {
                                     UserPrefs(requireContext()).save(info)
 
                                     val role = info.role?.lowercase()
-                                    val isGV = role == "giang_vien" || role == "truong_bo_mon"
+                                    val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
 
                                     // ĐỔI UI THEO ROLE (menu + appbar + graph)
                                     (requireActivity() as MainActivity).applyRoleUI(isGV)

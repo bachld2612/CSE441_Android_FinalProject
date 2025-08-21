@@ -10,7 +10,7 @@ import {
 export default function SinhVienOfGiangVienPage() {
   const [data, setData] = useState<SinhVienOfGiangVien[]>([]);
   const [page, setPage] = useState(0);
-  const size = 10;
+  const size = 7;
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 

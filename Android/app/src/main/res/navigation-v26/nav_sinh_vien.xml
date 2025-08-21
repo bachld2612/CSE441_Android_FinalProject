@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,7 +25,6 @@
         android:name="com.bachld.android.ui.view.thongbao.ThongBaoDetailFragment"
         android:label="Chi tiết thông báo"
         tools:layout="@layout/fragment_thong_bao_detail">
-
         <argument android:name="id" app:argType="long" />
         <argument android:name="title" app:argType="string" />
         <argument android:name="content" app:argType="string" />
@@ -32,14 +32,12 @@
         <argument android:name="createdAt" app:argType="string" />
     </fragment>
 
-    <!-- Các tab khác -->
+    <!-- Đồ án + Đề cương -->
     <fragment
         android:id="@+id/navigation_do_an"
         android:name="com.bachld.android.ui.view.doan.DoAnFragment"
         android:label="Đồ án"
         tools:layout="@layout/fragment_do_an">
-
-        <!-- NEW: action từ DoAnFragment sang DeCuongFragment -->
         <action
             android:id="@+id/action_navigation_do_an_to_de_cuong"
             app:destination="@id/de_cuong" />
@@ -48,13 +46,27 @@
             app:destination="@id/hoan_do_an" />
     </fragment>
 
-
+    <!-- Hội đồng -->
     <fragment
         android:id="@+id/navigation_hoi_dong"
         android:name="com.bachld.android.ui.view.hoidong.HoiDongFragment"
         android:label="Hội đồng"
-        tools:layout="@layout/fragment_hoi_dong" />
+        tools:layout="@layout/fragment_hoi_dong">
+        <action
+            android:id="@+id/action_hoiDong_to_chiTietHoiDong"
+            app:destination="@id/chiTietHoiDongFragment" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/chiTietHoiDongFragment"
+        android:name="com.bachld.android.ui.view.hoidong.ChiTietHoiDongFragment"
+        android:label="Chi tiết hội đồng"
+        tools:layout="@layout/fragment_chi_tiet_hoi_dong">
+        <argument android:name="hoiDongId" app:argType="long" />
+        <argument android:name="tenHoiDong" app:argType="string" />
+    </fragment>
+
+    <!-- Thông tin -->
     <fragment
         android:id="@+id/navigation_thong_tin"
         android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"

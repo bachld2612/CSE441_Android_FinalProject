@@ -67,6 +67,7 @@ public enum ErrorCode {
     DON_HOAN_FILE_UPLOAD_FAILED(1115, "Failed to upload MinhChungFile for DonHoanDoAn", HttpStatus.INTERNAL_SERVER_ERROR),
     POSTPONE_NOT_ALLOWED_WHEN_HAS_DE_TAI(1116, "Sinh viên has a DeTai already; postpone request is not allowed", HttpStatus.BAD_REQUEST),
     NOT_A_GVHD(2004, "Current account is not an GVHD", HttpStatus.FORBIDDEN),
+    HOI_DONG_NOT_FOUND(1201, "Hoi dong not found", org.springframework.http.HttpStatus.NOT_FOUND),
 
     MA_SV_INVALID(1021, "Ma SV invalid", HttpStatus.BAD_REQUEST),
     HO_TEN_EMPTY(1022, "Ho ten cannot be empty", HttpStatus.BAD_REQUEST),
@@ -91,8 +92,8 @@ public enum ErrorCode {
     THONG_BAO_NOT_FOUND(1042, "Thong bao not found", HttpStatus.NOT_FOUND),
     DANG_KY_TIME_INVALID(1043, "Not in thoi gian dang ki", HttpStatus.BAD_REQUEST),
     DE_TAI_ALREADY_ACCEPTED(1044, "De tai already accepted", HttpStatus.BAD_REQUEST),
-    NOT_IN_DOT_BAO_VE(1045, "Not in dot bao ve", HttpStatus.BAD_REQUEST),
-    ;
+    NOT_IN_DOT_BAO_VE(1045, "Not in dot bao ve", HttpStatus.BAD_REQUEST),;
+
 
     int code;
     String message;

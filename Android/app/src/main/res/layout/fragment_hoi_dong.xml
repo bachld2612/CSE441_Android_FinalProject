@@ -2,30 +2,14 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/hoidong"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/hoidong">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Light">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#FFFFFF"
-            app:title="Hội đồng"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:titleTextColor="@color/black" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/black"
-            android:layout_below="@id/toolbar"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:theme="@style/ThemeOverlay.AppCompat.Light" />
 
     <!-- Nội dung chính -->
     <LinearLayout
@@ -35,39 +19,47 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <!-- SearchView -->
+        <!-- Tiêu đề -->
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Danh sách hội đồng bảo vệ"
+            android:text="Danh sách hội đồng"
             android:textStyle="bold"
             android:textColor="#232323"
             android:textSize="17sp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_marginBottom="12dp"/>
 
-        <androidx.cardview.widget.CardView
+        <!-- Ô tìm kiếm bo góc -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            >
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardUseCompatPadding="true"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="1dp">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
                 android:queryHint="Tên hội đồng"
-                android:background="#EDEEF0"
-                />
-        </androidx.cardview.widget.CardView>
+                android:background="#F1F3F4"
+                android:iconifiedByDefault="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"/>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- RecyclerView chứa danh sách -->
+        <!-- Danh sách -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
+            android:paddingBottom="8dp"
             android:scrollbars="vertical"/>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,4 +18,7 @@
     <color name="file_border">#DADFE6</color>
     <color name="outlined_box_border">#9E9E9E</color>
 
+    <color name="state_success">#D4F8D3</color>
+    <color name="state_pending">#FFF0BB</color>
+    <color name="state_reject">#FFC300</color>
 </resources>

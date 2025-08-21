@@ -58,7 +58,7 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
 
 
         val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
-        val isGV = role == "giang_vien" || role == "truong_bo_mon"
+        val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
         if (isGV) {
             // Giảng viên không cần upload CV
             binding.btnUploadCv.visibility = View.GONE
@@ -236,7 +236,7 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
                 rows += ProfileRow("Ngành", info.nganh.orEmpty())
                 rows += ProfileRow("Khoa", info.khoa.orEmpty())
             }
-            "giang_vien", "truong_bo_mon" -> {
+            "giang_vien", "truong_bo_mon", "tro_ly_khoa" -> {
                 rows += ProfileRow("Mã giảng viên", info.maGV.orEmpty())
                 rows += ProfileRow("Học vị", info.hocVi.orEmpty())
                 rows += ProfileRow("Học hàm", info.hocHam.orEmpty())

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardUseCompatPadding="true"
-    android:layout_marginBottom="12dp">
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="#E3F2FD"
+    app:strokeColor="#D6EAF8"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,63 +35,66 @@
                     android:id="@+id/tvBoardName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tên hội đồng: "
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
+                    android:text="Tên hội đồng:"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtBoardName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
                     android:text="Hội đồng A"
-                    android:textSize="16sp"/>
-
+                    android:textColor="#000000"
+                    android:textSize="15sp"/>
             </LinearLayout>
 
             <!-- Ngày bảo vệ -->
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp">
 
                 <TextView
                     android:id="@+id/tvDefenseDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Ngày bảo vệ: "
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
+                    android:text="Ngày bảo vệ:"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="6dp"
                     android:text="21/7/2025 – 22/7/2025"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeStepGranularity="1sp"/>
             </LinearLayout>
         </LinearLayout>
 
         <!-- Nút Xem thêm -->
         <TextView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/tvMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
             android:drawableEnd="@drawable/ic_arrow_right"
-            android:drawablePadding="4dp"
+            android:drawablePadding="6dp"
             android:text="Xem thêm"
             android:textSize="14sp"
             android:textColor="#0071C6"
-            app:drawableTint="#BA0071C6"
+            app:drawableTint="#0071C6"
             app:drawableTintMode="src_in"/>
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

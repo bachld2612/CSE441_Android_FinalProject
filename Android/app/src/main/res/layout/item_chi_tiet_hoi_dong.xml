@@ -1,152 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="12dp"
+    app:cardUseCompatPadding="true"
+    app:strokeColor="#D6EAF8"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="#E3F2FD">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:background="#E3F2FD">
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-        <!-- Dòng 1: Họ tên | Đề tài -->
+        <!-- Cột trái -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvNameLabel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Họ tên:"
-                android:textStyle="bold"
-                android:textColor="#000"/>
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Họ tên:"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+                <TextView
+                    android:id="@+id/tvNameDetail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:text="Tên sinh viên"
+                    android:textColor="#000"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvNameDetail"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Lý Duy Bách"
-                android:textColor="#000"/>
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvMsvLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MSV:"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+                <TextView
+                    android:id="@+id/tvMsvDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="20210001"
+                    android:textColor="#000"/>
+            </LinearLayout>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvTopicLabel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Đề tài:"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/tvTopicDetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Xây dựng website …"
-                android:textColor="#000"/>
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvClassLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lớp:"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+                <TextView
+                    android:id="@+id/tvClassDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="K66-..."
+                    android:textColor="#000"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Dòng 2: MSV | GVHD -->
+        <!-- Cột phải -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingStart="8dp">
 
-            <TextView
-                android:id="@+id/tvMsvLabel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MSV:"
-                android:textStyle="bold"
-                android:textColor="#000"/>
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvTopicLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đề tài:"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+                <TextView
+                    android:id="@+id/tvTopicDetail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:text="Tên đề tài rất dài sẽ tự xuống dòng"
+                    android:textColor="#000"
+                    android:maxLines="4"
+                    android:ellipsize="end"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvMsvDetail"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="2251172245"
-                android:textColor="#000"/>
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvSupervisorLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GVHD:"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+                <TextView
+                    android:id="@+id/tvSupervisorDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="TS. ABC"
+                    android:textColor="#000"/>
+            </LinearLayout>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvSupervisorLabel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="GVHD:"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/tvSupervisorDetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Th.S Kiều Tuấn Dũng"
-                android:textColor="#000"/>
-        </LinearLayout>
-
-        <!-- Dòng 3: Lớp | Bộ môn -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
-
-            <TextView
-                android:id="@+id/tvClassLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lớp:"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/tvClassDetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="64KTPM4"
-                android:textColor="#000"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvDeptLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bộ môn:"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/tvDeptDetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Hệ thống thông tin"
-                android:textColor="#000"/>
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tvDeptLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bộ môn:"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+                <TextView
+                    android:id="@+id/tvDeptDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Hệ thống thông tin"
+                    android:textColor="#000"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
