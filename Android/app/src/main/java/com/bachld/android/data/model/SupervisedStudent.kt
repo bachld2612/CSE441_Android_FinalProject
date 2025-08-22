@@ -5,5 +5,6 @@ data class SupervisedStudent(
     val hoTen: String,
     val tenLop: String,
     val soDienThoai: String?,
-    val tenDeTai: String?
+    val tenDeTai: String?,
+    val cvUrl: String?
 )

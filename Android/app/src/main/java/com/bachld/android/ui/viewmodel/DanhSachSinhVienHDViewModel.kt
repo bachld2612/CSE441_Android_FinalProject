@@ -38,6 +38,7 @@ class DanhSachSinhVienHDViewModel(
                                 || normalize(s.tenLop).contains(nq)
                                 || (s.soDienThoai?.let { normalize(it).contains(nq) } ?: false)
                                 || (s.tenDeTai?.let { normalize(it).contains(nq) } ?: false)
+                                || (s.cvUrl?.let { normalize(it).contains(nq) } ?: false)
                     }
                 }
             }

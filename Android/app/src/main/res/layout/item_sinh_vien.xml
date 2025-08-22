@@ -121,5 +121,57 @@
             app:layout_constraintStart_toEndOf="@id/tv_label_sdt"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <TextView
+            android:id="@+id/tv_label_de_tai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Đề tài:"
+            android:textStyle="bold"
+            android:textColor="@color/text_strong"
+            app:layout_constraintTop_toBottomOf="@id/tv_label_lop"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_value_de_tai"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="(chưa có)"
+            android:textColor="@color/text_normal"
+            android:singleLine="true"
+            android:ellipsize="end"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_label_de_tai"
+            app:layout_constraintStart_toEndOf="@id/tv_label_de_tai"
+            app:layout_constraintEnd_toStartOf="@id/gl_center"/>
+
+        <!-- Phải: CV -->
+        <TextView
+            android:id="@+id/tv_label_cv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="CV:"
+            android:textStyle="bold"
+            android:textColor="@color/text_strong"
+            app:layout_constraintTop_toBottomOf="@id/tv_label_sdt"
+            app:layout_constraintStart_toStartOf="@id/gl_center"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_value_cv_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="Xem CV"
+            android:textColor="@color/blue"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_label_cv"
+            app:layout_constraintStart_toEndOf="@id/tv_label_cv"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
