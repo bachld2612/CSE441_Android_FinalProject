@@ -4,16 +4,6 @@ import { NavLink } from "react-router-dom";
 
 const sidebarLinks = [
   { 
-    name: "Sinh viên đăng ký đồ án", 
-    href: "/sinh-vien/dang-ky-do-an", 
-    roles: ["giang_vien", "truong_bo_mon"] 
-  },
-  { 
-    name: "Sinh viên hướng dẫn", 
-    href: "/sinh-vien/huong-dan", 
-    roles: ["giang_vien", "truong_bo_mon"] 
-  },
-  { 
     name: "Quản lý sinh viên", 
     href: "/sinh-vien", 
     roles: ["tro_ly_khoa", "admin"] 
@@ -22,6 +12,11 @@ const sidebarLinks = [
     name: "Đăng kí giảng viên hướng dẫn", 
     href: "/sinh-vien/gvhd", 
     roles: ["tro_ly_khoa", "admin"] 
+  },
+  { 
+    name: "Sinh viên hướng dẫn", 
+    href: "/sinh-vien/huong-dan", 
+    roles: ["giang_vien", "truong_bo_mon", "tro_ly_khoa"] 
   },
 ];
 

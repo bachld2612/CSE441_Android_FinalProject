@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    android:backgroundTint="#E4F6FF"
+    app:cardCornerRadius="12dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tvTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đề tài: ..."
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/tvMaSV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mã sinh viên: ..."
+            android:layout_marginTop="6dp"
+            android:textColor="#333"/>
+
+        <TextView
+            android:id="@+id/tvHoTenSV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Họ và tên: ..."/>
+
+        <TextView
+            android:id="@+id/tvHoTenGV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GV hướng dẫn: ..."/>
+
+        <!-- Link -->
+        <TextView
+            android:id="@+id/tvLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="File đề cương: link"
+            android:textColor="#177CFF"
+            android:textStyle="bold"
+            android:layout_marginTop="6dp"/>
+
+        <!-- Trạng thái -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trạng thái:"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="chờ xét duyệt"/>
+        </LinearLayout>
+
+        <!-- Nút -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="#FFC400"
+                android:text="Từ chối"
+                app:cornerRadius="12dp"
+                app:iconPadding="8dp"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Duyệt"
+                android:backgroundTint="#30C04F"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="8dp"
+                app:iconPadding="8dp"
+                app:iconGravity="textStart" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -18,5 +18,4 @@ public interface DotBaoVeRepository extends JpaRepository<DotBaoVe, Long> {
     findTopByThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqualOrderByThoiGianBatDauDesc(
             LocalDate today1, LocalDate today2
     );
-
 }

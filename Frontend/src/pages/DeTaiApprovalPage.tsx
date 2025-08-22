@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/dialog';
 import { downloadFile } from '@/lib/downloadFile';
 import { toast } from 'react-toastify';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
 export default function DeTaiApprovalPage() {
   const [data, setData] = useState<DeTai[]>([]);
@@ -125,6 +126,21 @@ export default function DeTaiApprovalPage() {
 
   return (
     <div>
+
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Đề tài
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <h1 className="text-3xl text-center mt-10 font-bold mb-6">
         Danh sách đề tài
       </h1>

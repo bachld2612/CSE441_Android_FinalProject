@@ -57,6 +57,7 @@ public class DeTaiServiceImpl implements DeTaiService {
         return approveDeTai(deTaiId, req);
     }
 
+
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
     public DeTaiResponse registerDeTai(DeTaiRequest request) {
