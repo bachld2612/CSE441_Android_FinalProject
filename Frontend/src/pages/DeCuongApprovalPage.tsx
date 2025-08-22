@@ -37,6 +37,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'react-toastify';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
 export default function DeCuongApprovalPage() {
   const [data, setData] = useState<DeCuong[]>([]);
@@ -146,6 +147,20 @@ export default function DeCuongApprovalPage() {
 
   return (
     <div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Đề cương
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList> 
+      </Breadcrumb>
+      
       <h1 className="text-3xl text-center mt-10 font-bold mb-6">
         Danh sách đề cương
       </h1>

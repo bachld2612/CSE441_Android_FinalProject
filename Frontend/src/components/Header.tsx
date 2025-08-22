@@ -34,7 +34,7 @@ export default function Header() {
   
   const navbarLinks = [
     { name: "Trang chủ", href: "/", hidden: false },
-    { name: "Đồ án", href: "/do-an", hidden: role === "TRO_LY_KHOA" || role === "ADMIN" },
+    { name: "Đồ án", href: "/do-an", hidden: role === "ADMIN" },
     { name: "Sinh viên", href: role === "GIANG_VIEN" || role === "TRUONG_BO_MON" ? "/sinh-vien/huong-dan" : "/sinh-vien", hidden: false },
     { name: "Giảng viên", href: "/giang-vien", hidden: false },
     { name: "Hội đồng", href: "/hoi-dong", hidden: false },

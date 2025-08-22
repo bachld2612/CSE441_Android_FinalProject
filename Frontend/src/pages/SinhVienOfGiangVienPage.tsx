@@ -1,11 +1,27 @@
 import { useEffect, useState } from "react";
-import { getSinhVienOfGiangVien, type SinhVienOfGiangVien } from "@/services/sinhVien.service";
+import {
+  getSinhVienOfGiangVien,
+  type SinhVienOfGiangVien,
+} from "@/services/sinhVien.service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function SinhVienOfGiangVienPage() {
   const [data, setData] = useState<SinhVienOfGiangVien[]>([]);
@@ -37,6 +53,20 @@ export default function SinhVienOfGiangVienPage() {
 
   return (
     <div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Sinh viên hướng dẫn
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <h1 className="text-3xl text-center mt-10 font-bold mb-4">
         Sinh viên đang đăng ký
       </h1>
@@ -56,7 +86,11 @@ export default function SinhVienOfGiangVienPage() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
-        <Button type="submit" className="h-10 border-gray-300" variant="outline">
+        <Button
+          type="submit"
+          className="h-10 border-gray-300"
+          variant="outline"
+        >
           <Search />
         </Button>
       </form>
@@ -64,30 +98,60 @@ export default function SinhVienOfGiangVienPage() {
       <Table className="mt-6 rounded-lg overflow-hidden shadow-sm border border-gray-300">
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead className="text-center font-semibold border border-gray-300">STT</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Mã SV</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Họ tên</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Lớp</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">SĐT</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Tên đề tài</TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              STT
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Mã SV
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Họ tên
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Lớp
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              SĐT
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Tên đề tài
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {!loading && data.length === 0 && (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={6}>
+              <TableCell
+                className="text-center border border-gray-300"
+                colSpan={6}
+              >
                 Không có dữ liệu
               </TableCell>
             </TableRow>
           )}
           {data.map((sv, i) => (
-            <TableRow key={sv.maSV} className="hover:bg-gray-50 transition-colors">
-              <TableCell className="text-center border border-gray-300">{page * size + i + 1}</TableCell>
-              <TableCell className="text-center border border-gray-300 font-medium">{sv.maSV}</TableCell>
-              <TableCell className="text-center border border-gray-300">{sv.hoTen}</TableCell>
-              <TableCell className="text-center border border-gray-300">{sv.tenLop}</TableCell>
-              <TableCell className="text-center border border-gray-300">{sv.soDienThoai ?? "-"}</TableCell>
-              <TableCell className="text-center border border-gray-300">{sv.tenDeTai ?? "-"}</TableCell>
+            <TableRow
+              key={sv.maSV}
+              className="hover:bg-gray-50 transition-colors"
+            >
+              <TableCell className="text-center border border-gray-300">
+                {page * size + i + 1}
+              </TableCell>
+              <TableCell className="text-center border border-gray-300 font-medium">
+                {sv.maSV}
+              </TableCell>
+              <TableCell className="text-center border border-gray-300">
+                {sv.hoTen}
+              </TableCell>
+              <TableCell className="text-center border border-gray-300">
+                {sv.tenLop}
+              </TableCell>
+              <TableCell className="text-center border border-gray-300">
+                {sv.soDienThoai ?? "-"}
+              </TableCell>
+              <TableCell className="text-center border border-gray-300">
+                {sv.tenDeTai ?? "-"}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -101,7 +165,9 @@ export default function SinhVienOfGiangVienPage() {
               if (page > 0) setPage(page - 1);
             }}
             className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
-              page === 0 ? "pointer-events-none opacity-50" : "hover:bg-gray-200"
+              page === 0
+                ? "pointer-events-none opacity-50"
+                : "hover:bg-gray-200"
             }`}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -130,7 +196,9 @@ export default function SinhVienOfGiangVienPage() {
               if (page + 1 < totalPages) setPage(page + 1);
             }}
             className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
-              page + 1 >= totalPages ? "pointer-events-none opacity-50" : "hover:bg-gray-200"
+              page + 1 >= totalPages
+                ? "pointer-events-none opacity-50"
+                : "hover:bg-gray-200"
             }`}
           >
             <ChevronRight className="w-4 h-4" />

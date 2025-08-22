@@ -21,6 +21,7 @@ import { getAllKhoa, type KhoaResponse } from "@/services/khoa.service";
 import { getGiangVienByBoMon, type GiangVienLite } from "@/services/giang-vien.service";
 import { useAuthStore } from "@/stores/authStore";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 export default function BoMonPage() {
   // dữ liệu bảng theo trang
@@ -243,10 +244,19 @@ export default function BoMonPage() {
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb */}
-      <div className="text-sm text-gray-500">
-        Trang chủ / Quản lý tổ chức / <span className="text-gray-700 font-medium">Quản lý bộ môn</span>
-      </div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Bộ Môn
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <h1 className="text-3xl font-bold text-center">Quản lý bộ môn</h1>
 
