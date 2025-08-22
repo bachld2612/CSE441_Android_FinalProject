@@ -57,7 +57,7 @@ public class GiangVienServiceImpl implements GiangVienService {
     SinhVienMapper sinhVienMapper;
     private final TimeGatekeeper timeGatekeeper;
 
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
     @Override
     public Page<SinhVienSupervisedResponse> getMySinhVienSupervised(Pageable pageable) {
         String email = currentEmail();
