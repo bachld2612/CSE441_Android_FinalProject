@@ -14,6 +14,7 @@ import com.bachld.android.core.UiState
 import com.bachld.android.databinding.FragmentXetDuyetDetaiListBinding
 import com.bachld.android.ui.adapter.XetDuyetDeTaiAdapter
 import com.bachld.android.ui.viewmodel.GVXetDuyetViewModel
+import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.launch
 
 class GVDeTaiXetDuyetFragment : Fragment(R.layout.fragment_xet_duyet_detai_list) {

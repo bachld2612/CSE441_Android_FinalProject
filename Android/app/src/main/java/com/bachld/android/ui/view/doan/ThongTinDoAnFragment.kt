@@ -78,6 +78,12 @@ class ThongTinDoAnFragment : Fragment() {
             )
         }
 
+        binding.btnDangKyDeTai.setOnClickListener {
+            findNavController().navigate(
+                com.bachld.android.R.id.action_navigation_do_an_to_dang_ky_do_an
+            )
+        }
+
         vm.load(forceRefresh = true)
     }
 

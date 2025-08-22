@@ -37,9 +37,8 @@ object ApiClient {
     lateinit var sinhVienApi: SinhVienApi
     lateinit var donHoanDoAnApi: DonHoanDoAnApi
         private set
-
     lateinit var giangVienApi: GiangVienApi
-
+        private set
     lateinit var hoiDongApi: HoiDongApi
         private set
 

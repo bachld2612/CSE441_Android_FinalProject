@@ -11,6 +11,7 @@
         android:name="com.bachld.android.ui.view.trangchu.TrangChuFragment"
         android:label="Trang chủ"
         tools:layout="@layout/fragment_trang_chu_scrolling">
+
         <action
             android:id="@+id/action_trang_chu_to_thong_bao_detail"
             app:destination="@id/navigation_thong_bao_detail"
@@ -40,8 +41,12 @@
         <action
             android:id="@+id/action_navigation_do_an_to_de_cuong"
             app:destination="@id/de_cuong" />
+        <action
+            android:id="@+id/action_navigation_do_an_to_hoan_do_an"
+            app:destination="@id/hoan_do_an" />
     </fragment>
 
+    <!-- Hội đồng -->
     <fragment
         android:id="@+id/navigation_hoi_dong"
         android:name="com.bachld.android.ui.view.hoidong.HoiDongFragment"
@@ -68,7 +73,6 @@
         android:label="Thông tin"
         tools:layout="@layout/fragment_thong_tin" />
 
-
     <!-- NEW: Thông tin đồ án (destination riêng, để bạn điều hướng tới khi cần) -->
     <fragment
         android:id="@+id/thong_tin_do_an"
@@ -78,6 +82,9 @@
         <action
             android:id="@+id/action_thong_tin_do_an_to_hoan_do_an2"
             app:destination="@id/hoan_do_an" />
+        <action
+            android:id="@+id/action_thong_tin_do_an_to_dang_ky_do_an"
+            app:destination="@id/dang_ky_do_an" />
     </fragment>
 
     <!-- NEW: De cương (container TabLayout + ViewPager2) -->
@@ -93,7 +100,10 @@
         android:label="Đề nghị hoãn đồ án"
         tools:layout="@layout/fragment_hoan_do_an" />
 
-    <!-- action từ màn Thông tin đồ án (hoặc DoAnFragment) -->
-
+    <fragment
+        android:id="@+id/dang_ky_do_an"
+        android:name="com.bachld.android.ui.view.doan.DangKyDoAnFragment"
+        android:label="Đăng ký thực hiện đồ án"
+        tools:layout="@layout/fragment_dang_ky_do_an" />
 
 </navigation>
