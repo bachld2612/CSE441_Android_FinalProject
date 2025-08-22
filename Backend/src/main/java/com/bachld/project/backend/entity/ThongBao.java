@@ -1,5 +1,6 @@
 package com.bachld.project.backend.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -16,8 +17,8 @@ import lombok.experimental.FieldDefaults;
 public class ThongBao extends BaseEntity {
 
     String tieuDe;
+    @Column(columnDefinition = "TEXT")
     String noiDung;
-    @ManyToOne
-    TaiKhoan taiKhoan;
+    String fileUrl;
 
 }

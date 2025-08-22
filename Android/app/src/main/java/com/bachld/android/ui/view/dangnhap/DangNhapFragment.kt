@@ -13,8 +13,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bachld.android.R
 import com.bachld.android.core.UiState
+import com.bachld.android.core.UserPrefs
 import com.bachld.android.data.dto.request.auth.LoginRequest
 import com.bachld.android.databinding.FragmentDangNhapBinding
+import com.bachld.android.MainActivity   // <- để gọi applyRoleUI
 import com.bachld.android.ui.viewmodel.DangNhapViewModel
 import kotlinx.coroutines.launch
 
@@ -37,7 +39,7 @@ class DangNhapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Sự kiện bấm nút đăng nhập
+        // Bấm Đăng nhập
         binding.btnDangNhap.setOnClickListener {
             val email = binding.edtTaiKhoan.text.toString().trim()
             val password = binding.edtMatKhau.text.toString().trim()
@@ -45,47 +47,56 @@ class DangNhapFragment : Fragment() {
                 toast("Vui lòng nhập tài khoản và mật khẩu")
                 return@setOnClickListener
             }
-            val loginRequest = LoginRequest(email, password).apply {
-                this.email = email
-                this.password = password
-            }
-            vm.login(loginRequest)
+            vm.login(LoginRequest(email, password))
         }
 
-        // Lắng nghe cả loginState và myInfoState
+        // Lắng nghe state
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                // Collector cho loginState
+                // 1) Login state
                 launch {
                     vm.loginState.collect { st ->
                         binding.btnDangNhap.isEnabled = st !is UiState.Loading
                         when (st) {
-                            is UiState.Error -> toast(st.message ?: "Đăng nhập thất bại")
+                            is UiState.Loading -> { /* có thể show loading */ }
+                            is UiState.Error -> toast("Tài khoản hoặc mật khẩu không chính xác")
+                            is UiState.Success -> {
+                                // ĐÃ CÓ TOKEN -> gọi myInfo để lấy role thật
+                                vm.fetchMyInfo() // <- gọi hàm trong ViewModel của bạn
+                            }
                             else -> Unit
                         }
                     }
                 }
 
-                // Collector cho myInfoState
+                // 2) MyInfo state
                 launch {
                     vm.myInfoState.collect { st ->
                         binding.btnDangNhap.isEnabled = st !is UiState.Loading
                         when (st) {
-                            is UiState.Error -> {
-                                toast(st.message ?: "Lấy thông tin người dùng thất bại")
-                            }
+                            is UiState.Loading -> { /* có thể show loading */ }
+                            is UiState.Error -> toast("Lấy thông tin người dùng thất bại")
                             is UiState.Success -> {
                                 val res = st.data
-                                if (res.code == 1000 && res.result != null) {
+                                val info = res.result
+                                if (res.code == 1000 && info != null) {
+                                    // LƯU CACHE để các màn sau dùng
+                                    UserPrefs(requireContext()).save(info)
+
+                                    val role = info.role?.lowercase()
+                                    val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
+
+                                    // ĐỔI UI THEO ROLE (menu + appbar + graph)
+                                    (requireActivity() as MainActivity).applyRoleUI(isGV)
+
+                                    // ĐIỀU HƯỚNG sang graph đúng role (reset stack bằng global action)
+                                    findNavController().navigate(
+                                        if (isGV) R.id.action_global_nav_giang_vien
+                                        else R.id.action_global_nav_sinh_vien
+                                    )
+
                                     toast("Đăng nhập thành công")
-                                    val role = res.result.role?.lowercase()
-                                    when (role) {
-                                        "sinh_vien", "giang_vien", "admin", "tro_ly_khoa" -> {
-                                            findNavController().navigate(R.id.action_global_nav_sinh_vien)
-                                        }
-                                        else -> toast("Role không hợp lệ: $role")
-                                    }
                                 } else {
                                     toast(res.message ?: "Có lỗi xảy ra")
                                 }

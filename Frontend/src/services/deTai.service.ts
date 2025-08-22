@@ -9,7 +9,9 @@ export interface DeTai {
   tenDeTai: string;
   trangThai: "PENDING" | "ACCEPTED" | "REJECTED";
   tongQuanDeTaiUrl?: string;
+  tongQuanFilename?: string;
   idDeTai: string;
+  nhanXet?: string;
 }
 
 export interface DeTaiGiangVienHuongDanResponse {

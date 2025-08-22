@@ -19,4 +19,5 @@ public class DeTaiSinhVienApprovalResponse {
     String idDeTai;
     DeTaiState trangThai;
     String tongQuanDeTaiUrl;
+    String nhanXet;
 }

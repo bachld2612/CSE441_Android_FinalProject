@@ -49,8 +49,8 @@ public enum ErrorCode {
     NO_ACTIVE_SUBMISSION_WINDOW(1216, "Chưa tới thời gian nộp đề cương", HttpStatus.BAD_REQUEST),
     NO_ACTIVE_REVIEW_LIST(1217, "Chưa đến thời gian thực hiện xét duyệt đề cương", HttpStatus.BAD_REQUEST),
     ACCESS_DENIED(1218, "Access Denied", HttpStatus.FORBIDDEN),
-
-
+    FILE_EMPTY(1219, "File is empty", HttpStatus.BAD_REQUEST),
+    FILE_TYPE_NOT_ALLOWED(1220, "File type not allowed", HttpStatus.BAD_REQUEST),
     //Duc
     DE_TAI_EMPTY(1101, "Ten de tai cannot be empty", HttpStatus.BAD_REQUEST),
     DE_TAI_GVHD_REQUIRED(1102, "GVHD is required", HttpStatus.BAD_REQUEST),
@@ -67,6 +67,7 @@ public enum ErrorCode {
     DON_HOAN_FILE_UPLOAD_FAILED(1115, "Failed to upload MinhChungFile for DonHoanDoAn", HttpStatus.INTERNAL_SERVER_ERROR),
     POSTPONE_NOT_ALLOWED_WHEN_HAS_DE_TAI(1116, "Sinh viên has a DeTai already; postpone request is not allowed", HttpStatus.BAD_REQUEST),
     NOT_A_GVHD(2004, "Current account is not an GVHD", HttpStatus.FORBIDDEN),
+    HOI_DONG_NOT_FOUND(1201, "Hoi dong not found", org.springframework.http.HttpStatus.NOT_FOUND),
 
     MA_SV_INVALID(1021, "Ma SV invalid", HttpStatus.BAD_REQUEST),
     HO_TEN_EMPTY(1022, "Ho ten cannot be empty", HttpStatus.BAD_REQUEST),
@@ -88,7 +89,12 @@ public enum ErrorCode {
     HOC_KI_EMPTY(1039, "Hoc ki cannot be empty", HttpStatus.BAD_REQUEST),
     INVALID_FILE_TYPE(1040, "Invalid file type", HttpStatus.BAD_REQUEST),
     FILE_TOO_LARGE(1041, "File size exceeds the limit", HttpStatus.BAD_REQUEST),
-    ;
+    THONG_BAO_NOT_FOUND(1042, "Thong bao not found", HttpStatus.NOT_FOUND),
+    DANG_KY_TIME_INVALID(1043, "Not in thoi gian dang ki", HttpStatus.BAD_REQUEST),
+    DE_TAI_ALREADY_ACCEPTED(1044, "De tai already accepted", HttpStatus.BAD_REQUEST),
+    NOT_IN_DOT_BAO_VE(1045, "Not in dot bao ve", HttpStatus.BAD_REQUEST),;
+
+
     int code;
     String message;
     HttpStatusCode httpStatusCode;

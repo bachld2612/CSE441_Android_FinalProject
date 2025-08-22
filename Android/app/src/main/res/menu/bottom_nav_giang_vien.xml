@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/gv_navigation_trang_chu"
+        android:title="Trang chủ"
+        android:icon="@drawable/ic_main_page" />
+
+    <item
+        android:id="@+id/gv_navigation_sinh_vien"
+        android:title="Sinh viên"
+        android:icon="@drawable/ic_student" />
+
+    <item
+        android:id="@+id/gv_navigation_de_tai"
+        android:title="Đề tài"
+        android:icon="@drawable/ic_book" />
+
+    <item
+        android:id="@+id/gv_navigation_de_cuong"
+        android:title="Đề cương"
+        android:icon="@drawable/ic_book" />
+
+    <item
+        android:id="@+id/gv_navigation_thong_tin"
+        android:title="Thông tin"
+        android:icon="@drawable/ic_profile" />
+</menu>

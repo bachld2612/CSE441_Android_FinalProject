@@ -22,22 +22,29 @@ export default function SidebarToChuc() {
 
   // chỉ TRO_LY_KHOA được thấy "Quản lý đợt đồ án"
   if (role === "TRO_LY_KHOA") {
-    sidebarLinks.push({ name: "Quản lý đợt đồ án", href: "/to-chuc/dot-do-an" });
+    sidebarLinks.push({
+      name: "Quản lý đợt đồ án",
+      href: "/to-chuc/dot-do-an",
+    });
   }
 
   return (
-    <aside className="w-64 h-full fixed top-[64px] left-0 bg-[#F1F1F3] text-gray-900 border-r border-gray-200">
-      <nav className="p-4 space-y-1">
+    <aside className="w-64 h-full fixed top-[64px] left-0 bg-[#457B9D] text-white border-r border-gray-200">
+      <div className="p-4 font-bold text-lg border-b border-white/20">
+        Quản lý tổ chức
+      </div>
+      <nav className="flex-1 p-4 space-y-2">
         {sidebarLinks.map((link) => (
           <NavLink
             key={link.href}
             to={link.href}
             className={({ isActive }) =>
               [
-                "block rounded px-3 py-2 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-[#EFF6FF] text-[#006EFF]"
-                  : "text-gray-800 hover:bg-gray-200 hover:text-gray-900",
+                `block px-3 py-2 rounded-lg ${
+                  isActive
+                    ? "bg-white text-[#457B9D] font-semibold"
+                    : "hover:bg-white/20"
+                }`,
               ].join(" ")
             }
           >

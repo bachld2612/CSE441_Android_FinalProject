@@ -27,6 +27,7 @@ import com.bachld.android.data.dto.response.auth.MyInfoResponse
 import com.bachld.android.databinding.FragmentThongTinBinding
 import com.bachld.android.ui.adapter.ProfileAdapter
 import com.bachld.android.ui.adapter.ProfileRow
+import com.bachld.android.ui.viewmodel.CvViewModel
 import com.bachld.android.ui.viewmodel.ThongTinViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
@@ -39,6 +40,13 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
     private val infoVm: ThongTinViewModel by viewModels()
     private val adapter = ProfileAdapter()
 
+    private val cvVm: CvViewModel by viewModels()
+
+    // Picker CV (PDF)
+    private val pickPdf = registerForActivityResult(GetContent()) { uri: Uri? ->
+        uri?.let { cvVm.uploadCv(requireContext(), it) }
+    }
+
     // Picker ảnh
     private val pickImage = registerForActivityResult(GetContent()) { uri: Uri? ->
         uri?.let { uploadAvatar(it) }
@@ -48,12 +56,26 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentThongTinBinding.bind(view)
 
+
+        val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
+        val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
+        if (isGV) {
+            // Giảng viên không cần upload CV
+            binding.btnUploadCv.visibility = View.GONE
+        } else {
+            // Sinh viên mới có nút upload CV
+            binding.btnUploadCv.visibility = View.VISIBLE
+        }
         // Recycler
         binding.rvProfile.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProfile.adapter = adapter
 
         // Nút sửa -> mở picker
         binding.btnEdit.setOnClickListener { pickImage.launch("image/*") }
+
+        binding.btnUploadCv.setOnClickListener {
+            pickPdf.launch("application/pdf")
+        }
 
         // Load avatar từ cache nếu có
         UserPrefs(requireContext()).getCached()?.anhDaiDienUrl?.let { url ->
@@ -78,6 +100,33 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
         // Quan sát my-info
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                // Quan sát các state từ ViewModel upload cv
+                launch {
+                    cvVm.cvState.collect { st ->
+                        when (st) {
+                            is UiState.Loading -> {
+                                binding.btnUploadCv.isEnabled = false
+                                Toast.makeText(requireContext(), "Đang upload CV...", Toast.LENGTH_SHORT).show()
+                            }
+                            is UiState.Success -> {
+                                binding.btnUploadCv.isEnabled = true
+                                val res = st.data
+                                if (res.code == 1000) {
+                                    Toast.makeText(requireContext(), "Upload CV thành công", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(requireContext(), res.message ?: "Upload CV thất bại", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            is UiState.Error -> {
+                                binding.btnUploadCv.isEnabled = true
+                                Toast.makeText(requireContext(), st.message ?: "Lỗi upload CV", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
                 launch {
                     infoVm.myInfoState.collect { st ->
                         when (st) {
@@ -187,7 +236,7 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
                 rows += ProfileRow("Ngành", info.nganh.orEmpty())
                 rows += ProfileRow("Khoa", info.khoa.orEmpty())
             }
-            "giang_vien", "truong_bo_mon" -> {
+            "giang_vien", "truong_bo_mon", "tro_ly_khoa" -> {
                 rows += ProfileRow("Mã giảng viên", info.maGV.orEmpty())
                 rows += ProfileRow("Học vị", info.hocVi.orEmpty())
                 rows += ProfileRow("Học hàm", info.hocHam.orEmpty())

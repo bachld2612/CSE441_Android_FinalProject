@@ -21,4 +21,9 @@ public interface ThoiGianThucHienRepository extends JpaRepository<ThoiGianThucHi
 
     boolean existsByDotBaoVeAndCongViec(DotBaoVe dotBaoVe, CongViec congViec);
     Optional<ThoiGianThucHien> findByDotBaoVe_IdAndCongViec(Long dotBaoVeId, CongViec congViec);
+
+    Optional<ThoiGianThucHien>
+    findTopByCongViecAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqualOrderByThoiGianBatDauDesc(
+            CongViec cv, LocalDate today1, LocalDate today2
+    );
 }

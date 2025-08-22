@@ -61,7 +61,7 @@ export default function GiangVienPage() {
   /* ================== Dữ liệu GV ================== */
   const [data, setData] = useState<GiangVien[]>([]);
   const [page, setPage] = useState(0); // 0-based
-  const [size, setSize] = useState(10);
+  const [size] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
 

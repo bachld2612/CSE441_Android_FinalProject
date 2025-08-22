@@ -1,12 +1,10 @@
 package com.bachld.project.backend.service.impl;
 
-import com.bachld.project.backend.dto.request.decuong.DeCuongLogRequest;
 import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
-import com.bachld.project.backend.entity.DotBaoVe;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.ThoiGianThucHien;
 import com.bachld.project.backend.enums.CongViec;
@@ -17,7 +15,7 @@ import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.DeCuongMapper;
 import com.bachld.project.backend.repository.*;
 import com.bachld.project.backend.service.DeCuongService;
-import com.bachld.project.backend.service.util.TimeGatekeeper;
+import com.bachld.project.backend.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.bachld.project.backend.service.CloudinaryService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,53 +48,40 @@ public class DeCuongServiceImpl implements DeCuongService {
     TimeGatekeeper timeGatekeeper;
 
     private static final ZoneId ZONE_BKK = ZoneId.of("Asia/Bangkok");
-    private final CloudinaryService cloudinaryService;
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
     public DeCuongResponse submitDeCuong(DeCuongUploadRequest request) {
-        // 1. Lấy đề tài
-        DeTai deTai = deTaiRepository.findById(request.getDeTaiId())
+        // 1) Lấy email hiện hành
+        final String email = currentUsername();
+
+        // 2) Tìm DeTai thuộc về SV hiện hành (ràng buộc UNIQUE theo DB)
+        DeTai deTai = deTaiRepository
+                .findBySinhVienThucHien_TaiKhoan_EmailIgnoreCase(email)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
-        // 2. Kiểm tra trạng thái đề tài
+        // 3) Kiểm tra trạng thái đề tài
         if (deTai.getTrangThai() != DeTaiState.ACCEPTED) {
             throw new ApplicationException(ErrorCode.DE_TAI_NOT_ACCEPTED);
         }
 
-        DotBaoVe dot = deTai.getDotBaoVe();
-        if (dot == null) {
+        // 4) Phải có đợt bảo vệ
+        if (deTai.getDotBaoVe() == null) {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // 3. Chỉ cho nộp trong mốc NỘP_ĐỀ_CƯƠNG
-        timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, dot);
+        // 5) Kiểm tra chỉ được nộp trong mốc NỘP_ĐỀ_CƯƠNG
+        timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, deTai.getDotBaoVe());
 
-        // 4. Xác thực sinh viên chủ sở hữu
-        String email = currentUsername();
-        boolean isOwner = deTai.getSinhVienThucHien() != null
-                && deTai.getSinhVienThucHien().getTaiKhoan() != null
-                && email.equalsIgnoreCase(deTai.getSinhVienThucHien().getTaiKhoan().getEmail());
-        if (!isOwner) {
-            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
-        }
-
-        // 5. Xác định URL (upload hoặc dùng trực tiếp)
-        String tmpUrl;
-        if (request.getFile() != null && !request.getFile().isEmpty()) {
-            // Upload lên Cloudinary
-            tmpUrl = cloudinaryService.upload(request.getFile());
-        } else if (request.getFileUrl() != null && !request.getFileUrl().isBlank()) {
-            // Dùng URL có sẵn
-            tmpUrl = request.getFileUrl().trim();
-        } else {
+        // 6) Lấy/chuẩn hóa URL
+        final String finalUrl = toClickableUrl(request.getFileUrl());
+        if (finalUrl == null || finalUrl.isBlank()) {
             throw new ApplicationException(ErrorCode.FILE_URL_EMPTY);
         }
 
-        final String finalUrl = tmpUrl; // biến final để dùng trong lambda
-
-        // 6. Tạo mới hoặc cập nhật DeCuong
-        DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
+        // 7) Tạo mới/cập nhật DeCuong theo SV hiện hành
+        DeCuong dc = deCuongRepository
+                .findByDeTai_SinhVienThucHien_TaiKhoan_EmailIgnoreCase(email)
                 .map(existing -> {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
@@ -116,7 +100,7 @@ public class DeCuongServiceImpl implements DeCuongService {
                     return created;
                 });
 
-        // 7. Lưu DB và trả response
+        // 8) Lưu DB & trả về response
         return mapper.toResponse(deCuongRepository.save(dc));
     }
 
@@ -370,4 +354,6 @@ public class DeCuongServiceImpl implements DeCuongService {
         }
         return gv.getBoMon().getId();
     }
+
+
 }
