@@ -105,9 +105,9 @@ public class GiangVienServiceImpl implements GiangVienService {
         return responses;
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
     @Override
-    public List<SinhVienSupervisedResponse> getMySinhVienSupervisedAll(String q) {
+    public List<StudentSupervisedResponse> getMySinhVienSupervisedAll(String q) {
         String email = currentEmail();
 
         Long gvhdId = giangVienRepository.findByTaiKhoan_Email(email)
@@ -122,7 +122,7 @@ public class GiangVienServiceImpl implements GiangVienService {
 
         // map sang DTO response
         return list.stream()
-                .map(sinhVienMapper::toSinhVienSupervisedResponse)
+                .map(sinhVienMapper::toStudentSupervisedResponse)
                 .toList();
     }
 
