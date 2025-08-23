@@ -19,6 +19,9 @@ import GiangVienPage from "@/pages/GiangVienPage";
 import DangKiGiangVienHuongDan from "@/pages/DangKiGiangVienHuongDan";
 import SinhVienPage from '@/pages/SinhVienPage';
 import DeCuongApprovalPage from '@/pages/DeCuongApprovalPage';
+import ThongBaoCreatePage from '@/pages/ThongBaoCreatePage';
+import ThongBaoLayout from '@/layouts/ThongBaoLayout';
+import ThongBaoLatestPage from "@/pages/ThongBaoLatestPage";
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -116,4 +119,17 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  {
+  path: "/thong-bao",
+  element: (
+    <ProtectedRoute>
+      <ThongBaoLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    // Index = form tạo thông báo (theo yêu cầu hiện tại)
+    { index: true, element: <ThongBaoCreatePage /> },
+    { path: "moi-nhat", element: <ThongBaoLatestPage /> },
+  ],
+},
 ]);
