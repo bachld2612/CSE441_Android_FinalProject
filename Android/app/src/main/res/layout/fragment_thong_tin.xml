@@ -50,6 +50,16 @@
             android:text="Tải CV"
             android:textColor="#111"
             android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btn_change_password"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#E4E4E4"
+            android:text="Đổi mật khẩu"
+            android:textColor="#111"
+            android:textSize="14sp"/>
     </LinearLayout>
 
     <!-- RecyclerView -->
