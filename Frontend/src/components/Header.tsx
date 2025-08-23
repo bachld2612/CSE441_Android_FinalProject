@@ -39,6 +39,7 @@ export default function Header() {
     { name: "Giảng viên", href: "/giang-vien", hidden: false },
     { name: "Hội đồng", href: "/hoi-dong", hidden: false },
     { name: "Tổ chức", href: "/to-chuc/khoa", hidden: false },
+    { name: "Thông báo hệ thống", href: "#", hidden: role == "GIANG_VIEN" || role == "TRUONG_BO_MON" }
   ];
 
   useEffect(() => {

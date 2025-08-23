@@ -92,7 +92,9 @@ public enum ErrorCode {
     THONG_BAO_NOT_FOUND(1042, "Thong bao not found", HttpStatus.NOT_FOUND),
     DANG_KY_TIME_INVALID(1043, "Not in thoi gian dang ki", HttpStatus.BAD_REQUEST),
     DE_TAI_ALREADY_ACCEPTED(1044, "De tai already accepted", HttpStatus.BAD_REQUEST),
-    NOT_IN_DOT_BAO_VE(1045, "Not in dot bao ve", HttpStatus.BAD_REQUEST),;
+    NOT_IN_DOT_BAO_VE(1045, "Not in dot bao ve", HttpStatus.BAD_REQUEST),
+    OLD_PASSWORD(1046, "This is old password", HttpStatus.FORBIDDEN),
+    ;
 
 
     int code;

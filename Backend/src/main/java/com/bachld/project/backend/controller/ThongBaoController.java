@@ -38,7 +38,7 @@ public class ThongBaoController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<ThongBaoCreationResponse> createThongBao(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam("tieuDe") String tieuDe,
             @RequestParam("noiDung") String noiDung
     ){
