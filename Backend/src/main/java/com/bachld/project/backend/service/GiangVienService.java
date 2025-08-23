@@ -23,4 +23,5 @@ public interface GiangVienService {
     Page<GiangVienResponse> getAllGiangVien(Pageable pageable);
     GiangVienResponse updateGiangVien(Long id, GiangVienUpdateRequest request);
     Set<GiangVienInfoResponse> getGiangVienByBoMonAndSoLuongDeTai(Long boMonId);
+    List<StudentSupervisedResponse> getMySinhVienSupervisedAll(String q);
 }

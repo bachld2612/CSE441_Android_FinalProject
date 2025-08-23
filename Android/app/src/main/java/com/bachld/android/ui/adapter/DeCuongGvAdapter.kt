@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bachld.android.R
 import com.bachld.android.data.dto.response.decuong.DeCuongItem
-import com.bachld.android.databinding.ItemDeCuongBinding
 import com.bachld.android.databinding.ItemDeCuongGvBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

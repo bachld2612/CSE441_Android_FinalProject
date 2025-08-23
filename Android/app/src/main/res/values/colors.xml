@@ -21,4 +21,12 @@
     <color name="state_success">#D4F8D3</color>
     <color name="state_pending">#FFF0BB</color>
     <color name="state_reject">#FFC300</color>
+
+    <!-- Nền thẻ xanh nhạt -->
+    <color name="student_card_bg">#E9F6FF</color>
+
+    <!-- Màu chữ -->
+    <color name="text_strong">#1B1B1F</color>   <!-- nhãn đậm, tối hơn -->
+    <color name="text_normal">#343A40</color>   <!-- giá trị -->
+    <color name="divider_soft">#14000000</color>
 </resources>

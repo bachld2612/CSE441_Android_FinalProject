@@ -200,7 +200,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         String email = auth.getName();
         boolean isGV = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("SCOPE_GIANG_VIEN")
-                        || a.getAuthority().equals("SCOPE_TRUONG_BO_MON"));
+                        || a.getAuthority().equals("SCOPE_TRUONG_BO_MON") || a.getAuthority().equals("SCOPE_TRO_LY_KHOA"));
 
 
         Page<DeCuong> page = isGV
