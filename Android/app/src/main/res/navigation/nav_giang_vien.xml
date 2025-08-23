@@ -49,4 +49,10 @@
         android:label="Thông tin"
         tools:layout="@layout/fragment_thong_tin" />
 
+    <fragment
+        android:id="@+id/gv_navigation_de_cuong"
+        android:name="com.bachld.android.ui.view.decuong.DeCuongGvFragment"
+        android:label="Danh sách đề cương"
+        tools:layout="@layout/fragment_de_cuong_list" />
+
 </navigation>

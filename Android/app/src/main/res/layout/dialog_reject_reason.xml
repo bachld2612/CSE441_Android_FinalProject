@@ -7,6 +7,7 @@
     android:padding="16dp">
 
     <LinearLayout
+        android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -15,6 +16,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:text="Từ chối đề tài"
             android:textStyle="bold"
             android:textSize="16sp"
@@ -24,14 +26,16 @@
             android:id="@+id/tilReason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Lý do từ chối">
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtReason"
+                android:hint="Lý do từ chối"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#E2E2E2"
                 android:inputType="textMultiLine"
-                android:minLines="2"/>
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -43,16 +47,19 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
+                android:backgroundTint="#9D9C9C"
                 android:layout_height="wrap_content"
+                app:cornerRadius="12dp"
                 android:text="Trở về"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnConfirmReject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#457B9D"
                 android:text="Xác nhận"
+                app:cornerRadius="12dp"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
     </LinearLayout>

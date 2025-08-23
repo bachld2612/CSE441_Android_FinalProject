@@ -1,4 +1,4 @@
-package com.bachld.android.ui.view.giangvien
+package com.bachld.android.ui.view.decuong
 
 import android.os.Bundle
 import android.view.View
@@ -11,68 +11,64 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bachld.android.R
 import com.bachld.android.core.UiState
-import com.bachld.android.databinding.FragmentXetDuyetDetaiListBinding
-import com.bachld.android.ui.adapter.XetDuyetDeTaiAdapter
-import com.bachld.android.ui.viewmodel.GVXetDuyetViewModel
-import com.google.ai.client.generativeai.type.content
+import com.bachld.android.databinding.FragmentDeCuongListBinding
+import com.bachld.android.ui.adapter.DeCuongGvAdapter
+import com.bachld.android.ui.viewmodel.DeCuongGvViewModel
 import kotlinx.coroutines.launch
 
-class GVDeTaiXetDuyetFragment : Fragment(R.layout.fragment_xet_duyet_detai_list) {
+class DeCuongGvFragment : Fragment(R.layout.fragment_de_cuong_list) {
 
-    private var _binding: FragmentXetDuyetDetaiListBinding? = null
+    private var _binding: FragmentDeCuongListBinding? = null
     private val binding get() = _binding!!
 
-    private val vm: GVXetDuyetViewModel by viewModels()
-    private lateinit var adapter: XetDuyetDeTaiAdapter
+    private val vm: DeCuongGvViewModel by viewModels()
+    private lateinit var adapter: DeCuongGvAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentXetDuyetDetaiListBinding.bind(view)
+        _binding = FragmentDeCuongListBinding.bind(view)
 
-        adapter = XetDuyetDeTaiAdapter(
+        adapter = DeCuongGvAdapter(
             onApprove = { id -> vm.approve(id) },
             onReject  = { id, reason -> vm.reject(id, reason) }
         )
-        binding.rvXetDuyet.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvXetDuyet.adapter = adapter
+        binding.rvDeCuong.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvDeCuong.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // 1) List
+
+                // Danh sách
                 launch {
                     vm.listState.collect { st ->
                         when (st) {
-                            is UiState.Loading -> { /* show loading nếu muốn */ }
-                            is UiState.Error -> toast(st.message ?: "Lỗi tải danh sách")
+                            is UiState.Loading -> { /* show loading nếu cần */ }
+                            is UiState.Error   -> toast(st.message ?: "Lỗi tải danh sách")
                             is UiState.Success -> {
-                                val page = st.data.result
-                                val list = page?.content.orEmpty() // <- nạp đúng type adapter
+                                val list = st.data.result?.content.orEmpty()
                                 adapter.submitList(list)
                             }
                             else -> Unit
                         }
                     }
                 }
-                // 2) Action (approve/reject)
+
+                // Hành động duyệt / từ chối
                 launch {
                     vm.actionState.collect { st ->
                         when (st) {
                             is UiState.Loading -> Unit
-                            is UiState.Error   -> {
-                                toast(st.message ?: "Thao tác thất bại")
-                                vm.clearAction()
-                            }
+                            is UiState.Error   -> { toast(st.message ?: "Thao tác thất bại"); vm.clearAction() }
                             is UiState.Success -> {
-                                val res = st.data
-                                val status = res.result?.status?.uppercase()
-                                val msg = res.message
+                                val status = st.data.result?.status?.uppercase()
+                                val msg = st.data.message
                                     ?: when (status) {
-                                        "ACCEPTED" -> "Đã duyệt đề tài"
-                                        "CANCELLED", "CENCELLED" -> "Đã từ chối đề tài"
+                                        "ACCEPTED" -> "Đã duyệt đề cương"
+                                        "CANCELLED", "CENCELLED" -> "Đã từ chối đề cương"
                                         else -> "Thành công"
                                     }
                                 toast(msg)
-                                vm.load(page = 0, size = 10) // reload
+                                vm.load(0, 10)
                                 vm.clearAction()
                             }
                             else -> Unit
@@ -82,7 +78,7 @@ class GVDeTaiXetDuyetFragment : Fragment(R.layout.fragment_xet_duyet_detai_list)
             }
         }
 
-        vm.load(page = 0, size = 10)
+        vm.load(0, 10)
     }
 
     private fun toast(msg: String) =

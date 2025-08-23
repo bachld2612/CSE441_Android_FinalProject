@@ -17,6 +17,7 @@ import {
   type KhoaResponse, type KhoaRequest,
 } from "@/services/khoa.service";
 import { useAuthStore } from "@/stores/authStore";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 export default function KhoaPage() {
   const [khoas, setKhoas] = useState<KhoaResponse[]>([]);
@@ -143,10 +144,19 @@ export default function KhoaPage() {
 
   return (
     <div className="space-y-6">
-      {/* Breadcrumb đơn giản */}
-      <div className="text-sm text-gray-500">
-        Trang chủ / Quản lý tổ chức / <span className="text-gray-700 font-medium">Quản lý khoa</span>
-      </div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Khoa
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       {/* Tiêu đề */}
       <h1 className="text-3xl font-bold text-center">Quản lý khoa</h1>

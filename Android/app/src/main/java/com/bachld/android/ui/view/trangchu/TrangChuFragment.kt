@@ -53,6 +53,13 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
             }
         }else{
             binding.layoutTopState.visibility = View.VISIBLE
+
+            binding.btnDeNghiHoan.setOnClickListener {
+                findNavController().navigate(R.id.action_trang_chu_to_hoan_do_an)
+            }
+            binding.btnDangKyDeTai.setOnClickListener {
+                findNavController().navigate(R.id.action_trang_chu_to_dang_ky_do_an)
+            }
         }
 
         setupRecyclerView()

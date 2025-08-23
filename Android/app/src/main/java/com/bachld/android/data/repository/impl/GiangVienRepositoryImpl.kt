@@ -10,6 +10,7 @@ import com.bachld.android.data.model.SupervisedStudent
 import com.bachld.android.data.model.mapper.to_model
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.data.repository.GiangVienRepository
+import com.bachld.android.data.dto.response.giangvien.GiangVienResponse
 
 class GiangVienRepositoryImpl: GiangVienRepository {
     private val api = ApiClient.giangVienApi
@@ -23,6 +24,10 @@ class GiangVienRepositoryImpl: GiangVienRepository {
 
     override suspend fun rejectDeTai(idDeTai: Long, lyDo: String): ApiResponse<DeTaiResponse> =
         api.rejectDeTai(idDeTai, RejectDeTaiRequest(lyDo))
+    override suspend fun getAllForDropdown(): List<GiangVienResponse> {
+        val page = api.listGiangVien(size = 200).result
+        return page?.content ?: emptyList()
+    }
 
     override suspend fun get_sinh_vien_huong_dan_all(q: String?)
             : List<SupervisedStudent> {
