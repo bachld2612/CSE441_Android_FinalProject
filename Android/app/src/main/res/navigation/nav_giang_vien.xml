@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_giang_vien"
+    app:startDestination="@id/gv_navigation_trang_chu">
+
+    <fragment
+        android:id="@+id/gv_navigation_trang_chu"
+        android:name="com.bachld.android.ui.view.trangchu.TrangChuFragment"
+        android:label="Trang chủ"
+        tools:layout="@layout/fragment_trang_chu_scrolling">
+
+        <!-- ✅ Action từ Trang chủ GV sang chi tiết -->
+        <action
+            android:id="@+id/action_gv_trang_chu_to_thong_bao_detail"
+            app:destination="@id/navigation_thong_bao_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gv_navigation_sinh_vien"
+        android:name="com.bachld.android.ui.view.giangvien.DanhSachSinhVienHuongDanFragment"
+        android:label="Sinh viên"
+        tools:layout="@layout/fragment_danh_sach_sinh_vien_huong_dan" />
+
+    <!-- ✅ Destination chi tiết phải có trong graph GV -->
+    <fragment
+        android:id="@+id/navigation_thong_bao_detail"
+        android:name="com.bachld.android.ui.view.thongbao.ThongBaoDetailFragment"
+        android:label="Chi tiết thông báo"
+        tools:layout="@layout/fragment_thong_bao_detail">
+
+        <argument android:name="id" app:argType="long" />
+        <argument android:name="title" app:argType="string" />
+        <argument android:name="content" app:argType="string" />
+        <argument android:name="fileUrl" app:argType="string" app:nullable="true" />
+        <argument android:name="createdAt" app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gv_navigation_de_tai"
+        android:name="com.bachld.android.ui.view.giangvien.GVDeTaiXetDuyetFragment"
+        android:label="Đề tài"
+        tools:layout="@layout/fragment_xet_duyet_detai_list" />
+
+    <fragment
+        android:id="@+id/gv_navigation_thong_tin"
+        android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"
+        android:label="Thông tin"
+        tools:layout="@layout/fragment_thong_tin" />
+
+    <fragment
+        android:id="@+id/gv_navigation_de_cuong"
+        android:name="com.bachld.android.ui.view.decuong.DeCuongGvFragment"
+        android:label="Danh sách đề cương"
+        tools:layout="@layout/fragment_de_cuong_list" />
+
+    <fragment
+        android:id="@+id/cvWebViewFragment"
+        android:name="com.bachld.android.ui.view.giangvien.CvWebViewFragment"
+        android:label="Xem CV">
+        <argument
+            android:name="cv_url"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

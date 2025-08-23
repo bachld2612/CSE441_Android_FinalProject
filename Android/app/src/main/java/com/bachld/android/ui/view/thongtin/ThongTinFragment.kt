@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil3.load
 import coil3.request.CachePolicy
@@ -27,9 +26,13 @@ import com.bachld.android.data.dto.response.auth.MyInfoResponse
 import com.bachld.android.databinding.FragmentThongTinBinding
 import com.bachld.android.ui.adapter.ProfileAdapter
 import com.bachld.android.ui.adapter.ProfileRow
+import com.bachld.android.ui.viewmodel.CvViewModel
 import com.bachld.android.ui.viewmodel.ThongTinViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.bachld.android.databinding.DialogDoiMatKhauBinding
+import androidx.appcompat.app.AlertDialog
 
 class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
 
@@ -38,6 +41,14 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
 
     private val infoVm: ThongTinViewModel by viewModels()
     private val adapter = ProfileAdapter()
+
+    private var changePwdDialog: AlertDialog? = null
+    private val cvVm: CvViewModel by viewModels()
+
+    // Picker CV (PDF)
+    private val pickPdf = registerForActivityResult(GetContent()) { uri: Uri? ->
+        uri?.let { cvVm.uploadCv(requireContext(), it) }
+    }
 
     // Picker ảnh
     private val pickImage = registerForActivityResult(GetContent()) { uri: Uri? ->
@@ -48,12 +59,30 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentThongTinBinding.bind(view)
 
+
+        val role = UserPrefs(requireContext()).getCached()?.role?.lowercase()
+        val isGV = role == "giang_vien" || role == "truong_bo_mon" || role == "tro_ly_khoa"
+        if (isGV) {
+            // Giảng viên không cần upload CV
+            binding.btnUploadCv.visibility = View.GONE
+        } else {
+            // Sinh viên mới có nút upload CV
+            binding.btnUploadCv.visibility = View.VISIBLE
+        }
         // Recycler
         binding.rvProfile.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProfile.adapter = adapter
 
         // Nút sửa -> mở picker
         binding.btnEdit.setOnClickListener { pickImage.launch("image/*") }
+
+        binding.btnUploadCv.setOnClickListener {
+            pickPdf.launch("application/pdf")
+        }
+
+        binding.btnChangePassword.setOnClickListener {
+            showChangePasswordDialog()
+        }
 
         // Load avatar từ cache nếu có
         UserPrefs(requireContext()).getCached()?.anhDaiDienUrl?.let { url ->
@@ -78,6 +107,61 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
         // Quan sát my-info
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    infoVm.changePasswordState.collect { st ->
+                        when (st) {
+                            is UiState.Loading -> Unit
+                            is UiState.Success -> {
+                                val res = st.data
+                                when (res.code) {
+                                    1000 -> {
+                                        toast("Đổi mật khẩu thành công")
+                                        changePwdDialog?.dismiss()
+                                    }
+                                    1007 -> toast("Mật khẩu cũ không chính xác")
+                                    1046 -> toast("Mật khẩu mới không được trùng với mật khẩu cũ")
+                                    else -> toast(res.message ?: "Đổi mật khẩu thất bại")
+                                }
+                                changePwdDialog?.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.isEnabled = true
+                                infoVm.clearChangePasswordState()
+                            }
+                            is UiState.Error -> {
+                                toast(st.message ?: "Lỗi đổi mật khẩu")
+                                changePwdDialog?.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)?.isEnabled = true
+                                infoVm.clearChangePasswordState()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
+                // Quan sát các state từ ViewModel upload cv
+                launch {
+                    cvVm.cvState.collect { st ->
+                        when (st) {
+                            is UiState.Loading -> {
+                                binding.btnUploadCv.isEnabled = false
+                                Toast.makeText(requireContext(), "Đang upload CV...", Toast.LENGTH_SHORT).show()
+                            }
+                            is UiState.Success -> {
+                                binding.btnUploadCv.isEnabled = true
+                                val res = st.data
+                                if (res.code == 1000) {
+                                    Toast.makeText(requireContext(), "Upload CV thành công", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(requireContext(), res.message ?: "Upload CV thất bại", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            is UiState.Error -> {
+                                binding.btnUploadCv.isEnabled = true
+                                Toast.makeText(requireContext(), st.message ?: "Lỗi upload CV", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
                 launch {
                     infoVm.myInfoState.collect { st ->
                         when (st) {
@@ -187,7 +271,7 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
                 rows += ProfileRow("Ngành", info.nganh.orEmpty())
                 rows += ProfileRow("Khoa", info.khoa.orEmpty())
             }
-            "giang_vien", "truong_bo_mon" -> {
+            "giang_vien", "truong_bo_mon", "tro_ly_khoa" -> {
                 rows += ProfileRow("Mã giảng viên", info.maGV.orEmpty())
                 rows += ProfileRow("Học vị", info.hocVi.orEmpty())
                 rows += ProfileRow("Học hàm", info.hocHam.orEmpty())
@@ -214,10 +298,43 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
         }
     }
 
+    private fun showChangePasswordDialog() {
+        val db = DialogDoiMatKhauBinding.inflate(layoutInflater)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Đổi mật khẩu")
+            .setView(db.root)
+            .setNegativeButton("Trở về", null)
+            .setPositiveButton("Đổi mật khẩu", null)
+            .create()
+        dialog.setOnShowListener {
+            val positive = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+            positive.setOnClickListener {
+                val current = db.etCurrent.text?.toString().orEmpty()
+                val newPw = db.etNew.text?.toString().orEmpty()
+                val confirm = db.etConfirm.text?.toString().orEmpty()
+
+                if (current.length < 6 || newPw.length < 6 || confirm.length < 6) {
+                    toast("Mật khẩu phải chứa ít nhất 6 kí tự")
+                    return@setOnClickListener
+                }
+                if (newPw != confirm) {
+                    toast("Xác nhận mật khẩu không khớp")
+                    return@setOnClickListener
+                }
+                infoVm.changePassword(current, newPw)
+                positive.isEnabled = false
+            }
+        }
+        dialog.show()
+        changePwdDialog = dialog
+    }
+
     private fun toast(s: String) =
         Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show()
 
     override fun onDestroyView() {
+        changePwdDialog?.dismiss()
+        changePwdDialog = null
         _binding = null
         super.onDestroyView()
     }

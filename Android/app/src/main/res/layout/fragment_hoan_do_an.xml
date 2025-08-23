@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:text="Gửi đề nghị"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="#537198"
+                android:backgroundTint="@color/brand_457b9d"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"

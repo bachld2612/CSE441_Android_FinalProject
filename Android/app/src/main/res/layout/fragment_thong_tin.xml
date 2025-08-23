@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="70dp">
@@ -39,32 +40,58 @@
             android:text="Sửa"
             android:textColor="#111"
             android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btn_upload_cv"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#E4E4E4"
+            android:text="Tải CV"
+            android:textColor="#111"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btn_change_password"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#E4E4E4"
+            android:text="Đổi mật khẩu"
+            android:textColor="#111"
+            android:textSize="14sp"/>
     </LinearLayout>
 
     <!-- RecyclerView -->
+
+
+    <!-- NÚT ĐĂNG XUẤT (mới) -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_profile"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
         android:clipToPadding="false"
+        android:padding="8dp"
         android:paddingBottom="70dp"
-        app:layout_constraintTop_toBottomOf="@id/profile_bg_block"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_logout" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_bg_block"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- NÚT ĐĂNG XUẤT (mới) -->
     <Button
         android:id="@+id/btn_logout"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:text="Đăng xuất"
-        android:textAllCaps="false"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="24dp"
+        android:text="Đăng xuất"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

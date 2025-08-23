@@ -3,9 +3,17 @@ package com.bachld.android.data.remote.client
 import android.app.Application
 import com.bachld.android.core.ApiConfig
 import com.bachld.android.core.AuthInterceptor
+import com.bachld.android.core.MoshiDateTimeConfig
+import com.bachld.android.data.remote.service.*
+import com.bachld.android.core.LocalDateJsonAdapter
 import com.bachld.android.data.remote.service.AuthApi
 import com.bachld.android.data.remote.service.DeTaiApi
+import com.bachld.android.data.remote.service.GiangVienApi
+import com.bachld.android.data.remote.service.SinhVienApi
 import com.bachld.android.data.remote.service.TaiKhoanApi
+import com.bachld.android.data.remote.service.DeCuongApi
+import com.bachld.android.data.remote.service.HoiDongApi
+import com.bachld.android.data.remote.service.ThongBaoApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -21,9 +29,19 @@ object ApiClient {
         private set
     lateinit var app: Application
         private set
-
     lateinit var deTaiApi: DeTaiApi
         private set
+    lateinit var deCuongApi: DeCuongApi
+        private set
+    lateinit var thongBaoApi: ThongBaoApi
+    lateinit var sinhVienApi: SinhVienApi
+    lateinit var donHoanDoAnApi: DonHoanDoAnApi
+        private set
+    lateinit var giangVienApi: GiangVienApi
+        private set
+    lateinit var hoiDongApi: HoiDongApi
+        private set
+
 
     fun init(app: Application) {
         this.app = app
@@ -31,6 +49,7 @@ object ApiClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+
         val okHttp = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(app.applicationContext))
             .addInterceptor(logging)
@@ -38,10 +57,8 @@ object ApiClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .build()
 
-        // Khởi tạo Moshi với hỗ trợ Kotlin
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        // Dùng module cấu hình Moshi đã tách
+        val moshi = MoshiDateTimeConfig.build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl(ApiConfig.BASE_URL)
@@ -52,5 +69,11 @@ object ApiClient {
         authApi = retrofit.create(AuthApi::class.java)
         taiKhoanApi = retrofit.create(TaiKhoanApi::class.java)
         deTaiApi = retrofit.create(DeTaiApi::class.java)
+        thongBaoApi = retrofit.create(ThongBaoApi::class.java)
+        sinhVienApi = retrofit.create(SinhVienApi::class.java)
+        deCuongApi = retrofit.create(DeCuongApi::class.java)
+        donHoanDoAnApi = retrofit.create(DonHoanDoAnApi::class.java)
+        hoiDongApi = retrofit.create(HoiDongApi::class.java)
+        giangVienApi = retrofit.create(GiangVienApi::class.java)
     }
 }

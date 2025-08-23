@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_sinh_vien"
+    app:startDestination="@id/navigation_trang_chu">
+
+    <!-- Trang chủ -->
+    <fragment
+        android:id="@+id/navigation_trang_chu"
+        android:name="com.bachld.android.ui.view.trangchu.TrangChuFragment"
+        android:label="Trang chủ"
+        tools:layout="@layout/fragment_trang_chu_scrolling">
+
+        <action
+            android:id="@+id/action_trang_chu_to_thong_bao_detail"
+            app:destination="@id/navigation_thong_bao_detail"
+            app:popUpTo="@id/navigation_trang_chu"
+            app:popUpToInclusive="false" />
+
+        <action
+            android:id="@+id/action_trang_chu_to_hoan_do_an"
+            app:destination="@id/hoan_do_an"/>
+
+        <action
+            android:id="@+id/action_trang_chu_to_dang_ky_do_an"
+            app:destination="@id/dang_ky_do_an"/>
+    </fragment>
+
+    <!-- Chi tiết thông báo -->
+    <fragment
+        android:id="@+id/navigation_thong_bao_detail"
+        android:name="com.bachld.android.ui.view.thongbao.ThongBaoDetailFragment"
+        android:label="Chi tiết thông báo"
+        tools:layout="@layout/fragment_thong_bao_detail">
+        <argument android:name="id" app:argType="long" />
+        <argument android:name="title" app:argType="string" />
+        <argument android:name="content" app:argType="string" />
+        <argument android:name="fileUrl" app:argType="string" app:nullable="true" />
+        <argument android:name="createdAt" app:argType="string" />
+    </fragment>
+
+    <!-- Đồ án + Đề cương -->
+    <fragment
+        android:id="@+id/navigation_do_an"
+        android:name="com.bachld.android.ui.view.doan.DoAnFragment"
+        android:label="Đồ án"
+        tools:layout="@layout/fragment_do_an">
+        <action
+            android:id="@+id/action_navigation_do_an_to_de_cuong"
+            app:destination="@id/de_cuong" />
+        <action
+            android:id="@+id/action_navigation_do_an_to_hoan_do_an"
+            app:destination="@id/hoan_do_an" />
+        <action
+            android:id="@+id/action_navigation_do_an_to_dang_ky_do_an"
+            app:destination="@id/dang_ky_do_an" />
+    </fragment>
+
+    <!-- Hội đồng -->
+    <fragment
+        android:id="@+id/navigation_hoi_dong"
+        android:name="com.bachld.android.ui.view.hoidong.HoiDongFragment"
+        android:label="Hội đồng"
+        tools:layout="@layout/fragment_hoi_dong">
+        <action
+            android:id="@+id/action_hoiDong_to_chiTietHoiDong"
+            app:destination="@id/chiTietHoiDongFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chiTietHoiDongFragment"
+        android:name="com.bachld.android.ui.view.hoidong.ChiTietHoiDongFragment"
+        android:label="Chi tiết hội đồng"
+        tools:layout="@layout/fragment_chi_tiet_hoi_dong">
+        <argument android:name="hoiDongId" app:argType="long" />
+        <argument android:name="tenHoiDong" app:argType="string" />
+    </fragment>
+
+    <!-- Thông tin -->
+    <fragment
+        android:id="@+id/navigation_thong_tin"
+        android:name="com.bachld.android.ui.view.thongtin.ThongTinFragment"
+        android:label="Thông tin"
+        tools:layout="@layout/fragment_thong_tin" />
+
+    <!-- NEW: Thông tin đồ án (destination riêng, để bạn điều hướng tới khi cần) -->
+    <fragment
+        android:id="@+id/thong_tin_do_an"
+        android:name="com.bachld.android.ui.view.doan.ThongTinDoAnFragment"
+        android:label="Thông tin đồ án"
+        tools:layout="@layout/fragment_thong_tin_do_an" >
+        <action
+            android:id="@+id/action_thong_tin_do_an_to_hoan_do_an2"
+            app:destination="@id/hoan_do_an" />
+        <action
+            android:id="@+id/action_thong_tin_do_an_to_dang_ky_do_an"
+            app:destination="@id/dang_ky_do_an" />
+    </fragment>
+
+    <!-- NEW: De cương (container TabLayout + ViewPager2) -->
+    <fragment
+        android:id="@+id/de_cuong"
+        android:name="com.bachld.android.ui.view.decuong.DeCuongFragment"
+        android:label="Đề cương"
+        tools:layout="@layout/fragment_de_cuong" />
+
+    <fragment
+        android:id="@+id/hoan_do_an"
+        android:name="com.bachld.android.ui.view.doan.HoanDoAnFragment"
+        android:label="Đề nghị hoãn đồ án"
+        tools:layout="@layout/fragment_hoan_do_an" />
+
+    <fragment
+        android:id="@+id/dang_ky_do_an"
+        android:name="com.bachld.android.ui.view.doan.DangKyDoAnFragment"
+        android:label="Đăng ký thực hiện đồ án"
+        tools:layout="@layout/fragment_dang_ky_do_an" />
+
+</navigation>

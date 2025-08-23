@@ -23,7 +23,7 @@ public interface DeCuongMapper {
             @Mapping(source = "deTai.sinhVienThucHien.hoTen", target = "hoTenSinhVien"),
             @Mapping(source = "deTai.gvhd.hoTen",             target = "hoTenGiangVien"),
             @Mapping(source = "soLanNop",                     target = "soLanNop"),
-//            @Mapping(source = "nhanXet",                      target = "nhanXet")
+            @Mapping(source = "deCuongUrl",                   target = "deCuongUrl"),
     })
     DeCuongResponse toResponse(DeCuong entity);
 

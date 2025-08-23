@@ -23,7 +23,7 @@ public class DonHoanDoAnController {
     DonHoanDoAnService donHoanDoAnService;
 
     // Sinh viên gửi đơn hoãn (lý do + file minh chứng optional)
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/sinh-vien/hoan-do-an", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<DonHoanDoAnResponse> createPostponeRequest(
             @ModelAttribute DonHoanDoAnRequest request) {
         return ApiResponse.<DonHoanDoAnResponse>builder()

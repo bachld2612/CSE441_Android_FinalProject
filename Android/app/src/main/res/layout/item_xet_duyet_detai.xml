@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    android:backgroundTint="#E4F6FF"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="12dp"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Tiêu đề đề tài -->
+        <TextView
+            android:id="@+id/tvTenDeTai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đề tài: ..."
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Mã SV -->
+        <TextView
+            android:id="@+id/tvMaSV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mã sinh viên: 2251172xxx"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp"
+            android:textColor="#333" />
+
+        <!-- Họ tên -->
+        <TextView
+            android:id="@+id/tvHoTen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Họ và tên: Nguyễn Văn A"
+            android:textSize="14sp"
+            android:textColor="#333" />
+
+        <!-- Lớp -->
+        <TextView
+            android:id="@+id/tvTenLop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lớp: 64KTPM4"
+            android:textSize="14sp"
+            android:textColor="#333" />
+
+        <!-- Trạng thái -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trạng thái:"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTrangThai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="chờ xét duyệt"
+                app:chipCornerRadius="8dp"
+                app:chipIconVisible="false" />
+        </LinearLayout>
+
+        <!-- Hàng nút hành động: chỉ hiện khi PENDING -->
+        <LinearLayout
+            android:id="@+id/layoutAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="#FFC400"
+                android:text="Từ chối"
+                app:cornerRadius="12dp"
+                app:iconPadding="8dp"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApprove"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Duyệt"
+                android:backgroundTint="#30C04F"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="8dp"
+                app:iconPadding="8dp"
+                app:iconGravity="textStart" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,12 +1,14 @@
 package com.bachld.project.backend.service.impl;
 
+import com.bachld.project.backend.dto.request.detai.DeTaiGiangVienHuongDanRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiRequest;
 import com.bachld.project.backend.dto.request.detai.DeTaiApprovalRequest;
+import com.bachld.project.backend.dto.response.detai.DeTaiGiangVienHuongDanResponse;
 import com.bachld.project.backend.dto.response.detai.DeTaiResponse;
-import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.SinhVien;
+import com.bachld.project.backend.entity.*;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
@@ -14,6 +16,7 @@ import com.bachld.project.backend.mapper.DeTaiMapper;
 import com.bachld.project.backend.repository.*;
 import com.bachld.project.backend.service.CloudinaryService;
 import com.bachld.project.backend.service.DeTaiService;
+import com.bachld.project.backend.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -36,6 +41,22 @@ public class DeTaiServiceImpl implements DeTaiService {
     GiangVienRepository giangVienRepository;
     CloudinaryService cloudinaryService;
     DeTaiMapper deTaiMapper;
+    TimeGatekeeper timeGatekeeper;
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
+    public DeTaiResponse approveByGiangVien(Long deTaiId, String nhanXet) {
+        DeTaiApprovalRequest req = new DeTaiApprovalRequest(true, nhanXet);
+        return approveDeTai(deTaiId, req);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
+    public DeTaiResponse rejectByGiangVien(Long deTaiId, String nhanXet) {
+        DeTaiApprovalRequest req = new DeTaiApprovalRequest(false, nhanXet);
+        return approveDeTai(deTaiId, req);
+    }
+
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
@@ -44,23 +65,29 @@ public class DeTaiServiceImpl implements DeTaiService {
         String accountEmail = getCurrentUsername();
         SinhVien sv = sinhVienRepository.findByTaiKhoan_Email(accountEmail)
                         .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        ThoiGianThucHien thoiGianDangKy = timeGatekeeper.validateThoiGianDangKy();
+        DotBaoVe dotBaoVe = thoiGianDangKy.getDotBaoVe();
+        DeTai deTai = sv.getDeTai();
 
-        // chặn nếu SV đã có đề tài đang tồn tại
-        if (deTaiRepository.existsBySinhVienThucHien_Id(sv.getId())) {
-            throw new ApplicationException(ErrorCode.SINH_VIEN_ALREADY_REGISTERED_DE_TAI);
+        if (deTai == null) {
+            deTai = deTaiMapper.toDeTai(request);
+            deTai.setSinhVienThucHien(sv);
+        } else {
+            if(deTai.getTrangThai() == DeTaiState.ACCEPTED){
+                throw  new ApplicationException(ErrorCode.DE_TAI_ALREADY_ACCEPTED);
+            }
+            deTaiMapper.update(request, deTai);
         }
 
-        DeTai detai = deTaiMapper.toDeTai(request);
-        detai.setSinhVienThucHien(sv);
-
-        try { detai.setTrangThai(DeTaiState.valueOf("PENDING")); } catch (Exception ignored) {}
+        deTai.setTrangThai(DeTaiState.PENDING);
 
         if (request.getFileTongQuan() != null && !request.getFileTongQuan().isEmpty()) {
             String url = upload(request.getFileTongQuan());
-            detai.setTongQuanDeTaiUrl(url);
+            deTai.setTongQuanDeTaiUrl(url);
         }
 
-        DeTai saved = deTaiRepository.save(detai);
+        deTai.setDotBaoVe(dotBaoVe);
+        DeTai saved = deTaiRepository.save(deTai);
         return deTaiMapper.toDeTaiResponse(saved);
     }
 
@@ -75,6 +102,27 @@ public class DeTaiServiceImpl implements DeTaiService {
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
         return deTaiMapper.toDeTaiResponse(deTai);
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @Override
+    public DeTaiGiangVienHuongDanResponse addGiangVienHuongDan(DeTaiGiangVienHuongDanRequest request) {
+        SinhVien sv = sinhVienRepository.findByMaSV(request.getMaSV())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        GiangVien gv = giangVienRepository.findByMaGV(request.getMaGV()).
+                orElseThrow(() -> new ApplicationException(ErrorCode.GIANG_VIEN_NOT_FOUND));
+        Optional<DeTai> deTai = deTaiRepository.findBySinhVienThucHien_Id(sv.getId());
+        if(deTai.isPresent()) {
+            throw new ApplicationException(ErrorCode.SINH_VIEN_ALREADY_REGISTERED_DE_TAI);
+        }
+        DeTai newDeTai = DeTai.builder()
+                .sinhVienThucHien(sv)
+                .gvhd(gv)
+                .build();
+        deTaiRepository.save(newDeTai);
+        return DeTaiGiangVienHuongDanResponse.builder()
+                .success(true)
+                .build();
     }
 
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")

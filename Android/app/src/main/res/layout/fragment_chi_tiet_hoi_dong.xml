@@ -4,10 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/committee_detail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <!-- AppBar + Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -16,14 +14,12 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#FFFFFF"
+            android:background="?attr/colorPrimary"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:title="Chi tiết hội đồng"
-            app:titleTextColor="@color/black"
-            android:elevation="4dp"/>
+            app:titleTextColor="@android:color/white"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Nội dung chính cuộn cùng AppBar -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,39 +31,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Tiêu đề hội đồng -->
+            <!-- TÊN HỘI ĐỒNG -->
             <TextView
+                android:id="@+id/tvCommitteeName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hội đồng A"
-                android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#232323"
+                android:textSize="18sp"
                 android:gravity="center"
                 android:layout_marginBottom="12dp"/>
 
-            <androidx.cardview.widget.CardView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <!-- Card thông tin hội đồng -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="16dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="#D6EAF8"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="#E3F2FD">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="#E3F2FD">
+                    android:padding="12dp">
 
-                    <!-- 1: Ngày bảo vệ -->
+                    <!-- Ngày bảo vệ -->
                     <LinearLayout
+                        android:id="@+id/rowDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:paddingVertical="4dp">
 
                         <TextView
@@ -75,27 +73,32 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Ngày bảo vệ:"
-                            android:textColor="#232323"
                             android:textStyle="bold"
-                            />
+                            android:textColor="#232323"/>
 
                         <TextView
                             android:id="@+id/tvDateDetail"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:layout_marginStart="8dp"
+                            android:text="15/08/2025–15/09/2025"
                             android:textColor="#232323"
-                            android:text="21/7/2025 – 22/7/2025"/>
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="12sp"
+                            android:autoSizeMaxTextSize="14sp"
+                            android:autoSizeStepGranularity="1sp"/>
                     </LinearLayout>
 
-                    <!-- 2: Chủ tịch hội đồng -->
+                    <!-- Chủ tịch -->
                     <LinearLayout
+                        android:id="@+id/rowChair"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:paddingVertical="4dp">
-
                         <TextView
                             android:id="@+id/tvChairLabel"
                             android:layout_width="wrap_content"
@@ -103,24 +106,22 @@
                             android:text="Chủ tịch hội đồng:"
                             android:textStyle="bold"
                             android:textColor="#232323"/>
-
                         <TextView
                             android:id="@+id/tvChairDetail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:textColor="#232323"
-                            android:text="Th.S Kiều Tuấn Dũng"/>
+                            android:text="-"
+                            android:textColor="#232323"/>
                     </LinearLayout>
 
-                    <!-- 3: Thư ký hội đồng -->
+                    <!-- Thư ký -->
                     <LinearLayout
+                        android:id="@+id/rowSecretary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:paddingVertical="4dp">
-
                         <TextView
                             android:id="@+id/tvSecretaryLabel"
                             android:layout_width="wrap_content"
@@ -128,49 +129,45 @@
                             android:text="Thư ký hội đồng:"
                             android:textStyle="bold"
                             android:textColor="#232323"/>
-
                         <TextView
                             android:id="@+id/tvSecretaryDetail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:textColor="#232323"
-                            android:text="Th.S Kiều Tuấn Dũng"/>
+                            android:text="-"
+                            android:textColor="#232323"/>
                     </LinearLayout>
 
-                    <!-- 4: Giảng viên PB 1 -->
+                    <!-- PB 1 -->
                     <LinearLayout
+                        android:id="@+id/rowPB1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:paddingVertical="4dp">
-
                         <TextView
                             android:id="@+id/tvReviewer1Label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Giảng viên PB 1:"
-                            android:textColor="#232323"
-                            android:textStyle="bold"/>
-
+                            android:textStyle="bold"
+                            android:textColor="#232323"/>
                         <TextView
                             android:id="@+id/tvReviewer1Detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:textColor="#232323"
-                            android:text="Th.S Kiều Tuấn Dũng"/>
+                            android:text="-"
+                            android:textColor="#232323"/>
                     </LinearLayout>
 
-                    <!-- 5: Giảng viên PB 2 -->
+                    <!-- PB 2 -->
                     <LinearLayout
+                        android:id="@+id/rowPB2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:paddingVertical="4dp">
-
                         <TextView
                             android:id="@+id/tvReviewer2Label"
                             android:layout_width="wrap_content"
@@ -178,45 +175,42 @@
                             android:text="Giảng viên PB 2:"
                             android:textStyle="bold"
                             android:textColor="#232323"/>
-
                         <TextView
                             android:id="@+id/tvReviewer2Detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:textColor="#232323"
-                            android:text="Th.S Kiều Tuấn Dũng"/>
+                            android:text="-"
+                            android:textColor="#232323"/>
                     </LinearLayout>
 
-                    <!-- 6: Giảng viên PB 3 -->
+                    <!-- PB 3 -->
                     <LinearLayout
+                        android:id="@+id/rowPB3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
                         android:paddingVertical="4dp">
-
                         <TextView
                             android:id="@+id/tvReviewer3Label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Giảng viên PB 3:"
-                            android:textColor="#232323"
-                            android:textStyle="bold"/>
-
+                            android:textStyle="bold"
+                            android:textColor="#232323"/>
                         <TextView
                             android:id="@+id/tvReviewer3Detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:textColor="#232323"
-                            android:text="Th.S Kiều Tuấn Dũng"/>
+                            android:text="-"
+                            android:textColor="#232323"/>
                     </LinearLayout>
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Nhãn phân vùng Sinh viên bảo vệ -->
+            <!-- Header Sinh viên -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -226,14 +220,14 @@
                 android:textColor="#232323"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- RecyclerView danh sách sinh viên -->
+            <!-- List sinh viên -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvStudents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

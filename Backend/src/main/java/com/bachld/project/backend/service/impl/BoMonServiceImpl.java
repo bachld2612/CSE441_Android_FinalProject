@@ -3,7 +3,9 @@ package com.bachld.project.backend.service.impl;
 import com.bachld.project.backend.dto.request.bomon.BoMonRequest;
 import com.bachld.project.backend.dto.request.bomon.TruongBoMonCreationRequest;
 import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
+import com.bachld.project.backend.dto.response.bomon.BoMonWithTruongBoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
+import com.bachld.project.backend.dto.response.giangvien.GiangVienLiteResponse;
 import com.bachld.project.backend.entity.BoMon;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.Khoa;
@@ -11,6 +13,7 @@ import com.bachld.project.backend.enums.Role;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.BoMonMapper;
+import com.bachld.project.backend.mapper.GiangVienMapper;
 import com.bachld.project.backend.repository.BoMonRepository;
 import com.bachld.project.backend.repository.GiangVienRepository;
 import com.bachld.project.backend.repository.KhoaRepository;
@@ -24,6 +27,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -34,6 +39,7 @@ public class BoMonServiceImpl implements BoMonService {
     BoMonMapper boMonMapper;
     KhoaRepository khoaRepository;
     private final GiangVienRepository giangVienRepository;
+    GiangVienMapper giangVienMapper;
 
     @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_ADMIN')")
     @Override
@@ -99,5 +105,12 @@ public class BoMonServiceImpl implements BoMonService {
         giangVienRepository.save(truongBoMon);
         return boMonMapper.toTruongBoMonCreationResponse(boMonRepository.save(boMon));
 
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public Page<BoMonWithTruongBoMonResponse> findAllWithTruongBoMon(Pageable pageable) {
+        return boMonRepository.findAll(pageable)
+                .map(boMonMapper::toWithTruongBoMon);
     }
 }

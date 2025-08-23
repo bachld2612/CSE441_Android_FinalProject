@@ -14,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class DeTai extends BaseEntity {
 
     String tenDeTai;

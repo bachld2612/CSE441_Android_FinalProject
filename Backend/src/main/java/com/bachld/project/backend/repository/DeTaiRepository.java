@@ -14,5 +14,6 @@ public interface DeTaiRepository extends JpaRepository<DeTai, Long> {
     boolean existsBySinhVienThucHien_Id(Long sinhVienId);
     Page<DeTai> findByGvhd_IdAndTrangThai(Long gvhdId, DeTaiState trangThai, Pageable pageable);
     Optional<DeTai> findBySinhVienThucHien_Id(Long sinhVienId);
-    
+    Optional<DeTai> findByTenDeTaiIgnoreCaseAndSinhVienThucHien_MaSVIgnoreCase(String tenDeTai, String sinhVienThucHienMaSV);
+    Optional<DeTai> findBySinhVienThucHien_TaiKhoan_EmailIgnoreCase(String email);
 }

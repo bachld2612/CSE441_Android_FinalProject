@@ -1,10 +1,10 @@
 package com.bachld.project.backend.service.impl;
 
+import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.entity.DeCuong;
 import com.bachld.project.backend.entity.DeTai;
-import com.bachld.project.backend.entity.DotBaoVe;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.ThoiGianThucHien;
 import com.bachld.project.backend.enums.CongViec;
@@ -15,7 +15,7 @@ import com.bachld.project.backend.exception.ErrorCode;
 import com.bachld.project.backend.mapper.DeCuongMapper;
 import com.bachld.project.backend.repository.*;
 import com.bachld.project.backend.service.DeCuongService;
-import com.bachld.project.backend.service.util.TimeGatekeeper;
+import com.bachld.project.backend.util.TimeGatekeeper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -51,38 +50,42 @@ public class DeCuongServiceImpl implements DeCuongService {
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
-    public DeCuongResponse submitDeCuong(Long deTaiId, String fileUrl) {
-        DeTai deTai = deTaiRepository.findById(deTaiId)
+    public DeCuongResponse submitDeCuong(DeCuongUploadRequest request) {
+        // 1) Lấy email hiện hành
+        final String email = currentUsername();
+
+        // 2) Tìm DeTai thuộc về SV hiện hành (ràng buộc UNIQUE theo DB)
+        DeTai deTai = deTaiRepository
+                .findBySinhVienThucHien_TaiKhoan_EmailIgnoreCase(email)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
+        // 3) Kiểm tra trạng thái đề tài
         if (deTai.getTrangThai() != DeTaiState.ACCEPTED) {
             throw new ApplicationException(ErrorCode.DE_TAI_NOT_ACCEPTED);
         }
 
-        DotBaoVe dot = deTai.getDotBaoVe();
-        if (dot == null) {
+        // 4) Phải có đợt bảo vệ
+        if (deTai.getDotBaoVe() == null) {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // Chỉ cho nộp trong mốc NỘP_ĐỀ_CƯƠNG của chính đợt của đề tài
-        timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, dot);
+        // 5) Kiểm tra chỉ được nộp trong mốc NỘP_ĐỀ_CƯƠNG
+        timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, deTai.getDotBaoVe());
 
-        // Chỉ SV chủ sở hữu
-        String email = currentUsername();
-        boolean isOwner = deTai.getSinhVienThucHien() != null
-                && deTai.getSinhVienThucHien().getTaiKhoan() != null
-                && email.equalsIgnoreCase(deTai.getSinhVienThucHien().getTaiKhoan().getEmail());
-        if (!isOwner) {
-            throw new ApplicationException(ErrorCode.ACCESS_DENIED);
+        // 6) Lấy/chuẩn hóa URL
+        final String finalUrl = toClickableUrl(request.getFileUrl());
+        if (finalUrl == null || finalUrl.isBlank()) {
+            throw new ApplicationException(ErrorCode.FILE_URL_EMPTY);
         }
 
-        DeCuong dc = deCuongRepository.findByDeTai_Id(deTai.getId())
+        // 7) Tạo mới/cập nhật DeCuong theo SV hiện hành
+        DeCuong dc = deCuongRepository
+                .findByDeTai_SinhVienThucHien_TaiKhoan_EmailIgnoreCase(email)
                 .map(existing -> {
                     if (existing.getTrangThai() == DeCuongState.ACCEPTED) {
-                        // Đã duyệt thì không cho nộp nữa
                         throw new ApplicationException(ErrorCode.DE_CUONG_ALREADY_APPROVED);
                     }
-                    existing.setDeCuongUrl(fileUrl);
+                    existing.setDeCuongUrl(finalUrl);
                     existing.setTrangThai(DeCuongState.PENDING);
                     existing.setSoLanNop(existing.getSoLanNop() + 1);
                     return existing;
@@ -90,14 +93,16 @@ public class DeCuongServiceImpl implements DeCuongService {
                 .orElseGet(() -> {
                     DeCuong created = new DeCuong();
                     created.setDeTai(deTai);
-                    created.setDeCuongUrl(fileUrl);
+                    created.setDeCuongUrl(finalUrl);
                     created.setTrangThai(DeCuongState.PENDING);
                     created.setSoLanNop(1);
                     return created;
                 });
 
+        // 8) Lưu DB & trả về response
         return mapper.toResponse(deCuongRepository.save(dc));
     }
+
 
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
@@ -125,7 +130,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         return res;
     }
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON', 'SCOPE_TRO_LY_KHOA')")
     @Override
     public DeCuongResponse reviewDeCuong(Long deCuongId, boolean approve, String reason) {
         String email = currentUsername();
@@ -140,8 +145,13 @@ public class DeCuongServiceImpl implements DeCuongService {
             throw new ApplicationException(ErrorCode.NO_ACTIVE_SUBMISSION_WINDOW);
         }
 
-        // Chỉ trong mốc NỘP_ĐỀ_CƯƠNG của đúng đợt của đề tài
-        timeGatekeeper.assertWithinWindow(CongViec.NOP_DE_CUONG, deTai.getDotBaoVe());
+        // Lấy đợt bảo vệ hiện hành (nếu không có -> NOT_IN_DOT_BAO_VE)
+        var currentDot = timeGatekeeper.getCurrentDotBaoVe();
+
+        // Đảm bảo đề tài thuộc đúng đợt hiện hành
+        if (!currentDot.getId().equals(deTai.getDotBaoVe().getId())) {
+            throw new ApplicationException(ErrorCode.NOT_IN_DOT_BAO_VE);
+        }
 
         // Chỉ GVHD
         if (deTai.getGvhd() == null || !deTai.getGvhd().getId().equals(gv.getId())) {
@@ -178,17 +188,20 @@ public class DeCuongServiceImpl implements DeCuongService {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN','SCOPE_TRUONG_BO_MON', 'SCOPE_TRO_LY_KHOA')")
     @Override
     public Page<DeCuongResponse> getAllDeCuong(Pageable pageable) {
         // 1) Lấy danh sách dot đang mở NOP_DE_CUONG hôm nay
-        List<Long> activeDotIds = activeSubmissionDotIdsToday();
+        Long activeDotId = timeGatekeeper.getCurrentDotBaoVe().getId(); // ném NOT_IN_DOT_BAO_VE nếu không có
+        List<Long> activeDotIds = java.util.List.of(activeDotId);
 
         // 2) Phân quyền: GV chỉ xem SV mình hướng dẫn
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         boolean isGV = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("SCOPE_GIANG_VIEN"));
+                .anyMatch(a -> a.getAuthority().equals("SCOPE_GIANG_VIEN")
+                        || a.getAuthority().equals("SCOPE_TRUONG_BO_MON") || a.getAuthority().equals("SCOPE_TRO_LY_KHOA"));
+
 
         Page<DeCuong> page = isGV
                 ? deCuongRepository
@@ -202,8 +215,9 @@ public class DeCuongServiceImpl implements DeCuongService {
     @PreAuthorize("hasAuthority('SCOPE_TRUONG_BO_MON')")
     @Override
     public Page<DeCuongResponse> getAcceptedForTBM(Pageable pageable) {
-        // 1) Lấy danh sách dot đang mở NOP_DE_CUONG hôm nay
-        List<Long> activeDotIds = activeSubmissionDotIdsToday();
+        // 1) Lấy danh sách dot đang mở
+        Long activeDotId = timeGatekeeper.getCurrentDotBaoVe().getId();
+        List<Long> activeDotIds = java.util.List.of(activeDotId);
 
         // 2) Lấy bộ môn của TBM
         Long bmId = currentTBMBoMonId();
@@ -218,8 +232,9 @@ public class DeCuongServiceImpl implements DeCuongService {
     @PreAuthorize("hasAuthority('SCOPE_TRUONG_BO_MON')")
     @Override
     public byte[] exportAcceptedForTBMAsExcel() {
-        // 1) Lấy danh sách dot đang mở trong NOP_DE_CUONG
-        List<Long> activeDotIds = activeSubmissionDotIdsToday();
+        // 1) Lấy danh sách dot đang mở
+        Long activeDotId = timeGatekeeper.getCurrentDotBaoVe().getId();
+        List<Long> activeDotIds = java.util.List.of(activeDotId);
 
         // 2) Lấy bộ môn của TBM
         Long bmId = currentTBMBoMonId();
@@ -346,4 +361,6 @@ public class DeCuongServiceImpl implements DeCuongService {
         }
         return gv.getBoMon().getId();
     }
+
+
 }

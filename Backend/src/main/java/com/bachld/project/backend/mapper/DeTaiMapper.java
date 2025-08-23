@@ -15,7 +15,6 @@ public interface DeTaiMapper {
 
     // Request -> Entity
     @Mapping(source = "gvhdId", target = "gvhd")
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "trangThai", ignore = true)
     @Mapping(target = "nhanXet", ignore = true)
     @Mapping(target = "sinhVienThucHien", ignore = true)
@@ -27,6 +26,13 @@ public interface DeTaiMapper {
     @Mapping(source = "gvhd", target = "gvhdId")
     @Mapping(source = "sinhVienThucHien", target = "sinhVienId")
     DeTaiResponse toDeTaiResponse(DeTai entity);
+
+    @Mapping(source = "gvhdId", target = "gvhd")
+    @Mapping(target = "trangThai", ignore = true)
+    @Mapping(target = "nhanXet", ignore = true)
+    @Mapping(target = "sinhVienThucHien", ignore = true)
+    @Mapping(target = "tongQuanDeTaiUrl", ignore = true)
+    void update(DeTaiRequest request, @MappingTarget DeTai entity);
 
     // Convert GiangVien and SinhVien to their IDs
     default Long toId(GiangVien gv) { return gv != null ? gv.getId() : null; }
