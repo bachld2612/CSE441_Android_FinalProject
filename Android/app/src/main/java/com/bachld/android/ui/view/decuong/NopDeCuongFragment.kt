@@ -1,3 +1,4 @@
+// app/src/main/java/com/bachld/android/ui/view/decuong/NopDeCuongFragment.kt
 package com.bachld.android.ui.view.decuong
 
 import android.os.Bundle
@@ -7,9 +8,9 @@ import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.bachld.android.R
 import com.bachld.android.core.UiState
 import com.bachld.android.data.dto.response.decuong.DeCuongLogResponse
+import com.bachld.android.data.dto.response.decuong.DeCuongState
 import com.bachld.android.databinding.FragmentNopDeCuongBinding
 import com.bachld.android.ui.viewmodel.DeCuongViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -23,10 +24,20 @@ class NopDeCuongFragment : Fragment() {
 
     private val vm: DeCuongViewModel by activityViewModels()
 
-    // Chỉ chấp nhận host Drive/Docs
+    // TEXT INLINE
+    private val TXT_URL_ONLY_DRIVE = "Chỉ chấp nhận liên kết Google Drive (drive.google.com)."
+    private val TXT_SUBMITTING = "Đang nộp…"
+    private val TXT_SUBMIT = "Nộp đề cương"
+    private val TXT_SUBMIT_SUCCESS = "Nộp thành công!"
+    private val TXT_SUBMIT_ERROR = "Lỗi khi nộp"
+    private val TXT_LOG_ERROR = "Không tải được log"
+    private val TXT_ACCEPTED_ERROR_ON_CLICK = "Đề cương đã được duyệt. Không thể nộp thêm."
+
+    // Chỉ chấp nhận host Drive
     private val allowedHosts = setOf("drive.google.com")
 
-    private var isUrlValid: Boolean = false
+    private var isUrlValid = false
+    private var isAccepted = false
 
     private fun isGoogleDriveUrl(normalized: String): Boolean {
         val uri = runCatching { Uri.parse(normalized) }.getOrNull() ?: return false
@@ -38,23 +49,14 @@ class NopDeCuongFragment : Fragment() {
 
     private fun validateUrlAndShowError(raw: String?): Boolean {
         val s = raw?.trim().orEmpty()
-
-        // Trống → xoá lỗi, nhưng không coi là hợp lệ
-        if (s.isEmpty()) {
-            binding.tilUrl.error = null
-            return false
-        }
-
-        // Tự chèn https:// nếu người dùng gõ "www."
+        if (s.isEmpty()) { binding.tilUrl.error = null; return false }
         val normalized = if (s.startsWith("www.", ignoreCase = true)) "https://$s" else s
-
         val valid = isGoogleDriveUrl(normalized)
-
         if (valid) {
             binding.tilUrl.error = null
             if (normalized != s) binding.etUrl.setText(normalized)
         } else {
-            binding.tilUrl.error = "Chỉ chấp nhận liên kết Google Drive (drive.google.com)."
+            binding.tilUrl.error = TXT_URL_ONLY_DRIVE
         }
         return valid
     }
@@ -69,6 +71,7 @@ class NopDeCuongFragment : Fragment() {
 
         binding.tvLanNopValue.text = "-"
         binding.btnSubmit.isEnabled = false
+        binding.btnSubmit.text = TXT_SUBMIT
 
         // Validate khi gõ URL
         binding.etUrl.doOnTextChanged { text, _, _, _ ->
@@ -82,40 +85,26 @@ class NopDeCuongFragment : Fragment() {
                 is UiState.Loading -> Unit
                 is UiState.Success -> state.data?.let { bindLog(it) }
                 is UiState.Error ->
-                    Snackbar.make(binding.root, state.message ?: "Không tải được log", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, state.message ?: TXT_LOG_ERROR, Snackbar.LENGTH_LONG).show()
                 UiState.Idle -> Unit
             }
         }
 
-        // Quan sát submit
-        vm.submitState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiState.Loading -> {
-                    binding.btnSubmit.isEnabled = false
-                    binding.btnSubmit.text = getString(R.string.btn_submitting)
-                }
-                is UiState.Success -> {
-                    binding.btnSubmit.text = getString(R.string.btn_submit_decuong)
-                    Snackbar.make(binding.root, "Nộp thành công!", Snackbar.LENGTH_LONG).show()
-                    binding.etUrl.setText("")
-                    updateSubmitButtonEnabled()
-                    vm.resetSubmitState()
-                }
-                is UiState.Error -> {
-                    binding.btnSubmit.text = getString(R.string.btn_submit_decuong)
-                    updateSubmitButtonEnabled()
-                    Snackbar.make(binding.root, state.message ?: "Lỗi khi nộp", Snackbar.LENGTH_LONG).show()
-                    vm.resetSubmitState()
-                }
-                UiState.Idle -> Unit
-            }
+        // Cập nhật cờ isAccepted nhưng KHÔNG disable UI — để khi bấm sẽ báo lỗi
+        vm.currentState.observe(viewLifecycleOwner) { st ->
+            isAccepted = (st == DeCuongState.ACCEPTED)
+            // không khóa input/nút ở đây
+            updateSubmitButtonEnabled()
         }
 
-        // Lần đầu tải log
-        vm.loadLog()
-
-        // Nút Submit
+        // Submit
         binding.btnSubmit.setOnClickListener {
+            // Nếu đã duyệt → báo lỗi NGAY khi click, không gọi ViewModel.submit
+            if (isAccepted) {
+                Snackbar.make(binding.root, TXT_ACCEPTED_ERROR_ON_CLICK, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
             val url = binding.etUrl.text?.toString()?.trim().orEmpty()
             if (!validateUrlAndShowError(url)) {
                 updateSubmitButtonEnabled()
@@ -123,14 +112,41 @@ class NopDeCuongFragment : Fragment() {
             }
             vm.submit(url)
         }
+
+        // Quan sát submit state
+        vm.submitState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.btnSubmit.isEnabled = false
+                    binding.btnSubmit.text = TXT_SUBMITTING
+                }
+                is UiState.Success -> {
+                    binding.btnSubmit.text = TXT_SUBMIT
+                    Snackbar.make(binding.root, TXT_SUBMIT_SUCCESS, Snackbar.LENGTH_LONG).show()
+                    binding.etUrl.setText("")
+                    updateSubmitButtonEnabled()
+                    vm.resetSubmitState()
+                }
+                is UiState.Error -> {
+                    binding.btnSubmit.text = TXT_SUBMIT
+                    updateSubmitButtonEnabled()
+                    Snackbar.make(binding.root, state.message ?: TXT_SUBMIT_ERROR, Snackbar.LENGTH_LONG).show()
+                    vm.resetSubmitState()
+                }
+                UiState.Idle -> Unit
+            }
+        }
+
+        // Lần đầu tải log (từ đó ViewModel suy ra trạng thái)
+        vm.loadLog()
     }
 
     private fun bindLog(data: DeCuongLogResponse) {
         binding.tvLanNopValue.text = (data.tongSoLanNop ?: 0).toString()
-        // (tuỳ chọn) hiển thị thêm: data.fileUrlMoiNhat, data.ngayNopGanNhat ...
     }
 
     private fun updateSubmitButtonEnabled() {
+        // vẫn chỉ bật khi URL hợp lệ (để tránh spam), KHÔNG phụ thuộc isAccepted
         binding.btnSubmit.isEnabled = isUrlValid
     }
 
