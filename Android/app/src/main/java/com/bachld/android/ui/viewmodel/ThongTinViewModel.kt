@@ -10,6 +10,7 @@ import com.bachld.android.data.dto.request.auth.LogoutRequest
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.auth.MyInfoResponse
 import com.bachld.android.data.dto.response.taikhoan.AnhDaiDienUploadResponse
+import com.bachld.android.data.dto.response.taikhoan.DoiMatKhauRequest
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.data.repository.AuthRepository
 import com.bachld.android.data.repository.TaiKhoanRepository
@@ -19,11 +20,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import retrofit2.HttpException
+import org.json.JSONObject
 
 class ThongTinViewModel(
     private val authRepo: AuthRepository = AuthRepositoryImpl(ApiClient.app),
     private val tkRepo: TaiKhoanRepository = TaiKhoanRepositoryImpl()
 ) : ViewModel() {
+
+    private val _changePasswordState =
+        MutableStateFlow<UiState<ApiResponse<String>>>(UiState.Idle)
+    val changePasswordState: StateFlow<UiState<ApiResponse<String>>> = _changePasswordState
 
     private val _myInfoState =
         MutableStateFlow<UiState<ApiResponse<MyInfoResponse>>>(UiState.Idle)
@@ -71,6 +78,37 @@ class ThongTinViewModel(
             }
         }
     }
+
+    fun changePassword(current: String, new: String) {
+        viewModelScope.launch {
+            _changePasswordState.value = UiState.Loading
+            try {
+                val res = tkRepo.doiMatKhau(DoiMatKhauRequest(current, new))
+                _changePasswordState.value = UiState.Success(res)
+            } catch (e: HttpException) {
+                // HTTP 4xx/5xx: đọc body JSON {"code":1007/1046,"message":"..."}
+                val raw = e.response()?.errorBody()?.string()?.trim().orEmpty()
+                val parsed = if (raw.startsWith("{")) runCatching { JSONObject(raw) }.getOrNull() else null
+                if (parsed != null) {
+                    _changePasswordState.value = UiState.Success(
+                        ApiResponse(
+                            code = parsed.optInt("code", e.code()),
+                            message = parsed.optString("message", "HTTP ${e.code()}"),
+                            result = if (parsed.has("result") && !parsed.isNull("result")) parsed.optString("result") else null
+                        )
+                    )
+                } else {
+                    _changePasswordState.value = UiState.Error("HTTP ${e.code()}")
+                }
+            } catch (t: Throwable) {
+                _changePasswordState.value = UiState.Error(t.message)
+            }
+        }
+    }
+    fun clearChangePasswordState() {
+        _changePasswordState.value = UiState.Idle
+    }
+
 
     fun doLogout(context: Context, callApi: Boolean = true) {
         viewModelScope.launch {
