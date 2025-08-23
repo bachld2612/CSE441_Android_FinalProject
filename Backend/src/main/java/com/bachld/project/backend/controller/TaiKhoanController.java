@@ -1,6 +1,7 @@
 package com.bachld.project.backend.controller;
 
 import com.bachld.project.backend.dto.ApiResponse;
+import com.bachld.project.backend.dto.request.taikhoan.ChangePasswordRequest;
 import com.bachld.project.backend.dto.response.taikhoan.AnhDaiDienUploadResponse;
 import com.bachld.project.backend.service.TaiKhoanService;
 import lombok.AccessLevel;
@@ -29,6 +30,14 @@ public class TaiKhoanController {
                 .result(taiKhoanService.uploadAnhDaiDien(file))
                 .build();
 
+    }
+
+    @PostMapping("doi-mat-khau")
+    public ApiResponse<String> updatePassword(ChangePasswordRequest changePasswordRequest) {
+        taiKhoanService.changePassword(changePasswordRequest);
+        return ApiResponse.<String>builder()
+                .result("Change password successfully")
+                .build();
     }
 
 }
