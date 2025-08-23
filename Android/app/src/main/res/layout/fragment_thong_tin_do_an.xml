@@ -117,16 +117,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_thoi_gian_thuc_hien"
-                android:text="Thời gian thực hiện"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
             <Button
                 android:id="@+id/btn_thoi_gian_thuc_hien"
                 android:text=">>"
