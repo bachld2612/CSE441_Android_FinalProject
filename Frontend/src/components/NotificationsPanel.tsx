@@ -6,6 +6,8 @@ import { Link, useLocation } from "react-router-dom";
 import { getThongBaoPage, type ThongBaoResponse } from "@/services/thong-bao.service";
 import { downloadFile } from "@/lib/downloadFile";
 import { toast } from "react-toastify";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 /* ====== Cấu hình hiển thị ====== */
 const ALL_MIN = 3;
@@ -32,12 +34,12 @@ function formatTimeLabel(createdAt?: string) {
   const dt = new Date(createdAt);
   if (isNaN(dt.getTime())) return createdAt;
   const now = new Date();
-  const diffMs = now.getTime() - dt.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  const diffHour = Math.floor(diffMin / 60);
-  if (diffMin < 1) return "Vừa xong";
-  if (diffMin < 60) return `${diffMin} phút`;
-  if (diffHour < 24) return `${diffHour} giờ`;
+  const diff = now.getTime() - dt.getTime();
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(mins / 60);
+  if (mins < 1) return "Vừa xong";
+  if (mins < 60) return `${mins} phút`;
+  if (hours < 24) return `${hours} giờ`;
   return toDDMMYYYY(dt);
 }
 
@@ -49,7 +51,6 @@ function slugify(s: string) {
     .replace(/(^-|-$)+/g, "");
 }
 
-// Lấy tên file từ URL nếu có (Cloudinary/raw file/…)
 function fileNameFromUrl(url: string): string {
   try {
     const u = new URL(url);
@@ -75,30 +76,27 @@ function saveReadSet(set: Set<number>) {
 export default function NotificationsPanel() {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "unread">("all");
-  const [showAll, setShowAll] = useState(false);        // áp dụng cho tab hiện tại
+  const [showAll, setShowAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<ThongBaoResponse[]>([]);
   const [total, setTotal] = useState(0);
 
   const [readIds, setReadIds] = useState<Set<number>>(() => loadReadSet());
-  const [manualUnreadBump, setManualUnreadBump] = useState(0); // +1 khi FE tạo mới
+  const [manualUnreadBump, setManualUnreadBump] = useState(0);
 
   const bellRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
+  // Dialog chi tiết
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selected, setSelected] = useState<ThongBaoResponse | null>(null);
+
   /* ====== Dữ liệu theo tab ====== */
   const unreadList = useMemo(() => items.filter(tb => !readIds.has(tb.id)), [items, readIds]);
+  const allVisible = useMemo(() => items.slice(0, showAll ? ALL_MAX : ALL_MIN), [items, showAll]);
+  const unreadVisible = useMemo(() => unreadList.slice(0, showAll ? UNREAD_MAX : UNREAD_MIN), [unreadList, showAll]);
 
-  const allVisible = useMemo(
-    () => items.slice(0, showAll ? ALL_MAX : ALL_MIN),
-    [items, showAll]
-  );
-  const unreadVisible = useMemo(
-    () => unreadList.slice(0, showAll ? UNREAD_MAX : UNREAD_MIN),
-    [unreadList, showAll]
-  );
-
-  /* ====== Prefetch tổng số để hiển thị badge ====== */
+  /* ====== Prefetch tổng số để badge ====== */
   useEffect(() => {
     (async () => {
       try {
@@ -108,14 +106,14 @@ export default function NotificationsPanel() {
     })();
   }, []);
 
-  /* ====== Lắng nghe +1 khi tạo mới từ form ====== */
+  /* ====== +1 khi FE tạo mới ====== */
   useEffect(() => {
     const handler = () => setManualUnreadBump(c => c + 1);
     window.addEventListener("thongbao:new", handler);
     return () => window.removeEventListener("thongbao:new", handler);
   }, []);
 
-  /* ====== Load danh sách (50 để đủ lọc 20 chưa đọc) ====== */
+  /* ====== Load list ====== */
   const load = async () => {
     try {
       setLoading(true);
@@ -126,7 +124,7 @@ export default function NotificationsPanel() {
       }
       setItems(res.result.content || []);
       setTotal(res.result.totalElements || 0);
-      setManualUnreadBump(0); // đồng bộ xong thì reset bump
+      setManualUnreadBump(0);
     } catch {
       toast.error("Không tải được thông báo");
     } finally {
@@ -140,54 +138,53 @@ export default function NotificationsPanel() {
     if (next && items.length === 0) await load();
   };
 
-  /* ====== Đóng khi click ngoài / ESC ====== */
+  /* ====== Đóng panel khi click ngoài / ESC ====== */
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
       const t = e.target as Node;
-      if (
-        panelRef.current && !panelRef.current.contains(t) &&
-        bellRef.current  && !bellRef.current.contains(t)
-      ) setOpen(false);
+      if (panelRef.current && !panelRef.current.contains(t) && bellRef.current && !bellRef.current.contains(t)) {
+        setOpen(false);
+      }
     };
     const onEsc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onEsc);
-    return () => { document.removeEventListener("mousedown", onDown); document.removeEventListener("keydown", onEsc); };
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onEsc);
+    };
   }, [open]);
 
   /* ====== Đổi route thì đóng panel ====== */
   const location = useLocation();
   useEffect(() => { setOpen(false); }, [location.pathname]);
 
-  /* ====== Badge: số chưa đọc (kể cả khi chưa load) ====== */
+  /* ====== Badge: số chưa đọc ====== */
   const unreadCountLoaded = items.length ? unreadList.length : Math.max(total - readIds.size, 0);
   const badge = items.length
     ? Math.min(unreadCountLoaded + manualUnreadBump, 99)
     : Math.min(Math.max(unreadCountLoaded + manualUnreadBump, 0), 99);
 
-  /* ====== Hành vi item ====== */
+  /* ====== Item actions ====== */
   const markRead = (id: number) => {
     setReadIds(prev => {
       if (prev.has(id)) return prev;
       const next = new Set(prev); next.add(id); saveReadSet(next); return next;
     });
   };
-  const onClickItem = (tb: ThongBaoResponse) => {
+  const openDetail = (tb: ThongBaoResponse) => {
     markRead(tb.id);
-    if (!tb.fileUrl) { toast.info("Thông báo này không có tệp đính kèm."); return; }
-    const name = fileNameFromUrl(tb.fileUrl || "") || `${slugify(tb.tieuDe || "thong-bao")}.pdf`;
-    downloadFile(tb.fileUrl, name);
+    setSelected(tb);
+    setDialogOpen(true);
+    setOpen(false); // đóng panel khi mở dialog
   };
 
   const switchTab = (tab: "all" | "unread") => { setActiveTab(tab); setShowAll(false); };
-
   const listToRender = activeTab === "all" ? allVisible : unreadVisible;
   const canShowMore = activeTab === "all" ? items.length > ALL_MIN : unreadList.length > UNREAD_MIN;
-  const footerLabel =
-    activeTab === "all" ? "Xem thông báo trước đó" : "Xem thông báo chưa đọc";
+  const footerLabel = activeTab === "all" ? "Xem thông báo trước đó" : "Xem thông báo chưa đọc";
 
-  /* ====== Render qua Portal để luôn trên cùng ====== */
   return (
     <div className="relative">
       {/* Nút chuông */}
@@ -200,16 +197,15 @@ export default function NotificationsPanel() {
         )}
       </button>
 
+      {/* PANEL overlay */}
       {open && createPortal(
         <div className="fixed inset-0 z-[9999]">
-          {/* click ngoài để đóng */}
           <div className="absolute inset-0" onClick={() => setOpen(false)} />
-          {/* Panel */}
           <div
             ref={panelRef}
             className={`absolute top-16 right-4 w-[380px] bg-white rounded-xl shadow-2xl border border-gray-200 ${
               showAll ? "max-h-[80vh]" : ""
-            } z-[10000] overflow-hidden`}  // giữ nút trong panel
+            } z-[10000] overflow-hidden`}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3">
@@ -219,7 +215,7 @@ export default function NotificationsPanel() {
               </button>
             </div>
 
-            {/* Tabs + số chưa đọc */}
+            {/* Tabs */}
             <div className="px-4">
               <div className="flex gap-3 text-sm">
                 <button
@@ -237,7 +233,7 @@ export default function NotificationsPanel() {
               </div>
             </div>
 
-            {/* Nội dung */}
+            {/* Nội dung panel (cuộn 65vh nếu showAll) */}
             <div className={`${showAll ? "max-h-[65vh] overflow-y-auto" : ""}`}>
               {loading ? (
                 <div className="px-4 py-8 text-center text-sm text-gray-600">Đang tải...</div>
@@ -258,8 +254,8 @@ export default function NotificationsPanel() {
                       <li
                         key={tb.id}
                         className="px-4 py-3 hover:bg-gray-50 cursor-pointer"
-                        onClick={() => onClickItem(tb)}
-                        title={tb.fileUrl ? "Bấm để tải PDF & đánh dấu đã đọc" : "Bấm để đánh dấu đã đọc"}
+                        onClick={() => openDetail(tb)}
+                        title="Bấm để xem chi tiết"
                       >
                         <div className="flex gap-3">
                           <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
@@ -270,16 +266,6 @@ export default function NotificationsPanel() {
                             <div className={`text-[13px] ${isRead ? "text-gray-500" : "text-gray-700"} line-clamp-2`}>
                               {tb.noiDung}
                             </div>
-
-                            {/* Nhãn PDF nếu có file */}
-                            {tb.fileUrl && (
-                              <div className="text-[12px] mt-1">
-                                <span className="px-2 py-[2px] rounded bg-gray-100 border text-gray-700">
-                                  File: {fileNameFromUrl(tb.fileUrl)}
-                                </span>
-                              </div>
-                            )}
-
                             <div className="text-[12px] text-gray-500 mt-1">{formatTimeLabel(tb.createdAt)}</div>
                           </div>
                           {!isRead && <div className="ml-auto mt-2 w-2 h-2 bg-blue-500 rounded-full" />}
@@ -291,10 +277,9 @@ export default function NotificationsPanel() {
               )}
             </div>
 
-            {/* Footer sticky: 2 nút cạnh nhau (Xem thêm/Thu gọn + Xem tất cả) */}
+            {/* Footer panel */}
             <div className="sticky bottom-0 bg-white border-t px-4 py-3">
               <div className="flex gap-2">
-                {/* Trái: Xem thêm / Thu gọn (tùy trạng thái) */}
                 {showAll ? (
                   <button
                     className="flex-1 text-sm font-medium py-2 rounded-md hover:bg-gray-50"
@@ -313,9 +298,8 @@ export default function NotificationsPanel() {
                   )
                 )}
 
-                {/* Phải: Xem tất cả (luôn hiển thị) */}
                 <Link
-                  to="/thong-bao/moi-nhat"  // đổi path nếu bạn đặt khác
+                  to="/thong-bao/moi-nhat"
                   className={`${(showAll || canShowMore) ? "flex-1" : "w-full"} text-center text-sm font-medium py-2 rounded-md border hover:bg-gray-50`}
                 >
                   Xem tất cả
@@ -326,6 +310,55 @@ export default function NotificationsPanel() {
         </div>,
         document.body
       )}
+
+      {/* DIALOG – dùng GRID để phần thân BẮT BUỘC cuộn dọc */}
+      <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) setSelected(null); }}>
+        {/* grid rows: header | body (scroll) | footer */}
+        <DialogContent className="w-[92vw] sm:w-[680px] max-w-2xl p-0 bg-white border border-gray-200 max-h-[80vh] grid grid-rows-[auto,minmax(0,1fr),auto]">
+          {/* Header (row 1) */}
+          <div className="px-6 py-4 border-b">
+            <h2 className="text-lg font-bold">{selected?.tieuDe || "Chi tiết thông báo"}</h2>
+            <div className="text-xs text-gray-500 mt-1">
+              {selected?.createdAt ? formatTimeLabel(selected.createdAt) : ""}
+            </div>
+          </div>
+
+          {/* Body SCROLL (row 2) */}
+          <div className="px-6 py-4 overflow-y-auto overflow-x-hidden">
+            <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[14px] leading-relaxed text-gray-800">
+              {selected?.noiDung || ""}
+            </div>
+
+            {selected?.fileUrl ? (
+              <div className="mt-4">
+                <Button
+                  className="bg-[#457B9D] hover:bg-[#3e6e8d] text-white border-0"
+                  onClick={() => {
+                    const name =
+                      fileNameFromUrl(selected.fileUrl || "") ||
+                      `${slugify(selected?.tieuDe || "thong-bao")}.pdf`;
+                    downloadFile(selected.fileUrl!, name);
+                  }}
+                >
+                  Tải PDF
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-4 text-sm text-gray-500 italic">Không có tệp đính kèm.</div>
+            )}
+          </div>
+
+          {/* Footer (row 3) */}
+          <div className="px-6 py-3 border-t flex justify-end gap-2">
+            <Button
+              className="bg-[#BFBFBF] hover:bg-[#a6a6a6] text-black border-0"
+              onClick={() => setDialogOpen(false)}
+            >
+              Quay lại
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
