@@ -1,4 +1,4 @@
-package com.bachld.android.data.dto.response
+package com.bachld.android.data.dto.response.giangvien
 
 data class PageData<T>(
     val content: List<T> = emptyList(),

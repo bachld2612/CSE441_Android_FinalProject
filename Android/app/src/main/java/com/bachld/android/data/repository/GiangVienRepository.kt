@@ -2,8 +2,9 @@ package com.bachld.android.data.repository
 
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.DeTaiResponse
-import com.bachld.android.data.dto.response.PageData
+import com.bachld.android.data.dto.response.giangvien.PageData
 import com.bachld.android.data.dto.response.giangvien.DeTaiXetDuyetResponse
+import com.bachld.android.data.model.SupervisedStudent
 import com.bachld.android.data.dto.response.giangvien.GiangVienResponse
 
 interface GiangVienRepository {
@@ -12,5 +13,6 @@ interface GiangVienRepository {
     suspend fun approveDeTai(idDeTai: Long): ApiResponse<DeTaiResponse>
     suspend fun rejectDeTai(idDeTai: Long, lyDo: String): ApiResponse<DeTaiResponse>
     suspend fun getAllForDropdown(): List<GiangVienResponse>
+    suspend fun get_sinh_vien_huong_dan_all(q: String? = null): List<SupervisedStudent>
 
 }

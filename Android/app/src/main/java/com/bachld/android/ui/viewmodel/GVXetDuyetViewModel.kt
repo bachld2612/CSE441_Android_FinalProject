@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.bachld.android.core.UiState
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.DeTaiResponse
-import com.bachld.android.data.dto.response.PageData
+import com.bachld.android.data.dto.response.giangvien.PageData
 import com.bachld.android.data.dto.response.giangvien.*
 import com.bachld.android.data.repository.GiangVienRepository
 import com.bachld.android.data.repository.impl.GiangVienRepositoryImpl

@@ -3,6 +3,7 @@ package com.bachld.project.backend.mapper;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.response.giangvien.DeTaiSinhVienApprovalResponse;
 import com.bachld.project.backend.dto.response.giangvien.SinhVienSupervisedResponse;
+import com.bachld.project.backend.dto.response.giangvien.StudentSupervisedResponse;
 import com.bachld.project.backend.dto.response.sinhvien.GetSinhVienWithoutDeTaiResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienCreationResponse;
 import com.bachld.project.backend.dto.response.sinhvien.SinhVienInfoResponse;
@@ -34,6 +35,10 @@ public interface SinhVienMapper {
     @Mapping(source = "lop.tenLop", target = "tenLop")
     @Mapping(source = "deTai.tenDeTai", target = "tenDeTai")
     SinhVienSupervisedResponse toSinhVienSupervisedResponse(SinhVien sv);
+
+    @Mapping(source = "lop.tenLop", target = "tenLop")
+    @Mapping(source = "deTai.tenDeTai", target = "tenDeTai")
+    StudentSupervisedResponse toStudentSupervisedResponse(SinhVien sv);
 
     @Mapping(source = "lop.tenLop", target = "tenLop")
     @Mapping(source = "deTai.tenDeTai", target = "tenDeTai")
