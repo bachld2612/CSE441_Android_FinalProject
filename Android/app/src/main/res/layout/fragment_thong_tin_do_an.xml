@@ -115,30 +115,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/btn_thoi_gian_thuc_hien"
-                android:text=">>"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:textColor="@color/black"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBaseline_toBaselineOf="@id/tv_thoi_gian_thuc_hien"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
             <TextView
