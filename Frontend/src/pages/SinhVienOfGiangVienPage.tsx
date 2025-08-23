@@ -1,3 +1,4 @@
+// src/pages/SinhVienOfGiangVienPage.tsx
 import { useEffect, useState } from "react";
 import {
   getSinhVienOfGiangVien,
@@ -22,9 +23,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { downloadFile } from "@/lib/downloadFile";
+
+// Mở rộng type để chắc chắn có cvUrl từ BE (nếu service chưa có)
+type Row = SinhVienOfGiangVien & {
+  cvUrl?: string;
+  cvFilename?: string;
+};
 
 export default function SinhVienOfGiangVienPage() {
-  const [data, setData] = useState<SinhVienOfGiangVien[]>([]);
+  const [data, setData] = useState<Row[]>([]);
   const [page, setPage] = useState(0);
   const size = 7;
   const [totalPages, setTotalPages] = useState(0);
@@ -39,8 +47,10 @@ export default function SinhVienOfGiangVienPage() {
         page,
         size,
         sort: "maSV,asc",
+        // Nếu BE/Service hỗ trợ tìm kiếm theo q, truyền thêm param tại đây.
+        // q,
       });
-      setData(res.content);
+      setData(res.content as Row[]);
       setTotalPages(res.totalPages);
     } finally {
       setLoading(false);
@@ -49,6 +59,7 @@ export default function SinhVienOfGiangVienPage() {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   return (
@@ -116,6 +127,9 @@ export default function SinhVienOfGiangVienPage() {
             <TableHead className="text-center font-semibold border border-gray-300">
               Tên đề tài
             </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              CV
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -123,7 +137,7 @@ export default function SinhVienOfGiangVienPage() {
             <TableRow>
               <TableCell
                 className="text-center border border-gray-300"
-                colSpan={6}
+                colSpan={7}
               >
                 Không có dữ liệu
               </TableCell>
@@ -151,6 +165,24 @@ export default function SinhVienOfGiangVienPage() {
               </TableCell>
               <TableCell className="text-center border border-gray-300">
                 {sv.tenDeTai ?? "-"}
+              </TableCell>
+              <TableCell className="text-center border border-gray-300">
+                {sv.cvUrl ? (
+                  <button
+                    onClick={() =>
+                      downloadFile(
+                        sv.cvUrl!,
+                        sv.cvFilename ||
+                          `${sv.maSV ? sv.maSV : "sinhvien"}_CV.pdf`
+                      )
+                    }
+                    className="text-blue-600 underline font-medium"
+                  >
+                    {sv.cvFilename || "CV.pdf"}
+                  </button>
+                ) : (
+                  <span className="text-gray-500 italic">Không có CV</span>
+                )}
               </TableCell>
             </TableRow>
           ))}

@@ -10,6 +10,7 @@ import {
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { DropdownMenuPortal } from "./ui/dropdown-menu";
+import NotificationsPanel from "@/components/NotificationsPanel";
 
 type MyInfo = {
   maSV?: string;
@@ -39,7 +40,7 @@ export default function Header() {
     { name: "Giảng viên", href: "/giang-vien", hidden: false },
     { name: "Hội đồng", href: "/hoi-dong", hidden: false },
     { name: "Tổ chức", href: "/to-chuc/khoa", hidden: false },
-    { name: "Thông báo hệ thống", href: "#", hidden: role == "GIANG_VIEN" || role == "TRUONG_BO_MON" }
+    { name: "Thông báo hệ thống", href: "/thong-bao", hidden: role == "GIANG_VIEN" || role == "TRUONG_BO_MON" }
   ];
 
   useEffect(() => {
@@ -108,12 +109,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-6">
-            <div className="relative">
-              <Bell className="w-5 h-5 text-gray-800" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                2
-              </span>
-            </div>
+            <NotificationsPanel />
 
             {/* Avatar + name */}
             <div>

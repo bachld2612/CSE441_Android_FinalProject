@@ -13,6 +13,6 @@ interface GiangVienRepository {
     suspend fun approveDeTai(idDeTai: Long): ApiResponse<DeTaiResponse>
     suspend fun rejectDeTai(idDeTai: Long, lyDo: String): ApiResponse<DeTaiResponse>
     suspend fun getAllForDropdown(): List<GiangVienResponse>
-    suspend fun get_sinh_vien_huong_dan_all(q: String? = null): List<SupervisedStudent>
+    suspend fun getSinhVienHuongDanAll(q: String? = null): List<SupervisedStudent>
 
 }
