@@ -22,10 +22,10 @@ class DanhSachSinhVienHDViewModel(
     val error: StateFlow<String?> = _error
 
     private val _query = MutableStateFlow("")
-    fun update_query(q: String) { _query.value = q }
+    fun updateQuery(q: String) { _query.value = q }
 
     // lọc realtime tại client (không phân biệt dấu/hoa thường)
-    val students_filtered: StateFlow<List<SupervisedStudent>> =
+    val studentsFiltered: StateFlow<List<SupervisedStudent>> =
         _query
             .debounce(300)
             .distinctUntilChanged()
@@ -44,11 +44,11 @@ class DanhSachSinhVienHDViewModel(
             }
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun load_all(q: String? = null) {
+    fun loadAll(q: String? = null) {
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _source.value = repo.get_sinh_vien_huong_dan_all(q)
+                _source.value = repo.getSinhVienHuongDanAll(q)
             } catch (t: Throwable) {
                 _error.value = t.message
             } finally {

@@ -57,4 +57,13 @@
         android:label="Danh sách đề cương"
         tools:layout="@layout/fragment_de_cuong_list" />
 
+    <fragment
+        android:id="@+id/cvWebViewFragment"
+        android:name="com.bachld.android.ui.view.giangvien.CvWebViewFragment"
+        android:label="Xem CV">
+        <argument
+            android:name="cv_url"
+            app:argType="string" />
+    </fragment>
+
 </navigation>
