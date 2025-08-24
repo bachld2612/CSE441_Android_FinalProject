@@ -21,6 +21,8 @@ import DeCuongApprovalPage from '@/pages/DeCuongApprovalPage';
 import ThongBaoCreatePage from '@/pages/ThongBaoCreatePage';
 import ThongBaoLayout from '@/layouts/ThongBaoLayout';
 import ThongBaoLatestPage from "@/pages/ThongBaoLatestPage";
+import TaiKhoanInfoPage from '@/pages/TaiKhoanInfoPage';
+import TaiKhoanLayout from '@/layouts/TaiKhoanLayout';
 import TrangChuPage from '@/pages/TrangChuPage';
 import Hello from '@/pages/Hello';
 import ThoiGianThucHienPage from '@/pages/ThoiGianThucHienPage';
@@ -135,6 +137,17 @@ export const router = createBrowserRouter([
   children: [
     { index: true, element: <ThongBaoCreatePage /> },
     { path: "moi-nhat", element: <ThongBaoLatestPage /> },
-  ],
-},
+    ],
+  },
+  {
+  path: "/tai-khoan",
+  element: (
+    <ProtectedRoute>
+      <TaiKhoanLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <TaiKhoanInfoPage /> },
+    ],
+  },
 ]);
