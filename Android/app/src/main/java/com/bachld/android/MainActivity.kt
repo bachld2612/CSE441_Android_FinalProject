@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity() {
             R.id.gv_navigation_trang_chu,
             R.id.gv_navigation_de_tai,
             R.id.gv_navigation_thong_tin,
-            R.id.gv_navigation_de_cuong
+            R.id.gv_navigation_de_cuong,
+            R.id.gv_navigation_sinh_vien
         )
         val homeChildrenSV = setOf(R.id.navigation_thong_bao_detail)
         val homeChildrenGV = setOf(R.id.navigation_thong_bao_detail)
