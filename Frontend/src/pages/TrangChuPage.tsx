@@ -1,7 +1,7 @@
 import TrangChuComponent, {
   type TrangChuPageProps,
 } from "@/components/TrangChuComponent";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function TrangChuPage() {
   const [role, setRole] = useState(null);

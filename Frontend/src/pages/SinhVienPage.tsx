@@ -626,7 +626,7 @@ export default function SinhVienPage() {
                 <div className="mt-4">
                   <a
                     className="text-blue-600 underline"
-                    download
+                    download="/assets/sinhvien.xlsx"
                     href="/assets/sinhvien.xlsx"
                   >
                     Tải file mẫu
