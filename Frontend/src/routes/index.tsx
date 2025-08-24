@@ -22,6 +22,8 @@ import DeCuongApprovalPage from '@/pages/DeCuongApprovalPage';
 import ThongBaoCreatePage from '@/pages/ThongBaoCreatePage';
 import ThongBaoLayout from '@/layouts/ThongBaoLayout';
 import ThongBaoLatestPage from "@/pages/ThongBaoLatestPage";
+import TaiKhoanInfoPage from '@/pages/TaiKhoanInfoPage';
+import TaiKhoanLayout from '@/layouts/TaiKhoanLayout';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -130,6 +132,17 @@ export const router = createBrowserRouter([
     // Index = form tạo thông báo (theo yêu cầu hiện tại)
     { index: true, element: <ThongBaoCreatePage /> },
     { path: "moi-nhat", element: <ThongBaoLatestPage /> },
-  ],
-},
+    ],
+  },
+  {
+  path: "/tai-khoan",
+  element: (
+    <ProtectedRoute>
+      <TaiKhoanLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <TaiKhoanInfoPage /> },
+    ],
+  },
 ]);
