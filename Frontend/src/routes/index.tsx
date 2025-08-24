@@ -23,6 +23,7 @@ import ThongBaoLayout from '@/layouts/ThongBaoLayout';
 import ThongBaoLatestPage from "@/pages/ThongBaoLatestPage";
 import TrangChuPage from '@/pages/TrangChuPage';
 import Hello from '@/pages/Hello';
+import ThoiGianThucHienPage from '@/pages/ThoiGianThucHienPage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -117,6 +118,11 @@ export const router = createBrowserRouter([
         element: <DotBaoVePage />,
         handle: { breadcrumb: 'Quản lý đợt đồ án' },
       },
+      {
+        path: 'thoi-gian-do-an',
+        element: <ThoiGianThucHienPage />,
+        handle: { breadcrumb: 'Quản lý thời gian đồ án' },
+      }
     ],
   },
   {
