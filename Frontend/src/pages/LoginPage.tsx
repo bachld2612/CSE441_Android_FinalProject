@@ -57,7 +57,7 @@ export default function LoginPage() {
         }
         localStorage.setItem("myInfo", JSON.stringify(myInfoResponse.result));
       }
-      navigate("/auth");
+      navigate("/");
       toast.success("Đăng nhập thành công", {
         position: "top-right",
         autoClose: 3000,

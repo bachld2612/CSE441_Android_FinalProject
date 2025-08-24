@@ -1,7 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
 import ToChucLayout from '@/layouts/ToChucLayout';
-import Hello from '@/pages/Hello';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from './ProtectedRoute';
 import KhoaPage from '@/pages/KhoaPage';
@@ -22,6 +21,8 @@ import DeCuongApprovalPage from '@/pages/DeCuongApprovalPage';
 import ThongBaoCreatePage from '@/pages/ThongBaoCreatePage';
 import ThongBaoLayout from '@/layouts/ThongBaoLayout';
 import ThongBaoLatestPage from "@/pages/ThongBaoLatestPage";
+import TrangChuPage from '@/pages/TrangChuPage';
+import Hello from '@/pages/Hello';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     handle: { breadcrumb: "Trang chủ" },
     children: [
-      { index: true, element: <Hello />, handle: { breadcrumb: "Tổng quan" } },
+      { index: true, element: <TrangChuPage />, handle: { breadcrumb: "Tổng quan" } },
       { path: "*", element: <NotFound /> },
     ],
   },
@@ -75,9 +76,8 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
-    handle: { breadcrumb: 'Trang chủ' },
     children: [
-      { index: true, element: <Hello />, handle: { breadcrumb: 'Tổng quan' } },
+      { index: true, element: <TrangChuPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -127,7 +127,6 @@ export const router = createBrowserRouter([
     </ProtectedRoute>
   ),
   children: [
-    // Index = form tạo thông báo (theo yêu cầu hiện tại)
     { index: true, element: <ThongBaoCreatePage /> },
     { path: "moi-nhat", element: <ThongBaoLatestPage /> },
   ],
