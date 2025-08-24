@@ -115,6 +115,12 @@ export default function SinhVienPage() {
 
   const [file, setFile] = useState<File | null>(null);
 
+  // ===================== ADD: cấu hình số cột để dùng cho colSpan =====================
+  const showActionCol = role === "TRO_LY_KHOA"; // có cột Hành động hay không
+  const baseCols = 6; // Email, Mã SV, Họ Tên, Lớp, SĐT, Trạng thái
+  const totalCols = baseCols + (showActionCol ? 1 : 0);
+  // ====================================================================================
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -716,6 +722,19 @@ export default function SinhVienPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
+          {/* ===================== ADD: Hiển thị khi không có dữ liệu ===================== */}
+          {students.length === 0 && (
+            <TableRow>
+              <TableCell
+                className="text-center border border-gray-300"
+                colSpan={totalCols}
+              >
+                Không có dữ liệu
+              </TableCell>
+            </TableRow>
+          )}
+          {/* ============================================================================ */}
+
           {students.map((s) => (
             <TableRow
               key={s.maSV}
