@@ -68,7 +68,7 @@ export default function DeTaiApprovalPage() {
 
       setData(filtered);
       setTotalPages(res.totalPages);
-    } catch (e: any) {
+    } catch {
       toast.error('Không thể tải danh sách đề tài');
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ export default function DeTaiApprovalPage() {
       setActionType(null);
       setSelectedDeTai(null);
       loadData();
-    } catch (e: any) {
+    } catch {
       toast.error('Thao tác thất bại');
     }
   };

@@ -53,6 +53,7 @@ import {
   type DeTaiGiangVienHuongDanRequest,
 } from "@/services/deTai.service";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { downloadFile } from "@/lib/downloadFile";
 
 const formSchema = z.object({
   boMonId: z.string().nonempty("Vui lòng chọn bộ môn"),
@@ -266,12 +267,11 @@ export default function DangKiGiangVienHuongDan() {
             <p>
               <span className="font-semibold">CV:</span>{" "}
               {(sinhVienDetail.cvUrl && (
-                <a className="text-blue-700 underline" href={sinhVienDetail.cvUrl  ?? "#"} download>
+                <span className="text-blue-700 underline" onClick={() => downloadFile(sinhVienDetail.cvUrl!, `${sinhVienDetail.maSV}_CV.pdf`)}>
                   CV sinh viên
-                </a>
+                </span>
               )) ||
                 "Chưa có"}
-                <span> (để định dạng pdf khi tải)</span>
             </p>
           </div>
 

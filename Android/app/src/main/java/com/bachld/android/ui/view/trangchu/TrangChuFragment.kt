@@ -66,7 +66,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
         if (isGV) {
             binding.layoutTopState.visibility = View.GONE
             binding.tvThongBao.updateLayoutParams <ViewGroup.MarginLayoutParams> {
-                topMargin = 45
+                topMargin = 5
             }
         } else {
             // Sinh viên: mặc định ẩn, sẽ hiện nếu CHƯA có đồ án
