@@ -16,6 +16,8 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ThoiGianThucHienResponse {
 
+
+    Long id;
     CongViec congViec;
     LocalDate thoiGianBatDau;
     LocalDate thoiGianKetThuc;

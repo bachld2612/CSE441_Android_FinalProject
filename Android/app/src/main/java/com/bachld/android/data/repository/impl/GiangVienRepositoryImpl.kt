@@ -7,7 +7,7 @@ import com.bachld.android.data.dto.response.giangvien.DeTaiXetDuyetResponse
 import com.bachld.android.data.dto.response.giangvien.PageData
 import com.bachld.android.data.dto.response.unwrapOrThrow
 import com.bachld.android.data.model.SupervisedStudent
-import com.bachld.android.data.model.mapper.to_model
+import com.bachld.android.data.model.mapper.toModel
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.data.repository.GiangVienRepository
 import com.bachld.android.data.dto.response.giangvien.GiangVienResponse
@@ -29,10 +29,10 @@ class GiangVienRepositoryImpl: GiangVienRepository {
         return page?.content ?: emptyList()
     }
 
-    override suspend fun get_sinh_vien_huong_dan_all(q: String?)
+    override suspend fun getSinhVienHuongDanAll(q: String?)
             : List<SupervisedStudent> {
         val res = api.get_sinh_vien_huong_dan_all(q)
         val dtos = res.unwrapOrThrow()
-        return dtos.map { it.to_model() }
+        return dtos.map { it.toModel() }
     }
 }

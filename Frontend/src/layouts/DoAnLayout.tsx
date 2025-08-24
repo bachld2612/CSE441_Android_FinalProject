@@ -9,7 +9,7 @@ export default function DoAnLayout() {
       <SidebarDoAn />
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-6 mt-[64px] ml-64 bg-gray-50">
+        <main className="flex-1 p-6 mt-[64px] ml-64 ">
           <Outlet />
         </main>
       </div>

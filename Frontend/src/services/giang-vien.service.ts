@@ -135,7 +135,8 @@ export interface SinhVienSupervisedResponse {
   tenLop?: string;
   soDienThoai?: string;
   tenDeTai?: string;
-  // ... nếu backend trả thêm, bổ sung ở đây
+  cvUrl?: string;              // <-- thêm
+  // cvFilename?: string;      // (tuỳ chọn nếu BE trả về)
 }
 export async function getMySupervisedStudents(params?: {
   page?: number;

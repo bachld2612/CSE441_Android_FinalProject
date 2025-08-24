@@ -26,7 +26,12 @@ export default function SidebarToChuc() {
       name: "Quản lý đợt đồ án",
       href: "/to-chuc/dot-do-an",
     });
+    sidebarLinks.push({
+      name: "Quản lý thời gian đồ án",
+      href: "/to-chuc/thoi-gian-do-an",
+    });
   }
+
 
   return (
     <aside className="w-64 h-full fixed top-[64px] left-0 bg-[#457B9D] text-white border-r border-gray-200">

@@ -9,6 +9,6 @@ export default function SinhVienLayout() {
         <main className="container flex-1 p-6 mt-[100px] mx-auto">
           <Outlet />
         </main>
-      </div>
+    </div>
   )
 }

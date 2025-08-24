@@ -46,6 +46,21 @@
                 android:textColor="#666"
                 android:layout_marginBottom="12dp"/>
 
+            <!-- Link tải file -->
+            <TextView
+                android:id="@+id/tvDownloadLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xem tệp đính kèm"
+                android:textColor="#177CFF"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:background="?selectableItemBackgroundBorderless"/>
+
             <!-- Nội dung -->
             <TextView
                 android:id="@+id/tvContent"
@@ -57,19 +72,7 @@
                 android:lineSpacingExtra="4dp"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Link tải file -->
-            <TextView
-                android:id="@+id/tvDownloadLink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tải tệp đính kèm"
-                android:textColor="#177CFF"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="8dp"
-                android:background="?selectableItemBackgroundBorderless"/>
+
         </LinearLayout>
     </ScrollView>
 

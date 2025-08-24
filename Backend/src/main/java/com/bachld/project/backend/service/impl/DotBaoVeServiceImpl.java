@@ -133,7 +133,7 @@ public class DotBaoVeServiceImpl implements DotBaoVeService {
                         failures.add(AddSinhVienToDotBaoVeResponse.FailureItem.builder()
                                 .maSinhVien(maSinhVien)
                                 .tenDeTai(tenDeTai)
-                                .reason("Đề tài đã có trong đợt bảo vệ khác")
+                                    .reason("Đề tài đã có trong đợt bảo vệ khác")
                                 .build());
                         continue;
                     }
