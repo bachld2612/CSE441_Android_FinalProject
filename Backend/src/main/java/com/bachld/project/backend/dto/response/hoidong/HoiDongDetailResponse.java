@@ -5,7 +5,10 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.util.List;
 
-@Builder @Data @NoArgsConstructor @AllArgsConstructor
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HoiDongDetailResponse {
 

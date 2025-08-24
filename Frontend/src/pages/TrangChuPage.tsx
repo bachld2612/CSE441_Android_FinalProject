@@ -31,9 +31,9 @@ export default function TrangChuPage() {
       hidden: false,
     },
     {
-      href: "#",
+      href: "/hoi-dong",
       name: "Hội đồng",
-      hidden: false,
+      hidden: role !== "TRO_LY_KHOA",
     },
     {
       href: "/to-chuc",
@@ -41,7 +41,7 @@ export default function TrangChuPage() {
       hidden: false,
     },
     {
-      href: "#",
+      href: "/tai-khoan",
       name: "Thông tin",
       hidden: false,
     },

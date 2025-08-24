@@ -13,9 +13,9 @@ import DotBaoVePage from '@/pages/DotBaoVePage';
 import SinhVienOfGiangVienPage from '@/pages/SinhVienOfGiangVienPage';
 import DoAnLayout from '@/layouts/DoAnLayout';
 import DeTaiApprovalPage from '@/pages/DeTaiApprovalPage';
-import GiangVienLayout from "@/layouts/GiangVienLayout";
-import GiangVienPage from "@/pages/GiangVienPage";
-import DangKiGiangVienHuongDan from "@/pages/DangKiGiangVienHuongDan";
+import GiangVienLayout from '@/layouts/GiangVienLayout';
+import GiangVienPage from '@/pages/GiangVienPage';
+import DangKiGiangVienHuongDan from '@/pages/DangKiGiangVienHuongDan';
 import SinhVienPage from '@/pages/SinhVienPage';
 import DeCuongApprovalPage from '@/pages/DeCuongApprovalPage';
 import ThongBaoCreatePage from '@/pages/ThongBaoCreatePage';
@@ -26,6 +26,9 @@ import TaiKhoanLayout from '@/layouts/TaiKhoanLayout';
 import TrangChuPage from '@/pages/TrangChuPage';
 import Hello from '@/pages/Hello';
 import ThoiGianThucHienPage from '@/pages/ThoiGianThucHienPage';
+import HoiDongLayout from '@/layouts/HoiDongLayout';
+import HoiDongBaoVePage from '@/pages/HoiDongBaoVePage';
+import HoiDongPhanBienPage from '@/pages/HoiDongPhanBienPage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -37,42 +40,48 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <SinhVienPage/> },
-      { path: 'huong-dan', element: <SinhVienOfGiangVienPage/> },
-      { path: 'dang-ky-do-an', element: <Hello/> },
-      { path: "gvhd", element: <DangKiGiangVienHuongDan/> },
-    ]
+      { index: true, element: <SinhVienPage /> },
+      { path: 'huong-dan', element: <SinhVienOfGiangVienPage /> },
+      { path: 'dang-ky-do-an', element: <Hello /> },
+      { path: 'gvhd', element: <DangKiGiangVienHuongDan /> },
+    ],
   },
 
   {
-    path: "/",
+    path: '/',
     element: <MainLayout />,
-    handle: { breadcrumb: "Trang chủ" },
+    handle: { breadcrumb: 'Trang chủ' },
     children: [
       { index: true, element: <TrangChuPage />, handle: { breadcrumb: "Tổng quan" } },
       { path: "*", element: <NotFound /> },
     ],
   },
   {
-    path: "/giang-vien",
+    path: '/giang-vien',
     element: <GiangVienLayout />,
-    children: [
-      { index: true, element: <GiangVienPage /> },
-    ],
+    children: [{ index: true, element: <GiangVienPage /> }],
   },
 
   {
-    path: "/do-an",
+    path: '/do-an',
     element: (
       <ProtectedRoute>
         <DoAnLayout />
       </ProtectedRoute>
     ),
-    handle: { breadcrumb: "Quản lý đồ án" },
+    handle: { breadcrumb: 'Quản lý đồ án' },
     children: [
       { index: true, element: <Navigate to="duyet-de-tai" replace /> },
-      { path: "duyet-de-tai", element: <DeTaiApprovalPage />, handle: { breadcrumb: "Duyệt đề tài" } },
-      { path: "duyet-de-cuong", element: <DeCuongApprovalPage />, handle: { breadcrumb: "Duyệt đề cương" } },
+      {
+        path: 'duyet-de-tai',
+        element: <DeTaiApprovalPage />,
+        handle: { breadcrumb: 'Duyệt đề tài' },
+      },
+      {
+        path: 'duyet-de-cuong',
+        element: <DeCuongApprovalPage />,
+        handle: { breadcrumb: 'Duyệt đề cương' },
+      },
     ],
   },
 
@@ -148,6 +157,32 @@ export const router = createBrowserRouter([
   ),
   children: [
     { index: true, element: <TaiKhoanInfoPage /> },
+    ],
+  },
+  {
+    path: '/hoi-dong',
+    element: (
+      <ProtectedRoute>
+        <HoiDongLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <Navigate to="bao-ve" replace /> },
+      { path: 'bao-ve', element: <HoiDongBaoVePage /> },
+      { path: 'phan-bien', element: <HoiDongPhanBienPage /> },
+    ],
+  },
+  {
+    path: '/hoi-dong',
+    element: (
+      <ProtectedRoute>
+        <HoiDongLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <Navigate to="bao-ve" replace /> },
+      { path: 'bao-ve', element: <HoiDongBaoVePage /> },
+      { path: 'phan-bien', element: <HoiDongPhanBienPage /> },
     ],
   },
 ]);
