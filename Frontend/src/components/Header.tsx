@@ -121,14 +121,14 @@ export default function Header() {
             </nav>
           </div>
 
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center gap-3 justify-center">
             <NotificationsPanel />
 
             {/* Avatar: CLICK = điều hướng /tai-khoan */}
             <img
               src={avatarSrc}
               alt="User"
-              className="w-8 h-8 rounded-full cursor-pointer"
+              className="w-8 h-8 rounded-full cursor-pointer ml-2"
               onClick={() => navigate("/tai-khoan")}
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = DEFAULT_AVATAR;
