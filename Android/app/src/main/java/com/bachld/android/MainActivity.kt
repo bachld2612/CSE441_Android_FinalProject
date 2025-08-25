@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_thong_tin
         )
         val topLevelTabsGV = setOf(
-            R.id.gv_navigation_trang_chu,
+              R.id.gv_navigation_trang_chu,
             R.id.gv_navigation_de_tai,
             R.id.gv_navigation_thong_tin,
             R.id.gv_navigation_de_cuong,

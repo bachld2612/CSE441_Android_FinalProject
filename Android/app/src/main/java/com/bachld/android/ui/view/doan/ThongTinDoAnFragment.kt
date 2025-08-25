@@ -23,6 +23,7 @@ import com.bachld.android.ui.viewmodel.DoAnDetailViewModel
 import com.bachld.android.ui.viewmodel.SharedDeTaiViewModel
 import kotlinx.coroutines.launch
 import java.util.Locale
+import java.text.Normalizer
 
 class ThongTinDoAnFragment : Fragment() {
 
@@ -87,6 +88,12 @@ class ThongTinDoAnFragment : Fragment() {
         vm.load(forceRefresh = true)
     }
 
+    private fun statusLabelVi(status: String?): String = when (status?.uppercase(Locale.ROOT)) {
+        "ACCEPTED" -> "Đã duyệt"
+        "PENDING"  -> "Chờ xét duyệt"
+        "CANCELED" -> "Bị hủy"
+        else       -> "Không rõ"
+    }
     private fun render(p: DeTaiResponse?) = with(binding) {
         if (p == null) {
             // CHƯA CÓ ĐỀ TÀI
@@ -123,22 +130,9 @@ class ThongTinDoAnFragment : Fragment() {
         }
 
         val statusUpper = p.status?.toString()?.uppercase(Locale.ROOT)
-        val isAccepted = statusUpper == "ACCEPTED" || statusUpper == "ĐÃ DUYỆT"
+        val isAccepted = statusUpper == "ACCEPTED"
 
-        if (isAccepted) {
-            // ✅ Đã duyệt → ẩn 2 nút
-            btnDangKyDeTai.visibility = View.GONE
-            btnDeNghiHoan.visibility  = View.GONE
-            // (tuỳ chọn) ẩn dải thông tin trên cùng:
-            // layoutTopState.visibility = View.GONE
-        } else {
-            // ✅ Chưa duyệt → hiện 2 nút
-            btnDangKyDeTai.visibility = View.VISIBLE
-            btnDeNghiHoan.visibility  = View.VISIBLE
-            layoutTopState.visibility = View.VISIBLE
-        }
-
-        tvTrangThai.text = "Trạng thái: ${p.status}"
+        tvTrangThai.text = "Trạng thái: ${statusLabelVi(statusUpper)}"
     }
 
 

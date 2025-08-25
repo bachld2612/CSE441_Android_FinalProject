@@ -8,7 +8,7 @@ const sidebarLinks = [
     roles: ["tro_ly_khoa", "admin"],
   },
   {
-    name: "Đăng kí giảng viên hướng dẫn",
+    name: "Đăng ký giảng viên hướng dẫn",
     href: "/sinh-vien/gvhd",
     roles: ["tro_ly_khoa", "admin"],
   },
