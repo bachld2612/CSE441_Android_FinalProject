@@ -37,7 +37,6 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
     private val viewModel: ThongBaoViewModel by viewModels()
     private lateinit var adapter: ThongBaoAdapter
 
-    // Reuse DoAnDetailViewModel để kiểm tra sinh viên đã có đồ án chưa
     private val doAnVm: DoAnDetailViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -69,7 +68,6 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
                 topMargin = 5
             }
         } else {
-            // Sinh viên: mặc định ẩn, sẽ hiện nếu CHƯA có đồ án
             binding.layoutTopState.visibility = View.GONE
 
             binding.btnDeNghiHoan.setOnClickListener {
@@ -79,19 +77,17 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
                 findNavController().navigate(R.id.action_trang_chu_to_dang_ky_do_an)
             }
 
-            // Quan sát trạng thái đồ án: null => chưa có => hiện top; khác null => ẩn
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     launch {
                         doAnVm.project.collect { p ->
-                            binding.layoutTopState.visibility = if (p == null) View.VISIBLE else View.GONE
+                            binding.layoutTopState.visibility = if (p == null || p.status != "ACCEPTED") View.VISIBLE else View.GONE
                         }
                     }
                     launch {
                         doAnVm.error.collect { msg ->
                             if (!msg.isNullOrBlank()) {
                                 Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                                // Nếu lỗi khi load, cho phép hiện top để SV vẫn thấy nút hành động
                                 binding.layoutTopState.visibility = View.VISIBLE
                             }
                         }
@@ -99,7 +95,6 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
                 }
             }
 
-            // Gọi load để kiểm tra có đồ án hay chưa
             doAnVm.load(forceRefresh = true)
         }
 
