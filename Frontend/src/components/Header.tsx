@@ -87,7 +87,7 @@ export default function Header() {
       hidden: false,
     },
     { name: "Giảng viên", href: "/giang-vien", hidden: false },
-    { name: "Hội đồng", href: "/hoi-dong", hidden: role !== "TRO_LY_KHOA" },
+    { name: "Hội đồng", href: "/hoi-dong", hidden: role === "ADMIN" },
     { name: "Tổ chức", href: "/to-chuc/khoa", hidden: false },
     {
       name: "Thông báo hệ thống",
