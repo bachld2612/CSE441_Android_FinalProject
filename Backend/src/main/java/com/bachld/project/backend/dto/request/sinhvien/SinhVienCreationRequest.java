@@ -1,9 +1,6 @@
 package com.bachld.project.backend.dto.request.sinhvien;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -29,7 +26,7 @@ public class SinhVienCreationRequest {
     String email;
     @Size(min = 6, message = "PASSWORD_INVALID")
     String matKhau;
-    @NotEmpty(message = "LOP_EMPTY")
+    @NotNull(message = "LOP_EMPTY")
     Long lopId;
 
 }
