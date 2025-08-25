@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center"
-            android:text="Chưa có sinh viên nào đăng kí đề tài!"
+            android:text="Chưa có sinh viên nào nộp đề cương!"
             android:textColor="#888"
             android:textSize="20sp"
             android:textStyle="bold" />
