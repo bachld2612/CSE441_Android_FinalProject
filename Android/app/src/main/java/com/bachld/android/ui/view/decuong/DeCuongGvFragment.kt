@@ -38,14 +38,20 @@ class DeCuongGvFragment : Fragment(R.layout.fragment_de_cuong_list) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                // Danh sách
                 launch {
                     vm.listState.collect { st ->
                         when (st) {
-                            is UiState.Loading -> { /* show loading nếu cần */ }
+                            is UiState.Loading -> {  }
                             is UiState.Error   -> toast(st.message ?: "Lỗi tải danh sách")
                             is UiState.Success -> {
                                 val list = st.data.result?.content.orEmpty()
+                                if(list.isEmpty()) {
+                                    binding.layoutChuaDangKy.visibility = View.VISIBLE
+                                    binding.rvDeCuong.visibility = View.GONE
+                                } else {
+                                    binding.layoutChuaDangKy.visibility = View.GONE
+                                    binding.rvDeCuong.visibility = View.VISIBLE
+                                }
                                 adapter.submitList(list)
                             }
                             else -> Unit
@@ -53,7 +59,6 @@ class DeCuongGvFragment : Fragment(R.layout.fragment_de_cuong_list) {
                     }
                 }
 
-                // Hành động duyệt / từ chối
                 launch {
                     vm.actionState.collect { st ->
                         when (st) {
