@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -55,14 +56,23 @@ class HoiDongFragment : Fragment() {
             })
         }
 
-        vm.load() // lần đầu
+        vm.load()
 
         viewLifecycleOwner.lifecycleScope.launch {
             vm.state.collectLatest { st ->
                 when (st) {
-                    is UiState.Success -> adapter.submit(st.data)
-                    is UiState.Error   -> { /* TODO: show error */ }
-                    else               -> Unit
+                    is UiState.Success -> {
+                        if (st.data.isEmpty()) {
+                            Toast.makeText(requireContext(),
+                                "Không có hội đồng nào đang diễn ra", Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        adapter.submit(st.data)
+                    }
+                    is UiState.Error -> {
+                        Toast.makeText(requireContext(), st.message ?: "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show()
+                    }
+                    else -> Unit
                 }
             }
         }
