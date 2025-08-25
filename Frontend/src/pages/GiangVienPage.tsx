@@ -28,6 +28,7 @@ import {
 } from "@/services/bo-mon.service";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 /* ================== Schema tạo giảng viên ================== */
 const createSchema = z.object({
@@ -319,7 +320,20 @@ export default function GiangVienPage() {
 
   return (
     <div>
-      <h1 className="text-3xl text-center mt-10 font-bold mb-4">Danh sách giảng viên</h1>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Giảng viên
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <h1 className="text-3xl text-center mt-5 font-bold mb-4">Danh sách giảng viên</h1>
 
       {/* Controls: Quyền + Sort + Search */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
