@@ -7,6 +7,7 @@ import com.bachld.project.backend.dto.response.hoidong.HoiDongDetailResponse;
 import com.bachld.project.backend.dto.response.hoidong.HoiDongListItemResponse;
 import com.bachld.project.backend.enums.HoiDongType;
 import com.bachld.project.backend.service.HoiDongService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,7 +37,7 @@ public class HoiDongController {
                 .result(hoiDongService.getHoiDongsDangDienRa(keyword, type, pageable))
                 .build();
     }
-    
+
     @GetMapping("{hoiDongId}")
     public ApiResponse<HoiDongDetailResponse> getHoiDongDetail(@PathVariable Long hoiDongId) {
         return ApiResponse.<HoiDongDetailResponse>builder()
@@ -45,7 +46,7 @@ public class HoiDongController {
     }
 
     @PostMapping("/them-hoi-dong")
-    public ApiResponse<HoiDongDetailResponse> createHoiDong(@RequestBody HoiDongCreateRequest request) {
+    public ApiResponse<HoiDongDetailResponse> createHoiDong(@RequestBody @Valid HoiDongCreateRequest request) {
         return ApiResponse.<HoiDongDetailResponse>builder()
                 .result(hoiDongService.createHoiDong(request))
                 .build();

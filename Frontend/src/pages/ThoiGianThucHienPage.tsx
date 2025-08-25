@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -515,9 +514,6 @@ export default function ThoiGianThucHienPage() {
                 <DialogTitle className="text-center">
                   Thêm công việc
                 </DialogTitle>
-                <DialogDescription className="text-center">
-                  Giao diện demo (chưa gọi API).
-                </DialogDescription>
               </DialogHeader>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -690,9 +686,6 @@ export default function ThoiGianThucHienPage() {
                         <DialogTitle className="text-center">
                           Sửa công việc
                         </DialogTitle>
-                        <DialogDescription className="text-center">
-                          Không cho thay đổi đợt bảo vệ.
-                        </DialogDescription>
                       </DialogHeader>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

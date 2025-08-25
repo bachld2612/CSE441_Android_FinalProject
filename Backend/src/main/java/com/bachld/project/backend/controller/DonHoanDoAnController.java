@@ -4,6 +4,7 @@ import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.donhoandoan.DonHoanDoAnRequest;
 import com.bachld.project.backend.dto.response.donhoandoan.DonHoanDoAnResponse;
 import com.bachld.project.backend.service.DonHoanDoAnService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +26,7 @@ public class DonHoanDoAnController {
     // Sinh viên gửi đơn hoãn (lý do + file minh chứng optional)
     @PostMapping(value = "/sinh-vien/hoan-do-an", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<DonHoanDoAnResponse> createPostponeRequest(
-            @ModelAttribute DonHoanDoAnRequest request) {
+            @ModelAttribute @Valid DonHoanDoAnRequest request) {
         return ApiResponse.<DonHoanDoAnResponse>builder()
                 .result(donHoanDoAnService.createPostponeRequest(request))
                 .build();

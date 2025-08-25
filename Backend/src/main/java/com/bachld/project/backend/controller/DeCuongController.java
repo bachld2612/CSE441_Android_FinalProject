@@ -6,6 +6,7 @@ import com.bachld.project.backend.dto.request.decuong.DeCuongUploadRequest;
 import com.bachld.project.backend.dto.response.decuong.DeCuongLogResponse;
 import com.bachld.project.backend.dto.response.decuong.DeCuongResponse;
 import com.bachld.project.backend.service.DeCuongService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,7 +46,7 @@ public class DeCuongController {
 
     @PostMapping(value = "/sinh-vien/nop-de-cuong", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<DeCuongResponse> submitDeCuong(
-            @ModelAttribute DeCuongUploadRequest request) throws IOException {
+            @ModelAttribute @Valid DeCuongUploadRequest request) throws IOException {
         return ApiResponse.<DeCuongResponse>builder()
                 .result(deCuongService.submitDeCuong(request))
                 .build();
