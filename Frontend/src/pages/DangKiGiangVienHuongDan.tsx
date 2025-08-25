@@ -190,10 +190,10 @@ export default function DangKiGiangVienHuongDan() {
         <TableHeader>
           <TableRow className="bg-gray-100">
             <TableHead className="text-center font-semibold border border-gray-300">
-              Mã Sinh Viên
+              Mã sinh viên
             </TableHead>
             <TableHead className="text-center font-semibold border border-gray-300">
-              Giảng Viên
+              Họ và tên
             </TableHead>
             <TableHead className="text-center font-semibold border border-gray-300">
               Hành động

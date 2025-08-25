@@ -2,7 +2,7 @@ package com.bachld.android.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import com.bachld.android.data.repository.impl.DeTaiRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

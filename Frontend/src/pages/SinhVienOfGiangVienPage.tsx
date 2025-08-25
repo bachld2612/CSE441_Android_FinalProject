@@ -79,7 +79,7 @@ export default function SinhVienOfGiangVienPage() {
       </Breadcrumb>
 
       <h1 className="text-3xl text-center mt-10 font-bold mb-4">
-        Sinh viên đang đăng ký
+        Sinh viên hướng dẫn
       </h1>
 
       <form

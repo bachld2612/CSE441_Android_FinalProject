@@ -1,14 +1,22 @@
-// HoiDongPage.tsx
+// src/pages/HoiDongPage.tsx
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '@/lib/axios';
+
 import {
   getHoiDongPage,
   createHoiDong,
   getHoiDongDetail,
   importSinhVienToHoiDong,
 } from '@/services/hoiDong.service';
+
+import {
+  getDotBaoVeOptions,
+  getDotBaoVeIdBy,
+  type DotBaoVeOption,
+} from '@/services/dot-bao-ve.service';
+
 import type {
   HoiDongListItem,
   HoiDongDetail,
@@ -16,6 +24,7 @@ import type {
   ImportResult,
   HoiDongType,
 } from '@/types/hoiDong.types';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +36,9 @@ import {
   X,
   Plus,
   Trash2,
+  CheckCircle,
+  XCircle,
+  Loader2,
 } from 'lucide-react';
 import {
   Table,
@@ -56,27 +68,24 @@ const fmt = (d?: string) => (d ? new Date(d).toLocaleDateString('vi-VN') : '-');
 const toVnLoai = (x?: string) =>
   x === 'DEFENSE' ? 'Bảo vệ' : x === 'PEER_REVIEW' ? 'Phản biện' : x ?? '-';
 
-/* tải file log */
-async function downloadByUrl(url: string, filename = "ket_qua_import.xlsx") {
+/* tải file log (cố đặt tên cố định, có fallback) */
+async function downloadByUrl(url: string, filename = 'ket_qua_import.xlsx') {
   try {
-    // Cố tải cross-origin với CORS để chủ động đặt tên file
-    const res = await fetch(url, { mode: "cors" });
+    const res = await fetch(url, { mode: 'cors' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
-
     const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = blobUrl;
-    a.download = filename;                 // <— tên cố định
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(blobUrl);
-  } catch (err) {
-    // Fallback: vẫn thử đặt download, nhưng browser có thể bỏ qua với cross-origin
-    const a = document.createElement("a");
+  } catch {
+    const a = document.createElement('a');
     a.href = url;
-    a.setAttribute("download", filename);  // có thể bị ignore nếu nguồn không cho
+    a.setAttribute('download', filename);
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -217,7 +226,26 @@ function SuggestGVInput({
 /* ================== PAGE ================== */
 export default function HoiDongPage({ fixedLoai, title }: Props) {
   const [searchParams] = useSearchParams();
-  const dotBaoVeId = Number(searchParams.get('dot')) || 1;
+
+  /* ====== DOT FILTER (ngoài danh sách) ====== */
+  const [dotOptions, setDotOptions] = useState<DotBaoVeOption[]>([]);
+  const [dotId, setDotId] = useState<number | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const opts = await getDotBaoVeOptions();
+        setDotOptions(opts);
+        const fromParam = Number(searchParams.get('dot'));
+        if (fromParam) setDotId(fromParam);
+        else if (opts.length) setDotId(opts[0].value);
+      } catch {
+        setDotOptions([]);
+        setDotId(null);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // list
   const [rows, setRows] = useState<HoiDongListItem[]>([]);
@@ -239,6 +267,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
   const [importHoiDongId, setImportHoiDongId] = useState<number | null>(null);
 
   const loadData = async () => {
+    if (!dotId) return;
     setLoading(true);
     try {
       const data = await getHoiDongPage({
@@ -246,7 +275,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
         size,
         q,
         loai: fixedLoai,
-        dotBaoVeId,
+        dotBaoVeId: dotId,
       } as any);
       setRows(data.content);
       setTotalPages(data.totalPages);
@@ -260,7 +289,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, fixedLoai, dotBaoVeId]);
+  }, [page, fixedLoai, dotId]);
 
   /* ====== CREATE ====== */
   const [tenHoiDong, setTenHoiDong] = useState('');
@@ -312,14 +341,55 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
     })();
   }, [openCreate, allGV.length]);
 
+  /* ====== SUY RA ĐỢT (trong modal tạo) ====== */
+  const [namBatDau, setNamBatDau] = useState<string>('');
+  const [hocKi, setHocKi] = useState<string>('');
+  const [dotThu, setDotThu] = useState<string>('');
+  const [dotIdCreate, setDotIdCreate] = useState<number | null>(null);
+  const [findingDot, setFindingDot] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const y = Number(namBatDau);
+      const hk = Number(hocKi);
+      const dt = Number(dotThu);
+      if (!y || !hk || !dt) {
+        setDotIdCreate(null);
+        return;
+      }
+      setFindingDot(true);
+      try {
+        const id = await getDotBaoVeIdBy({
+          namBatDau: y,
+          hocKi: hk,
+          dotThu: dt,
+        });
+        setDotIdCreate(id);
+      } catch {
+        setDotIdCreate(null);
+      } finally {
+        setFindingDot(false);
+      }
+    })();
+  }, [namBatDau, hocKi, dotThu]);
+
   const creating = useMemo(
     () =>
       !tenHoiDong ||
       !ngayBatDau ||
       !ngayKetThuc ||
       !chuTich ||
+      !dotIdCreate ||
       (fixedLoai === 'DEFENSE' && !thuKy),
-    [tenHoiDong, ngayBatDau, ngayKetThuc, chuTich, thuKy, fixedLoai],
+    [
+      tenHoiDong,
+      ngayBatDau,
+      ngayKetThuc,
+      chuTich,
+      thuKy,
+      fixedLoai,
+      dotIdCreate,
+    ],
   );
 
   const addReviewer = () => setReviewers((arr) => [...arr, null]);
@@ -328,39 +398,72 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
   const setReviewerAt = (idx: number, v: GiangVienOption | null) =>
     setReviewers((arr) => arr.map((x, i) => (i === idx ? v : x)));
 
+  const ROLE = {
+    CHU_TICH: 'CHAIR',
+    THU_KY: 'SECRETARY',
+    PHAN_BIEN: 'EXAMINER',
+  };
+
   const doCreate = async () => {
-    const reviewerIds =
-      fixedLoai === 'DEFENSE'
-        ? reviewers.filter(Boolean).map((x) => (x as GiangVienOption).id)
-        : [];
-    const body: any = {
+    if (!dotIdCreate) {
+      toast.error('Chưa xác định được đợt. Nhập đủ Năm/Học kỳ/Đợt thứ.');
+      return;
+    }
+
+    // map giảng viên -> lecturers
+    const lecturers: Array<{ giangVienId: number; role: string }> = [];
+    if (chuTich?.id)
+      lecturers.push({ giangVienId: chuTich.id, role: ROLE.CHU_TICH });
+    if (fixedLoai === 'DEFENSE' && thuKy?.id)
+      lecturers.push({ giangVienId: thuKy.id, role: ROLE.THU_KY });
+    if (fixedLoai === 'DEFENSE') {
+      reviewers
+        .filter(Boolean)
+        .forEach((r) =>
+          lecturers.push({ giangVienId: (r as any).id, role: ROLE.PHAN_BIEN }),
+        );
+    }
+
+    const body = {
       tenHoiDong,
-      thoiGianBatDau: ngayBatDau,
-      thoiGianKetThuc: ngayKetThuc,
-      loaiHoiDong: fixedLoai,
+      thoiGianBatDau: ngayBatDau, // 'yyyy-MM-dd' từ <input type="date">
+      thoiGianKetThuc: ngayKetThuc, // 'yyyy-MM-dd'
+      loaiHoiDong: fixedLoai, // 'DEFENSE' | 'PEER_REVIEW'
+      dotBaoVeId: dotIdCreate,
+      lecturers,
     };
-    if (chuTich?.id) body.chuTichId = chuTich.id;
-    if (fixedLoai === 'DEFENSE' && thuKy?.id) body.thuKyId = thuKy.id;
-    if (reviewerIds.length) body.giangVienPhanBienIds = reviewerIds;
 
     try {
-      const res = await createHoiDong(body as HoiDongCreateRequest);
+      const res = await createHoiDong(body as any);
       if ((res as any).code === 1000) {
         toast.success('Tạo hội đồng thành công');
         setOpenCreate(false);
+        // reset form...
         setTenHoiDong('');
         setNgayBatDau('');
         setNgayKetThuc('');
         setChuTich(null);
         setThuKy(null);
         setReviewers([null]);
+        setNamBatDau('');
+        setHocKi('');
+        setDotThu('');
+        setDotIdCreate(null);
         setPage(0);
         loadData();
       } else {
         toast.error('Tạo hội đồng thất bại');
       }
-    } catch {
-      toast.error('Tạo hội đồng thất bại');
+    } catch (err: any) {
+      // log message chi tiết nếu BE trả về
+      const msg = err?.response?.data?.message || 'Tạo hội đồng thất bại';
+      toast.error(msg);
+      console.error(
+        'create body sent:',
+        body,
+        'server error:',
+        err?.response?.data,
+      );
     }
   };
 
@@ -394,11 +497,10 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
         f,
       );
 
-      // 1) Hiện toast trước
-      const baseMsg = `Import xong: ${result.successCount} thành công, ${result.failureCount} thất bại`;
-      toast.info(baseMsg);
+      toast.info(
+        `Import xong: ${result.successCount} thành công, ${result.failureCount} thất bại`,
+      );
 
-      // 2) Nếu có file log => sau 300ms mới hỏi xác nhận tải
       if (result.logFileUrl) {
         setTimeout(() => {
           const confirmMsg =
@@ -456,13 +558,30 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
         </div>
 
         <form
-          className="flex items-center gap-1"
+          className="flex items-center gap-2"
           onSubmit={(e) => {
             e.preventDefault();
             setPage(0);
             loadData();
           }}
         >
+          {/* chọn đợt */}
+          <select
+            className="h-10 min-w-[220px] rounded-md border border-gray-300 px-3 text-sm bg-white"
+            value={dotId ?? ''}
+            onChange={(e) => {
+              setPage(0);
+              setDotId(Number(e.target.value) || null);
+            }}
+          >
+            {dotOptions.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+
+          {/* tìm tên hội đồng */}
           <Input
             type="text"
             placeholder="Tìm theo tên hội đồng..."
@@ -649,14 +768,92 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
                   value={toVnLoai(fixedLoai)}
                   disabled
                   readOnly
-                  className="mt-1 font-semibold bg-gray-200 text-gray-900
-             disabled:text-gray-900 disabled:opacity-100
-             border border-gray-300 cursor-not-allowed"
+                  className="mt-1 font-semibold bg-gray-200 text-gray-900 disabled:text-gray-900 disabled:opacity-100 border border-gray-300 cursor-not-allowed"
                 />
               </div>
             </div>
 
-            {/* Hàng 2: Bắt đầu + Kết thúc */}
+            {/* Hàng 2: thông tin đợt → suy ra dotBaoVeId */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+              <div>
+                <label className="text-sm font-medium">Năm bắt đầu</label>
+                <Input
+                  type="number"
+                  value={namBatDau}
+                  onChange={(e) => setNamBatDau(e.target.value)}
+                  className="mt-1"
+                  placeholder="VD: 2025"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Học kỳ</label>
+                <Input
+                  type="number"
+                  value={hocKi}
+                  onChange={(e) => setHocKi(e.target.value)}
+                  className="mt-1"
+                  placeholder="1 hoặc 2"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Đợt thứ</label>
+                <Input
+                  type="number"
+                  value={dotThu}
+                  onChange={(e) => setDotThu(e.target.value)}
+                  className="mt-1"
+                  placeholder="1, 2, 3…"
+                />
+              </div>
+
+              {/* Trạng thái đợt – xuống dòng, chiếm full row */}
+              <div className="md:col-span-4">
+                <label className="text-sm font-medium">Trạng thái đợt</label>
+                <div className="mt-1 rounded-md border bg-gray-50 p-3">
+                  {findingDot ? (
+                    <div className="flex items-start gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-gray-500 mt-0.5" />
+                      <span className="text-sm text-gray-600">
+                        Đang xác định…
+                      </span>
+                    </div>
+                  ) : Number(namBatDau) && Number(hocKi) && Number(dotThu) ? (
+                    dotIdCreate ? (
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
+                        <div className="text-sm text-gray-900">
+                          <div className="font-medium">Tìm thấy đợt</div>
+                          <div>
+                            Đợt {dotThu} · HK {hocKi} · Năm {namBatDau}
+                          </div>
+                          {/* Không hiển thị ID ở đây nữa */}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start gap-2">
+                        <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
+                        <div className="text-sm text-red-600">
+                          <div className="font-medium">
+                            Không tìm thấy đợt phù hợp
+                          </div>
+                          <div className="text-gray-600">
+                            Kiểm tra lại Năm/Học kỳ/Đợt thứ.
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  ) : (
+                    <span className="text-sm text-gray-500">
+                      Nhập đủ 3 ô để xác định đợt
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Hàng 3: Bắt đầu + Kết thúc */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="text-sm font-medium">Bắt đầu</label>
@@ -710,7 +907,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
               </div>
             )}
 
-            {/* Dọc: Giảng viên phản biện (chỉ Bảo vệ) — mỗi dòng là một ô Input như Chủ tịch/Thư ký */}
+            {/* Dọc: Giảng viên phản biện (chỉ Bảo vệ) */}
             {fixedLoai === 'DEFENSE' && (
               <div className="mt-4">
                 <div className="flex items-center justify-between">

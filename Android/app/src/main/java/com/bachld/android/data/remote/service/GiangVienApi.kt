@@ -2,7 +2,7 @@ package com.bachld.android.data.remote.service
 
 import com.bachld.android.data.dto.request.giangvien.RejectDeTaiRequest
 import com.bachld.android.data.dto.response.ApiResponse
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import com.bachld.android.data.dto.response.giangvien.PageData
 import com.bachld.android.data.dto.response.giangvien.*
 import retrofit2.http.*

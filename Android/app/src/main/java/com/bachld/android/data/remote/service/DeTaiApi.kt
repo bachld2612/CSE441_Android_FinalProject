@@ -2,7 +2,7 @@ package com.bachld.android.data.remote.service
 
 
 import com.bachld.android.data.dto.response.ApiResponse
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.GET

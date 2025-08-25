@@ -8,11 +8,18 @@ export interface HoiDongListItem {
   loaiHoiDong: HoiDongType;
 }
 
+export type LecturerRole = "CHAIRMAN" | "SECRETARY" | "EXAMINER";
+
 export interface HoiDongCreateRequest {
   tenHoiDong: string;
-  thoiGianBatDau: string; 
+  thoiGianBatDau: string;
   thoiGianKetThuc: string;
   loaiHoiDong: HoiDongType;
+  dotBaoVeId: number;
+  lecturers: Array<{
+    giangVienId: number;
+    role: LecturerRole;
+  }>;
 }
 
 export interface HoiDongDetail {
