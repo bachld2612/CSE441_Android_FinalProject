@@ -5,6 +5,7 @@ import com.bachld.project.backend.dto.request.sinhvien.SinhVienCreationRequest;
 import com.bachld.project.backend.dto.request.sinhvien.SinhVienUpdateRequest;
 import com.bachld.project.backend.dto.response.sinhvien.*;
 import com.bachld.project.backend.service.SinhVienService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +29,7 @@ public class SinhVienController {
     SinhVienService sinhVienService;
 
     @PostMapping
-    public ApiResponse<SinhVienCreationResponse> createSinhVien(@RequestBody SinhVienCreationRequest request) {
+    public ApiResponse<SinhVienCreationResponse> createSinhVien(@RequestBody @Valid SinhVienCreationRequest request) {
 
         return ApiResponse.<SinhVienCreationResponse>builder()
                 .result(sinhVienService.createSinhVien(request))
@@ -48,10 +49,10 @@ public class SinhVienController {
     @GetMapping
     public ApiResponse<Page<SinhVienResponse>> getAllSinhVien(
             @PageableDefault(
-                page = 0,
-                size = 10,
-                sort = "updatedAt",
-                direction = Sort.Direction.DESC) Pageable pageable
+                    page = 0,
+                    size = 10,
+                    sort = "updatedAt",
+                    direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ApiResponse.<Page<SinhVienResponse>>builder()
                 .result(sinhVienService.getAllSinhVien(pageable))
@@ -62,10 +63,10 @@ public class SinhVienController {
     public ApiResponse<Page<SinhVienResponse>> getAllSinhVienByTenOrMaSV(
             @RequestParam String info,
             @PageableDefault(
-                page = 0,
-                size = 10,
-                sort = "updatedAt",
-                direction = Sort.Direction.DESC) Pageable pageable
+                    page = 0,
+                    size = 10,
+                    sort = "updatedAt",
+                    direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ApiResponse.<Page<SinhVienResponse>>builder()
                 .result(sinhVienService.getAllSinhVienByTenOrMaSV(info, pageable))
@@ -82,7 +83,7 @@ public class SinhVienController {
 
     @PutMapping("{maSV}")
     public ApiResponse<SinhVienCreationResponse> updateSinhVien(
-            @RequestBody SinhVienUpdateRequest request,
+            @RequestBody @Valid SinhVienUpdateRequest request,
             @PathVariable String maSV
     ) {
         return ApiResponse.<SinhVienCreationResponse>builder()

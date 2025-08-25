@@ -2,7 +2,7 @@
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 
-# Copy Maven wrapper & config trước để tận dụng cache
+# Copy Maven wrapper & config để tận dụng cache
 COPY mvnw ./
 COPY .mvn .mvn
 COPY pom.xml ./
@@ -24,13 +24,13 @@ RUN useradd -m spring
 # Copy jar đã build
 COPY --from=build /app/target/*.jar app.jar
 
-# Thư mục mount secret.yml
+# Thư mục mount secret.yml (tùy chọn)
 RUN mkdir -p /app/config && chown -R spring:spring /app
 USER spring
 
 EXPOSE 8080
 
-# Import secret.yml nếu có
+# Các biến mặc định; có thể override trong docker-compose/.env
 ENV SPRING_CONFIG_IMPORT=optional:file:/app/config/secret.yml \
     SPRING_PROFILES_ACTIVE=prod \
     JAVA_OPTS=""

@@ -4,6 +4,7 @@ import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.taikhoan.ChangePasswordRequest;
 import com.bachld.project.backend.dto.response.taikhoan.AnhDaiDienUploadResponse;
 import com.bachld.project.backend.service.TaiKhoanService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +35,7 @@ public class TaiKhoanController {
     }
 
     @PostMapping("doi-mat-khau")
-    public ApiResponse<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ApiResponse<String> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         taiKhoanService.changePassword(changePasswordRequest);
         return ApiResponse.<String>builder()
                 .result("Change password successfully")
