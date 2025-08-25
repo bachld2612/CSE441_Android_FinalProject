@@ -14,12 +14,14 @@ import com.bachld.project.backend.mapper.HoiDongMapper;
 import com.bachld.project.backend.repository.*;
 import com.bachld.project.backend.service.CloudinaryService;
 import com.bachld.project.backend.service.HoiDongService;
+import com.bachld.project.backend.util.TimeGatekeeper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -35,6 +37,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -50,6 +53,7 @@ public class HoiDongServiceImpl implements HoiDongService {
     DotBaoVeGiangVienRepository dotBaoVeGiangVienRepository;
     private final ThanhVienHoiDongRepository thanhVienHoiDongRepository;
     CloudinaryService cloudinaryService;
+    TimeGatekeeper timeGatekeeper;
 
     @PersistenceContext
     EntityManager em;
@@ -60,22 +64,13 @@ public class HoiDongServiceImpl implements HoiDongService {
         LocalDate today = LocalDate.now();
         boolean hasKeyword = keyword != null && !keyword.isBlank();
 
+        DotBaoVe dotBaoVe = timeGatekeeper.getCurrentDotBaoVe();
+
         Page<HoiDong> page;
-        if (type != null && hasKeyword) {
-            page = hoiDongRepository.findByLoaiHoiDongAndTenHoiDongContainingIgnoreCaseAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqual(
-                            type, keyword, today, today, pageable);
-        } else if (type != null) {
-            page = hoiDongRepository
-                    .findByLoaiHoiDongAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqual(
-                            type, today, today, pageable);
-        } else if (hasKeyword) {
-            page = hoiDongRepository
-                    .findByTenHoiDongContainingIgnoreCaseAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqual(
-                            keyword, today, today, pageable);
-        } else {
-            page = hoiDongRepository
-                    .findByThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqual(
-                            today, today, pageable);
+        if (hasKeyword) {
+            page = hoiDongRepository.findHoiDongByDotBaoVeAndTenHoiDongContainingIgnoreCase(dotBaoVe, keyword, pageable);
+        }else {
+            page = hoiDongRepository.findHoiDongByDotBaoVe(dotBaoVe, pageable);
         }
 
         return page.map(hoiDongMapper::toListItem);
