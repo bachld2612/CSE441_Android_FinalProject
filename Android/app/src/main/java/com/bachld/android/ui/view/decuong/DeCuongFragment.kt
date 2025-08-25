@@ -20,7 +20,7 @@ class DeCuongFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.viewPager.adapter = DeCuongPagerAdapter(this) // quan trọng để hết "No adapter attached"
+        binding.viewPager.adapter = DeCuongPagerAdapter(this)
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
             tab.text = titles[pos]
         }.attach()
