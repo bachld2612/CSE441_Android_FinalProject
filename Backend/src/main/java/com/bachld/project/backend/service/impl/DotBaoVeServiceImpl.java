@@ -93,7 +93,7 @@ public class DotBaoVeServiceImpl implements DotBaoVeService {
 
     }
 
-    @PreAuthorize("hasAuthority('SCOPE_TRO_LY_KHOA')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_TRO_LY_KHOA', 'SCOPE_GIANG_VIEN', 'SCOPE_TRUONG_BO_MON')")
     @Override
     public Page<DotBaoVeResponse> findAllDotBaoVe(Pageable pageable) {
         Page<DotBaoVe> page = dotBaoVeRepository.findAll(pageable);
