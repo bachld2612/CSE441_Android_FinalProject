@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.bachld.android.core.UserPrefs
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.data.repository.impl.DeTaiRepositoryImpl
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import com.bachld.android.databinding.FragmentThongTinDoAnBinding
 import com.bachld.android.ui.viewmodel.DoAnDetailViewModel
 import com.bachld.android.ui.viewmodel.SharedDeTaiViewModel
