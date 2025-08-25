@@ -44,7 +44,7 @@ export default function NganhPage() {
   // Role
   const token = useAuthStore((s) => s.token);
   const [role, setRole] = useState<string | null>(null);
-  const canManage = role === "ADMIN" || role === "TRO_LY_KHOA";
+  const canManage = role === "TRO_LY_KHOA";
 
   // Pagination (client-side)
   const [page, setPage] = useState(0); // 0-based
