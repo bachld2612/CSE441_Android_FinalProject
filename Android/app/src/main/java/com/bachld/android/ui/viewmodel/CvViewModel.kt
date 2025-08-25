@@ -2,15 +2,18 @@ package com.bachld.android.ui.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bachld.android.core.UiState
 import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.repository.SinhVienRepository
 import com.bachld.android.data.repository.impl.SinhVienRepositoryImpl
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class CvViewModel(
     private val repo: SinhVienRepository = SinhVienRepositoryImpl()
@@ -25,8 +28,14 @@ class CvViewModel(
             try {
                 val res = repo.uploadCv(context, uri)
                 _cvState.value = UiState.Success(res)
-            } catch (e: Exception) {
-                _cvState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { Gson().fromJson(it, ApiResponse::class.java) }
+                Log.d("CvViewModel", "uploadCv: ${apiErr?.code}")
+                _cvState.value = UiState.Success(
+                    ApiResponse(code = apiErr?.code ?: 413,
+                    message = apiErr?.message ?: e.message(),
+                    result = null))
             }
         }
     }

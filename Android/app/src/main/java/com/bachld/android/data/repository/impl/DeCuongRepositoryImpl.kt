@@ -23,9 +23,6 @@ class DeCuongRepositoryImpl(
 
     override suspend fun submit(request: DeCuongUploadRequest): ApiResponse<DeCuongResponse> {
         val url = request.fileUrl.trim()
-        require(url.isNotEmpty()) { "Bạn cần nhập URL đề cương." }
-
-        // Không cần extension: tạo RequestBody text/plain trực tiếp
         val fileUrlBody = url.toRequestBody("text/plain".toMediaType())
 
         return api.submitDeCuong(
