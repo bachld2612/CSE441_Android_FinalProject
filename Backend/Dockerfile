@@ -32,6 +32,9 @@ WORKDIR /app
 # Ví dụ: nếu dự án của bạn tên là 'my-spring-project', file có thể là 'my-spring-project-0.0.1-SNAPSHOT.jar'
 COPY --from=build /app/target/Backend-0.0.1-SNAPSHOT.jar app.jar
 
+ENV JAVA_TOOL_OPTIONS="-Xmx384m"
+
+
 # Thông báo cho Docker rằng container sẽ lắng nghe trên cổng 8080.
 # Điều này chỉ để thông tin, Railway sẽ điều khiển cổng thực tế thông qua biến môi trường PORT.
 EXPOSE 8080
