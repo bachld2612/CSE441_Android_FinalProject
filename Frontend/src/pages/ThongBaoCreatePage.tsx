@@ -9,7 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { createThongBao } from "@/services/thong-bao.service";
+import { createThongBao } from "@/services/thongBao.service";
 import { toast } from "react-toastify";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB

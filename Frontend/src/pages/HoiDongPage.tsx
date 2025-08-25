@@ -15,7 +15,7 @@ import {
   getDotBaoVeOptions,
   getDotBaoVeIdBy,
   type DotBaoVeOption,
-} from "@/services/dot-bao-ve.service";
+} from "@/services/dotBaoVe.service";
 
 import type {
   HoiDongListItem,

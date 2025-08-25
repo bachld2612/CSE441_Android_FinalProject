@@ -31,7 +31,7 @@ import {
 } from "@/services/sinhVien.service";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { getAllBoMon, type BoMonResponse } from "@/services/bo-mon.service";
+import { getAllBoMon, type BoMonResponse } from "@/services/boMon.service";
 import {
   getGiangVienByBoMonAndSoLuongDeTai,
   type GiangVienInfoResponse,

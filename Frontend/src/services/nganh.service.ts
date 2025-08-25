@@ -1,6 +1,6 @@
 // src/services/nganh.service.ts
 import api from "@/lib/axios";
-import type { ApiResponse } from "@/types/api-response";
+import type { ApiResponse } from "@/types/apiResponse";
 
 // ===== DTO từ backend =====
 interface NganhRequest {
@@ -44,7 +44,11 @@ async function getNganhPage(params?: {
 
 // Lấy tất cả: flatten Page -> array để dùng giống Khoa/Bộ môn
 async function getAllNganh(): Promise<ApiResponse<NganhResponse[]>> {
-  const pageRes = await getNganhPage({ page: 0, size: 1000, sort: "updatedAt,DESC" });
+  const pageRes = await getNganhPage({
+    page: 0,
+    size: 1000,
+    sort: "updatedAt,DESC",
+  });
   return {
     code: pageRes.code,
     message: pageRes.message,

@@ -66,7 +66,7 @@ import {
 import {
   getDotBaoVePage,
   type DotBaoVeResponse,
-} from "@/services/dot-bao-ve.service";
+} from "@/services/dotBaoVe.service";
 
 /* =========================
    Helpers

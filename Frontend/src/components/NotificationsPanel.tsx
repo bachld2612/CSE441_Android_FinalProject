@@ -3,7 +3,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Bell, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { getThongBaoPage, type ThongBaoResponse } from "@/services/thong-bao.service";
+import {
+  getThongBaoPage,
+  type ThongBaoResponse,
+} from "@/services/thongBao.service";
 import { downloadFile } from "@/lib/downloadFile";
 import { toast } from "react-toastify";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -25,9 +28,15 @@ function formatTimeLabel(createdAt?: string) {
   if (isDateOnly) {
     const dt = new Date(`${createdAt}T00:00:00`);
     const now = new Date();
-    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
     const startThat = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-    const diffDays = Math.floor((startToday.getTime() - startThat.getTime()) / 86400000);
+    const diffDays = Math.floor(
+      (startToday.getTime() - startThat.getTime()) / 86400000
+    );
     if (diffDays === 0) return "Hôm nay";
     if (diffDays === 1) return "Hôm qua";
     return toDDMMYYYY(dt);
@@ -67,7 +76,9 @@ function fileNameFromUrl(url: string): string {
 const STORAGE_KEY = "readThongBaoIds";
 function loadReadSet(): Set<number> {
   try {
-    return new Set<number>(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+    return new Set<number>(
+      JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")
+    );
   } catch {
     return new Set<number>();
   }
@@ -219,14 +230,21 @@ export default function NotificationsPanel() {
   };
   const listToRender = activeTab === "all" ? allVisible : unreadVisible;
   const canShowMore =
-    activeTab === "all" ? items.length > ALL_MIN : unreadList.length > UNREAD_MIN;
+    activeTab === "all"
+      ? items.length > ALL_MIN
+      : unreadList.length > UNREAD_MIN;
   const footerLabel =
     activeTab === "all" ? "Xem thông báo trước đó" : "Xem thông báo chưa đọc";
 
   return (
     <div className="relative">
       {/* Nút chuông */}
-      <button ref={bellRef} onClick={onToggle} className="relative" aria-label="Thông báo">
+      <button
+        ref={bellRef}
+        onClick={onToggle}
+        className="relative"
+        aria-label="Thông báo"
+      >
         <Bell className="w-5 h-5 text-gray-800" />
         {badge > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full min-w-4 h-4 px-[2px] flex items-center justify-center">
@@ -285,7 +303,9 @@ export default function NotificationsPanel() {
               </div>
 
               {/* Nội dung panel */}
-              <div className={`${showAll ? "max-h-[65vh] overflow-y-auto" : ""}`}>
+              <div
+                className={`${showAll ? "max-h-[65vh] overflow-y-auto" : ""}`}
+              >
                 {loading ? (
                   <div className="px-4 py-8 text-center text-sm text-gray-600">
                     Đang tải...
@@ -367,7 +387,9 @@ export default function NotificationsPanel() {
 
                   <Link
                     to="/thong-bao/moi-nhat"
-                    className={`${showAll || canShowMore ? "flex-1" : "w-full"} text-center text-sm font-medium py-2 rounded-md hover:bg-gray-50`}
+                    className={`${
+                      showAll || canShowMore ? "flex-1" : "w-full"
+                    } text-center text-sm font-medium py-2 rounded-md hover:bg-gray-50`}
                   >
                     Xem tất cả
                   </Link>

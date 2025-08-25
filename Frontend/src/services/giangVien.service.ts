@@ -1,6 +1,6 @@
 // src/services/giang-vien.service.ts
 import api from "@/lib/axios";
-import type { ApiResponse } from "@/types/api-response";
+import type { ApiResponse } from "@/types/apiResponse";
 
 /** Generic Page */
 export type Page<T> = {
@@ -55,7 +55,6 @@ export interface GiangVienImportResponse {
   success: number;
   errors: string[];
 }
-
 
 export interface GiangVienInfoResponse {
   maGV?: string;
@@ -135,7 +134,7 @@ export interface SinhVienSupervisedResponse {
   tenLop?: string;
   soDienThoai?: string;
   tenDeTai?: string;
-  cvUrl?: string;              // <-- thêm
+  cvUrl?: string; // <-- thêm
   // cvFilename?: string;      // (tuỳ chọn nếu BE trả về)
 }
 export async function getMySupervisedStudents(params?: {
@@ -206,10 +205,10 @@ export interface GiangVienUpdateRequest {
   hoTen: string;
   soDienThoai: string;
   email: string;
-  matKhau?: string;      // optional
-  hocVi?: string;        // optional
-  hocHam?: string;       // optional
-  boMonId: number;       // yêu cầu chọn lại BM rõ ràng
+  matKhau?: string; // optional
+  hocVi?: string; // optional
+  hocHam?: string; // optional
+  boMonId: number; // yêu cầu chọn lại BM rõ ràng
 }
 
 // PUT /api/v1/giang-vien/{id}

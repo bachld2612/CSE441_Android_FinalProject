@@ -1,5 +1,9 @@
 import api from "@/lib/axios";
-import type { ApiResponse, PageResponse, PageableRequest } from "@/types/api-response";
+import type {
+  ApiResponse,
+  PageResponse,
+  PageableRequest,
+} from "@/types/apiResponse";
 
 // Dạng dữ liệu đúng theo DeCuongResponse trong swagger mẫu
 export interface DeCuong {
