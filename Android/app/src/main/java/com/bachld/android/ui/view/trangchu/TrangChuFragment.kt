@@ -34,7 +34,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
     private var _binding: FragmentTrangChuScrollingBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ThongBaoViewModel by viewModels()
+    private val tbViewModel: ThongBaoViewModel by viewModels()
     private lateinit var adapter: ThongBaoAdapter
 
     private val doAnVm: DoAnDetailViewModel by viewModels {
@@ -102,12 +102,12 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
         observeUiState()
         observeDetailState()
 
-        viewModel.fetchThongBao()
+        tbViewModel.fetchThongBao()
     }
 
     private fun setupRecyclerView() {
         adapter = ThongBaoAdapter { thongBao ->
-            viewModel.fetchThongBaoDetail(thongBao.id)
+            tbViewModel.fetchThongBaoDetail(thongBao.id)
         }
         binding.recyclerViewNotifications.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -116,13 +116,20 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
     }
 
     private fun observeUiState() {
-        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+        tbViewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Idle -> Unit
                 is UiState.Loading -> {
-                    Toast.makeText(requireContext(), "Đang tải dữ liệu...", Toast.LENGTH_SHORT).show()
                 }
                 is UiState.Success -> {
+                    val list = state.data
+                    if(list.isEmpty()) {
+                        binding.recyclerViewNotifications.visibility = View.GONE
+                        binding.layoutChuaDangKy.visibility = View.VISIBLE
+                    } else {
+                        binding.recyclerViewNotifications.visibility = View.VISIBLE
+                        binding.layoutChuaDangKy.visibility = View.GONE
+                    }
                     adapter.submitList(state.data)
                 }
                 is UiState.Error -> {
@@ -133,7 +140,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
     }
 
     private fun observeDetailState() {
-        viewModel.detailState.observe(viewLifecycleOwner) { state ->
+        tbViewModel.detailState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Success -> {
                     val detail = state.data
@@ -155,7 +162,7 @@ class TrangChuFragment : Fragment(R.layout.fragment_trang_chu_scrolling) {
 
                     findNavController().navigate(actionId, args)
 
-                    viewModel.clearDetailState()
+                    tbViewModel.clearDetailState()
                 }
                 is UiState.Error -> {
                     Toast.makeText(requireContext(), state.message ?: "Lỗi tải chi tiết", Toast.LENGTH_SHORT).show()
