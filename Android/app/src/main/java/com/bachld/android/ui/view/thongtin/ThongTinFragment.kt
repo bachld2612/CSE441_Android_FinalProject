@@ -2,6 +2,7 @@ package com.bachld.android.ui.view.thongtin
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
@@ -149,13 +150,29 @@ class ThongTinFragment : Fragment(R.layout.fragment_thong_tin) {
                                 val res = st.data
                                 if (res.code == 1000) {
                                     Toast.makeText(requireContext(), "Upload CV thành công", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(requireContext(), res.message ?: "Upload CV thất bại", Toast.LENGTH_SHORT).show()
+                                } else  {
+                                    Toast.makeText(requireContext(),  "Upload CV thất bại", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             is UiState.Error -> {
                                 binding.btnUploadCv.isEnabled = true
-                                Toast.makeText(requireContext(), st.message ?: "Lỗi upload CV", Toast.LENGTH_SHORT).show()
+                                Log.d("Lỗi upload CV:","${st.message}")
+                                if(st.message == "1041"){
+                                    Toast.makeText(requireContext(),  "CV không được lớn hơn 5MB", Toast.LENGTH_SHORT).show()
+                                    return@collect
+                                }else if(st.message == "1040"){
+                                    Toast.makeText(requireContext(),  "Sai định dạng file. Vui lòng chọn file PDF", Toast.LENGTH_SHORT).show()
+                                    return@collect
+                                }else if (st.message == "413"){
+                                    Toast.makeText(requireContext(),  "CV không được lớn hơn 5MB", Toast.LENGTH_SHORT).show()
+                                    return@collect
+                                }else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Lỗi upload CV",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                             else -> Unit
                         }
