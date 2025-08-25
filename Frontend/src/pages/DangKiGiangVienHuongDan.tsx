@@ -35,7 +35,7 @@ import { getAllBoMon, type BoMonResponse } from "@/services/bo-mon.service";
 import {
   getGiangVienByBoMonAndSoLuongDeTai,
   type GiangVienInfoResponse,
-} from "@/services/giang-vien.service";
+} from "@/services/giangVien.service";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -52,7 +52,14 @@ import {
   addGiangVienHuongDan,
   type DeTaiGiangVienHuongDanRequest,
 } from "@/services/deTai.service";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { downloadFile } from "@/lib/downloadFile";
 
 const formSchema = z.object({
@@ -183,8 +190,9 @@ export default function DangKiGiangVienHuongDan() {
         </BreadcrumbList>
       </Breadcrumb>
 
-
-      <h1 className="text-3xl mt-10 font-bold mb-4 text-center">Đăng ký giảng viên hướng dẫn</h1>
+      <h1 className="text-3xl mt-10 font-bold mb-4 text-center">
+        Đăng ký giảng viên hướng dẫn
+      </h1>
 
       <Table className="mt-6 rounded-lg overflow-hidden shadow-sm border border-gray-300">
         <TableHeader>
@@ -267,7 +275,15 @@ export default function DangKiGiangVienHuongDan() {
             <p>
               <span className="font-semibold">CV:</span>{" "}
               {(sinhVienDetail.cvUrl && (
-                <span className="text-blue-700 underline" onClick={() => downloadFile(sinhVienDetail.cvUrl!, `${sinhVienDetail.maSV}_CV.pdf`)}>
+                <span
+                  className="text-blue-700 underline"
+                  onClick={() =>
+                    downloadFile(
+                      sinhVienDetail.cvUrl!,
+                      `${sinhVienDetail.maSV}_CV.pdf`
+                    )
+                  }
+                >
                   CV sinh viên
                 </span>
               )) ||
