@@ -41,8 +41,11 @@ class DeCuongViewModel(
 
                 // 👉 Điền mapping đúng theo DeCuongLogResponse của bạn:
                 _currentState.value = log?.let { extractStateFrom(it) }
-            } catch (e: Exception) {
-                _logState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
+                val code = apiErr?.code ?: 0
+                _logState.value = UiState.Error(code.toString())
             }
         }
     }
@@ -58,12 +61,6 @@ class DeCuongViewModel(
     }
 
     fun submit(fileUrl: String) {
-        // ✅ Chặn ở ViewModel: khi đã duyệt, báo lỗi ngay
-        if (_currentState.value == DeCuongState.ACCEPTED) {
-            _submitState.value = UiState.Error("Đề cương đã được duyệt. Không thể nộp thêm.")
-            return
-        }
-
         _submitState.value = UiState.Loading
         viewModelScope.launch {
             try {

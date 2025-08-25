@@ -15,6 +15,7 @@ import com.bachld.android.databinding.FragmentNopDeCuongBinding
 import com.bachld.android.ui.viewmodel.DeCuongViewModel
 import com.google.android.material.snackbar.Snackbar
 import android.net.Uri
+import android.widget.Toast
 import java.util.Locale
 
 class NopDeCuongFragment : Fragment() {
@@ -32,10 +33,7 @@ class NopDeCuongFragment : Fragment() {
     private val TXT_SUBMIT_ERROR = "Lỗi khi nộp"
     private val TXT_LOG_ERROR = "Không tải được log"
     private val TXT_ACCEPTED_ERROR_ON_CLICK = "Đề cương đã được duyệt. Không thể nộp thêm."
-
-    // Chỉ chấp nhận host Drive
     private val allowedHosts = setOf("drive.google.com")
-
     private var isUrlValid = false
     private var isAccepted = false
 
@@ -73,7 +71,6 @@ class NopDeCuongFragment : Fragment() {
         binding.btnSubmit.isEnabled = false
         binding.btnSubmit.text = TXT_SUBMIT
 
-        // Validate khi gõ URL
         binding.etUrl.doOnTextChanged { text, _, _, _ ->
             isUrlValid = validateUrlAndShowError(text?.toString())
             updateSubmitButtonEnabled()
@@ -84,24 +81,30 @@ class NopDeCuongFragment : Fragment() {
             when (state) {
                 is UiState.Loading -> Unit
                 is UiState.Success -> state.data?.let { bindLog(it) }
-                is UiState.Error ->
-                    Snackbar.make(binding.root, state.message ?: TXT_LOG_ERROR, Snackbar.LENGTH_LONG).show()
+                is UiState.Error -> {
+                    val message = when (state.message) {
+                        "1205" -> "Không tìm thấy đề cương"
+                        else   -> "${state.message ?: TXT_LOG_ERROR}"
+                    }
+                    message?.let {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                    }
+                }
+
                 UiState.Idle -> Unit
             }
         }
 
-        // Cập nhật cờ isAccepted nhưng KHÔNG disable UI — để khi bấm sẽ báo lỗi
+
         vm.currentState.observe(viewLifecycleOwner) { st ->
             isAccepted = (st == DeCuongState.ACCEPTED)
-            // không khóa input/nút ở đây
             updateSubmitButtonEnabled()
         }
 
         // Submit
         binding.btnSubmit.setOnClickListener {
-            // Nếu đã duyệt → báo lỗi NGAY khi click, không gọi ViewModel.submit
             if (isAccepted) {
-                Snackbar.make(binding.root, TXT_ACCEPTED_ERROR_ON_CLICK, Snackbar.LENGTH_LONG).show()
+                Toast.makeText(binding.root.context, TXT_ACCEPTED_ERROR_ON_CLICK, Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
@@ -122,7 +125,7 @@ class NopDeCuongFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     binding.btnSubmit.text = TXT_SUBMIT
-                    Snackbar.make(binding.root, TXT_SUBMIT_SUCCESS, Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(binding.root.context, TXT_SUBMIT_SUCCESS, Toast.LENGTH_LONG).show()
                     binding.etUrl.setText("")
                     updateSubmitButtonEnabled()
                     vm.resetSubmitState()
@@ -130,17 +133,17 @@ class NopDeCuongFragment : Fragment() {
                 is UiState.Error -> {
                     binding.btnSubmit.text = TXT_SUBMIT
                     updateSubmitButtonEnabled()
-//                    Snackbar.make(binding.root, state.message ?: TXT_SUBMIT_ERROR, Snackbar.LENGTH_LONG).show()
-                    if(state.message == "1212") {
-                        Snackbar.make(binding.root,"Đề tài chưa được duyệt" , Snackbar.LENGTH_LONG).show()
-                    }else if(state.message == "1216"){
-                        Snackbar.make(binding.root,"Chưa tới thời gian nộp đề cương" , Snackbar.LENGTH_LONG).show()
-                    }else if (state.message == "1215"){
-                        Snackbar.make(binding.root,"Ngoài thời gian nộp đề cương" , Snackbar.LENGTH_LONG).show()
-                    }else if (state.message == "1202"){
-                        Snackbar.make(binding.root,"Url không được để trống" , Snackbar.LENGTH_LONG).show()
-                    }else if( state.message == "1206") {
-                        Snackbar.make(binding.root, "Đề cương đã được duyệt", Snackbar.LENGTH_LONG).show()
+                    val message = when (state.message) {
+                        "1212" -> "Đề tài chưa được duyệt"
+                        "1216" -> "Chưa tới thời gian nộp đề cương"
+                        "1215" -> "Ngoài thời gian nộp đề cương"
+                        "1202" -> "Url không được để trống"
+                        "1206" -> "Đề cương đã được duyệt"
+                        else   -> "${state.message ?: TXT_SUBMIT_ERROR}"
+                    }
+
+                    message?.let {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                     }
                     vm.resetSubmitState()
                 }
