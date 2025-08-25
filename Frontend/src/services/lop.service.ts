@@ -1,6 +1,6 @@
 // src/services/lop.service.ts
 import api from "@/lib/axios";
-import type { ApiResponse } from "@/types/api-response";
+import type { ApiResponse } from "@/types/apiResponse";
 
 // ===== DTO từ backend =====
 interface LopRequest {
@@ -44,7 +44,11 @@ async function getLopPage(params?: {
 
 // Lấy tất cả -> mảng
 async function getAllLop(): Promise<ApiResponse<LopResponse[]>> {
-  const pageRes = await getLopPage({ page: 0, size: 1000, sort: "updatedAt,DESC" });
+  const pageRes = await getLopPage({
+    page: 0,
+    size: 1000,
+    sort: "updatedAt,DESC",
+  });
   return {
     code: pageRes.code,
     message: pageRes.message,
@@ -57,7 +61,10 @@ async function createLop(data: LopRequest): Promise<ApiResponse<LopResponse>> {
   return res;
 }
 
-async function updateLop(id: number, data: LopRequest): Promise<ApiResponse<LopResponse>> {
+async function updateLop(
+  id: number,
+  data: LopRequest
+): Promise<ApiResponse<LopResponse>> {
   const res: ApiResponse<LopResponse> = await api.put(`/lop/${id}`, data);
   return res;
 }

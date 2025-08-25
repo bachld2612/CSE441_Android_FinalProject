@@ -1,5 +1,9 @@
 import api from "@/lib/axios";
-import type { ApiResponse, PageResponse, PageableRequest } from "@/types/api-response";
+import type {
+  ApiResponse,
+  PageResponse,
+  PageableRequest,
+} from "@/types/apiResponse";
 import type {
   HoiDongCreateRequest,
   HoiDongDetail,
@@ -9,10 +13,14 @@ import type {
 } from "@/types/hoiDong.types";
 
 export async function getHoiDongPage(
-  pageable: PageableRequest & { q?: string; loai?: HoiDongType | "ALL"; dotBaoVeId: number }
+  pageable: PageableRequest & {
+    q?: string;
+    loai?: HoiDongType | "ALL";
+    dotBaoVeId: number;
+  }
 ): Promise<PageResponse<HoiDongListItem>> {
   const params: Record<string, any> = {
-    dotBaoVeId: pageable.dotBaoVeId, 
+    dotBaoVeId: pageable.dotBaoVeId,
     page: pageable.page,
     size: pageable.size,
   };
@@ -36,7 +44,10 @@ export async function getHoiDongDetail(id: number): Promise<HoiDongDetail> {
   return res.result!;
 }
 
-export async function importSinhVienToHoiDong(id: number, file: File): Promise<ImportResult> {
+export async function importSinhVienToHoiDong(
+  id: number,
+  file: File
+): Promise<ImportResult> {
   const fd = new FormData();
   fd.append("file", file);
 

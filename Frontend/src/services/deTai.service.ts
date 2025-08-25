@@ -1,5 +1,9 @@
 import api from "@/lib/axios";
-import type { ApiResponse, PageResponse, PageableRequest } from "@/types/api-response";
+import type {
+  ApiResponse,
+  PageResponse,
+  PageableRequest,
+} from "@/types/apiResponse";
 
 export interface DeTai {
   maSV: string;
@@ -59,10 +63,7 @@ const addGiangVienHuongDan = async (
     );
     return res;
   } catch (error) {
-    console.error(
-      "DeTaiService - addGiangVienHuongDan error:",
-      error
-    );
+    console.error("DeTaiService - addGiangVienHuongDan error:", error);
     throw error;
   }
 };

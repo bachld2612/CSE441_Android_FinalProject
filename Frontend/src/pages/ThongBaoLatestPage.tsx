@@ -1,13 +1,20 @@
 // src/pages/ThongBaoLatestPage.tsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList,
-  BreadcrumbPage, BreadcrumbSeparator
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { getThongBaoPage, type ThongBaoResponse } from "@/services/thong-bao.service";
+import {
+  getThongBaoPage,
+  type ThongBaoResponse,
+} from "@/services/thongBao.service";
 import { downloadFile } from "@/lib/downloadFile";
 import { toast } from "react-toastify";
 
@@ -18,14 +25,21 @@ const PAGE_SIZE = 10;
 function formatTimeLabel(createdAt?: string) {
   if (!createdAt) return "";
   const pad = (n: number) => n.toString().padStart(2, "0");
-  const toDDMMYYYY = (d: Date) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  const toDDMMYYYY = (d: Date) =>
+    `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
   const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(createdAt);
   if (isDateOnly) {
     const dt = new Date(`${createdAt}T00:00:00`);
     const now = new Date();
-    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startThat  = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-    const diffDays = Math.floor((startToday.getTime() - startThat.getTime()) / 86400000);
+    const startToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+    const startThat = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    const diffDays = Math.floor(
+      (startToday.getTime() - startThat.getTime()) / 86400000
+    );
     if (diffDays === 0) return "Hôm nay";
     if (diffDays === 1) return "Hôm qua";
     return toDDMMYYYY(dt);
@@ -45,7 +59,8 @@ function formatTimeLabel(createdAt?: string) {
 function slugify(s: string) {
   return (s || "thong-bao")
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)+/g, "");
 }
@@ -66,11 +81,18 @@ function fileNameFromUrl(url: string): string {
 /* ========== Lưu đã đọc localStorage ========== */
 const STORAGE_KEY = "readThongBaoIds";
 function loadReadSet(): Set<number> {
-  try { return new Set<number>(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")); }
-  catch { return new Set<number>(); }
+  try {
+    return new Set<number>(
+      JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")
+    );
+  } catch {
+    return new Set<number>();
+  }
 }
 function saveReadSet(set: Set<number>) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...set])); } catch {}
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+  } catch {}
 }
 
 // Parse createdAt (LocalDate "yyyy-MM-dd" hoặc ISO)
@@ -97,7 +119,7 @@ export default function ThongBaoLatestPage() {
   const [selected, setSelected] = useState<ThongBaoResponse | null>(null);
 
   const markRead = (id: number) => {
-    setReadIds(prev => {
+    setReadIds((prev) => {
       if (prev.has(id)) return prev;
       const next = new Set(prev);
       next.add(id);
@@ -109,7 +131,11 @@ export default function ThongBaoLatestPage() {
   const fetchPage = async (p: number) => {
     setLoading(true);
     try {
-      const res = await getThongBaoPage({ page: p, size: PAGE_SIZE, sort: "updatedAt,DESC" });
+      const res = await getThongBaoPage({
+        page: p,
+        size: PAGE_SIZE,
+        sort: "updatedAt,DESC",
+      });
       if (!res.result) {
         toast.error(res.message || "Không tải được danh sách thông báo");
         return;
@@ -122,7 +148,7 @@ export default function ThongBaoLatestPage() {
         return diff !== 0 ? diff : (b.id ?? 0) - (a.id ?? 0);
       });
 
-      setItems(prev => (p === 0 ? pageData : [...prev, ...pageData]));
+      setItems((prev) => (p === 0 ? pageData : [...prev, ...pageData]));
       setTotalPages(res.result.totalPages || 0);
     } catch {
       toast.error("Không tải được danh sách thông báo");
@@ -131,17 +157,20 @@ export default function ThongBaoLatestPage() {
     }
   };
 
-  useEffect(() => { fetchPage(0); }, []);
+  useEffect(() => {
+    fetchPage(0);
+  }, []);
 
   // Lọc tab + tìm nhanh trên FE
   const filtered = useMemo(() => {
     let arr = items;
-    if (tab === "unread") arr = arr.filter(x => !readIds.has(x.id));
+    if (tab === "unread") arr = arr.filter((x) => !readIds.has(x.id));
     if (q.trim()) {
       const t = q.trim().toLowerCase();
-      arr = arr.filter(x =>
-        (x.tieuDe || "").toLowerCase().includes(t) ||
-        (x.noiDung || "").toLowerCase().includes(t)
+      arr = arr.filter(
+        (x) =>
+          (x.tieuDe || "").toLowerCase().includes(t) ||
+          (x.noiDung || "").toLowerCase().includes(t)
       );
     }
     // đảm bảo luôn mới → cũ sau khi filter
@@ -180,7 +209,7 @@ export default function ThongBaoLatestPage() {
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
           </BreadcrumbItem>
-        <BreadcrumbSeparator />
+          <BreadcrumbSeparator />
           <BreadcrumbPage>
             <BreadcrumbLink className="font-bold" href="#">
               Thông báo mới nhất
@@ -197,13 +226,21 @@ export default function ThongBaoLatestPage() {
       <div className="flex flex-wrap items-center gap-3 justify-between mb-4">
         <div className="flex gap-4">
           <button
-            className={`pb-2 text-sm ${tab === "all" ? "font-semibold border-b-2 border-black" : "text-gray-600"}`}
+            className={`pb-2 text-sm ${
+              tab === "all"
+                ? "font-semibold border-b-2 border-black"
+                : "text-gray-600"
+            }`}
             onClick={() => setTab("all")}
           >
             Tất cả
           </button>
           <button
-            className={`pb-2 text-sm ${tab === "unread" ? "font-semibold border-b-2 border-black" : "text-gray-600"}`}
+            className={`pb-2 text-sm ${
+              tab === "unread"
+                ? "font-semibold border-b-2 border-black"
+                : "text-gray-600"
+            }`}
             onClick={() => setTab("unread")}
           >
             Chưa đọc
@@ -250,14 +287,20 @@ export default function ThongBaoLatestPage() {
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
                 <div className="min-w-0">
                   {/* CHỈ hiển thị tiêu đề + thời gian (đã xóa phần nội dung/preview) */}
-                  <div className={`text-[15px] font-semibold ${isRead ? "text-gray-700" : "text-gray-900"} line-clamp-1`}>
+                  <div
+                    className={`text-[15px] font-semibold ${
+                      isRead ? "text-gray-700" : "text-gray-900"
+                    } line-clamp-1`}
+                  >
                     {tb.tieuDe}
                   </div>
                   <div className="text-[12px] text-gray-500 mt-1">
                     {formatTimeLabel(tb.createdAt)}
                   </div>
                 </div>
-                {!isRead && <div className="ml-auto mt-2 w-2 h-2 bg-blue-500 rounded-full" />}
+                {!isRead && (
+                  <div className="ml-auto mt-2 w-2 h-2 bg-blue-500 rounded-full" />
+                )}
               </div>
             </div>
           );
@@ -279,12 +322,22 @@ export default function ThongBaoLatestPage() {
       </div>
 
       {/* DIALOG chi tiết – border-200, thân cuộn dọc, nút theo màu yêu cầu */}
-      <Dialog open={dialogOpen} onOpenChange={(v) => { setDialogOpen(v); if (!v) setSelected(null); }}>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(v) => {
+          setDialogOpen(v);
+          if (!v) setSelected(null);
+        }}
+      >
         <DialogContent className="w-[92vw] sm:w-[680px] max-w-2xl p-0 bg-white border border-gray-200 max-h-[80vh] grid grid-rows-[auto,minmax(0,1fr),auto]">
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-bold">{selected?.tieuDe || "Chi tiết thông báo"}</h2>
-            <div className="text-xs text-gray-500 mt-1">{selected?.createdAt ? formatTimeLabel(selected.createdAt) : ""}</div>
+            <h2 className="text-lg font-bold">
+              {selected?.tieuDe || "Chi tiết thông báo"}
+            </h2>
+            <div className="text-xs text-gray-500 mt-1">
+              {selected?.createdAt ? formatTimeLabel(selected.createdAt) : ""}
+            </div>
           </div>
 
           {/* Body (scroll) */}
@@ -308,7 +361,9 @@ export default function ThongBaoLatestPage() {
                 </Button>
               </div>
             ) : (
-              <div className="mt-4 text-sm text-gray-500 italic">Không có tệp đính kèm.</div>
+              <div className="mt-4 text-sm text-gray-500 italic">
+                Không có tệp đính kèm.
+              </div>
             )}
           </div>
 
