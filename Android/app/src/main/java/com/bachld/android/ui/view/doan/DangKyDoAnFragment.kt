@@ -13,10 +13,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bachld.android.core.UiState
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.databinding.FragmentDangKyDoAnBinding
+import com.bachld.android.ui.viewmodel.DangKyDoAnViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -27,6 +31,9 @@ class DangKyDoAnFragment : Fragment() {
 
     private var _vb: FragmentDangKyDoAnBinding? = null
     private val vb get() = _vb!!
+
+    // ViewModel: đã bắt lỗi trong VM và expose registerState
+    private val vm: DangKyDoAnViewModel by viewModels()
 
     private var selectedGvId: Long? = null
     private var filePart: MultipartBody.Part? = null
@@ -47,7 +54,7 @@ class DangKyDoAnFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Tải danh sách giảng viên cho dropdown
+        // Đổ danh sách GVHD cho dropdown
         loadGiangVienDropdown()
 
         // Chọn file
@@ -55,10 +62,32 @@ class DangKyDoAnFragment : Fragment() {
 
         // Gửi đăng ký
         vb.btnGuiDangKy.setOnClickListener { submit() }
+
+        // Lắng nghe trạng thái đăng ký từ ViewModel để hiển thị Toast + điều hướng
+        viewLifecycleOwner.lifecycleScope.launch {
+            vm.registerState.collectLatest { st ->
+                when (st) {
+                    is UiState.Loading -> setLoading(true)
+                    is UiState.Success -> {
+                        setLoading(false)
+                        // Báo về màn Thông tin để Toast + reload
+                        setFragmentResult("dangKyDeTai", Bundle().apply { putBoolean("changed", true) })
+                        Toast.makeText(requireContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                    }
+                    is UiState.Error -> {
+                        setLoading(false)
+                        Toast.makeText(requireContext(), st.message ?: "Lỗi đăng ký", Toast.LENGTH_LONG).show()
+                    }
+                    else -> Unit
+                }
+            }
+        }
     }
 
+    /** Tải danh sách GVHD cho AutoCompleteTextView (actGvhd) */
     private fun loadGiangVienDropdown() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 // /api/v1/giang-vien/list?size=200
                 val page = ApiClient.giangVienApi.listGiangVien(size = 200).result
@@ -78,6 +107,7 @@ class DangKyDoAnFragment : Fragment() {
         }
     }
 
+    /** Validate input và gọi ViewModel thực hiện đăng ký */
     private fun submit() {
         val gvId = selectedGvId
         val ten = vb.edtTenDeTai.text?.toString()?.trim().orEmpty()
@@ -93,28 +123,7 @@ class DangKyDoAnFragment : Fragment() {
             return
         }
 
-        setLoading(true)
-        lifecycleScope.launch {
-            try {
-                val gvRB  = gvId.toString().toRequestBody("text/plain".toMediaType())
-                val tenRB = ten.toRequestBody("text/plain".toMediaType())
-
-                val res = ApiClient.deTaiApi.registerDeTai(
-                    gvhdId = gvRB,
-                    tenDeTai = tenRB,
-                    fileTongQuan = filePart
-                ).result
-
-                Toast.makeText(requireContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
-
-                setFragmentResult("dangKyDeTai", Bundle().apply { putBoolean("changed", true) })
-                findNavController().popBackStack()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), e.message ?: "Lỗi đăng ký", Toast.LENGTH_LONG).show()
-            } finally {
-                setLoading(false)
-            }
-        }
+        vm.submitRegistration(gvId, ten, filePart) // bắt lỗi ở ViewModel
     }
 
     private fun setLoading(loading: Boolean) {

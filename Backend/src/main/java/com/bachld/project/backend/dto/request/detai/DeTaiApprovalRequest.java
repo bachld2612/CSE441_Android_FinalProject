@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeTaiApprovalRequest {
-    Boolean approved;   // true: PENDING → ACCEPTED, false: PENDING → CANCELED
+    Boolean approved;
     String nhanXet;
 }

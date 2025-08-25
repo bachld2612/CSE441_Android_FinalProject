@@ -130,7 +130,7 @@ public class GiangVienController {
     @PutMapping("/do-an/xet-duyet-de-tai/{deTaiId}/approve")
     public ApiResponse<DeTaiResponse> approveDeTaiByLecturer(
             @PathVariable Long deTaiId,
-            @RequestBody(required = false) @Valid DeTaiApprovalRequest request) {
+            @RequestBody(required = false) DeTaiApprovalRequest request) {
 
         if (request == null) request = new DeTaiApprovalRequest();
         request.setApproved(true);
