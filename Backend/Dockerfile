@@ -1,38 +1,45 @@
-# ---------- Build stage ----------
-FROM eclipse-temurin:17-jdk AS build
+# ==================== STAGE 1: BUILD PHASE ====================
+# Sử dụng một image chứa JDK và Maven để build dự án
+FROM maven:3.8.5-openjdk-17 AS build
+
+# Đặt thư mục làm việc bên trong container
 WORKDIR /app
 
-# Copy Maven wrapper & config trước để tận dụng cache
-COPY mvnw ./
-COPY .mvn .mvn
-COPY pom.xml ./
+# Copy file pom.xml và tải các dependencies trước.
+# Điều này giúp tận dụng Docker cache: nếu pom.xml không thay đổi, bước này sẽ không chạy lại.
+COPY pom.xml .
+RUN mvn dependency:go-offline -B # -B là chế độ batch mode, không hỏi tương tác
 
-# Tải dependencies để cache
-RUN chmod +x mvnw && ./mvnw -q -DskipTests dependency:go-offline
+# Copy toàn bộ mã nguồn của bạn vào container
+COPY src ./src
 
-# Copy source và build
-COPY src src
-RUN ./mvnw -q -DskipTests package
+# Build dự án Spring Boot thành một file JAR thực thi được
+# '-DskipTests' để bỏ qua chạy unit tests trong quá trình build Docker (để nhanh hơn)
+# Bạn có thể bỏ '-DskipTests' nếu muốn chạy tests trong quá trình build image
+RUN mvn package -DskipTests
 
-# ---------- Run stage ----------
-FROM eclipse-temurin:17-jre
+# ==================== STAGE 2: RUN PHASE ====================
+# Sử dụng một image JRE (Java Runtime Environment) nhẹ hơn để chạy ứng dụng
+# 'eclipse-temurin:17-jre-jammy' là một lựa chọn tốt, nhỏ gọn và an toàn
+FROM eclipse-temurin:17-jre-jammy
+
+# Đặt thư mục làm việc bên trong container chạy ứng dụng
 WORKDIR /app
 
-# Tạo user non-root
-RUN useradd -m spring
+# Copy file JAR đã được build từ giai đoạn 'build' trước đó sang giai đoạn 'run' này
+# Cần thay thế 'your-artifact-name-0.0.1-SNAPSHOT.jar' bằng tên file JAR thực tế của bạn
+# Tên này thường nằm trong thư mục 'target' sau khi chạy 'mvn package'
+# Ví dụ: nếu dự án của bạn tên là 'my-spring-project', file có thể là 'my-spring-project-0.0.1-SNAPSHOT.jar'
+COPY --from=build /app/target/Backend-0.0.1-SNAPSHOT.jar app.jar
 
-# Copy jar đã build
-COPY --from=build /app/target/*.jar app.jar
-
-# Thư mục mount secret.yml
-RUN mkdir -p /app/config && chown -R spring:spring /app
-USER spring
-
+# Thông báo cho Docker rằng container sẽ lắng nghe trên cổng 8080.
+# Điều này chỉ để thông tin, Railway sẽ điều khiển cổng thực tế thông qua biến môi trường PORT.
 EXPOSE 8080
 
-# Import secret.yml nếu có
-ENV SPRING_CONFIG_IMPORT=optional:file:/app/config/secret.yml \
-    SPRING_PROFILES_ACTIVE=prod \
-    JAVA_OPTS=""
+# Thiết lập biến môi trường TZ cho múi giờ để đảm bảo đúng thời gian trong log và ứng dụng
+ENV TZ=Asia/Ho_Chi_Minh
 
-ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar app.jar"]
+# Lệnh mặc định để khởi chạy ứng dụng Spring Boot
+# Ứng dụng sẽ đọc các biến môi trường (DB_URL, CLOUDINARY_API_KEY, v.v.)
+# mà bạn sẽ cung cấp cho container khi nó được khởi chạy trên Railway.
+ENTRYPOINT ["java", "-jar", "app.jar"]
