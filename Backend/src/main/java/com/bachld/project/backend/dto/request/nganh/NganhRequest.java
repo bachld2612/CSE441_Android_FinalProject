@@ -1,6 +1,7 @@
 package com.bachld.project.backend.dto.request.nganh;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,7 +14,7 @@ public class NganhRequest {
 
     @NotEmpty(message = "NGANH_EMPTY")
     String tenNganh;
-    @NotEmpty(message = "KHOA_EMPTY")
+    @NotNull(message = "KHOA_EMPTY")
     Long khoaId;
 
 }
