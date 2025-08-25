@@ -130,7 +130,18 @@ class NopDeCuongFragment : Fragment() {
                 is UiState.Error -> {
                     binding.btnSubmit.text = TXT_SUBMIT
                     updateSubmitButtonEnabled()
-                    Snackbar.make(binding.root, state.message ?: TXT_SUBMIT_ERROR, Snackbar.LENGTH_LONG).show()
+//                    Snackbar.make(binding.root, state.message ?: TXT_SUBMIT_ERROR, Snackbar.LENGTH_LONG).show()
+                    if(state.message == "1212") {
+                        Snackbar.make(binding.root,"1212" , Snackbar.LENGTH_LONG).show()
+                    }else if(state.message == "1216"){
+                        Snackbar.make(binding.root,"1216" , Snackbar.LENGTH_LONG).show()
+                    }else if (state.message == "1215"){
+                        Snackbar.make(binding.root,"1215" , Snackbar.LENGTH_LONG).show()
+                    }else if (state.message == "1202"){
+                        Snackbar.make(binding.root,"1202" , Snackbar.LENGTH_LONG).show()
+                    }else if( state.message == "1206") {
+                        Snackbar.make(binding.root, "1206", Snackbar.LENGTH_LONG).show()
+                    }
                     vm.resetSubmitState()
                 }
                 UiState.Idle -> Unit

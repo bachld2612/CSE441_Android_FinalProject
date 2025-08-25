@@ -1,18 +1,21 @@
 // app/src/main/java/com/bachld/android/ui/viewmodel/DeCuongViewModel.kt
 package com.bachld.android.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bachld.android.core.UiState
 import com.bachld.android.data.dto.request.decuong.DeCuongUploadRequest
+import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongLogResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongState
 import com.bachld.android.data.repository.DeCuongRepository
 import com.bachld.android.data.repository.impl.DeCuongRepositoryImpl
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class DeCuongViewModel(
     private val repository: DeCuongRepository = DeCuongRepositoryImpl()
@@ -73,8 +76,12 @@ class DeCuongViewModel(
 
                 // Làm tươi log (và lại suy ra state)
                 loadLog()
-            } catch (e: Exception) {
-                _submitState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
+                val code = apiErr?.code ?: 0
+                _submitState.value = UiState.Error(code.toString())
+                Log.d("DeCuongViewModel", "submit: ${_submitState.value}")
             }
         }
     }

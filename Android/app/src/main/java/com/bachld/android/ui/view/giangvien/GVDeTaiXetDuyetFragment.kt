@@ -38,22 +38,47 @@ class GVDeTaiXetDuyetFragment : Fragment(R.layout.fragment_xet_duyet_detai_list)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // 1) List
+
                 launch {
                     vm.listState.collect { st ->
                         when (st) {
-                            is UiState.Loading -> { /* show loading nếu muốn */ }
+                            is UiState.Loading -> {  }
                             is UiState.Error -> toast(st.message ?: "Lỗi tải danh sách")
                             is UiState.Success -> {
-                                val page = st.data.result
-                                val list = page?.content.orEmpty() // <- nạp đúng type adapter
-                                adapter.submitList(list)
+
+                                val code = st.data.code
+                                when (code) {
+                                    1110 -> {
+                                        toast("Bạn không phải là giảng viên hướng dẫn của đề tài này")
+                                    }
+                                    1109 -> {
+                                        toast("Trạng thái đề tài không hợp lệ")
+                                    }
+                                    1111 -> {
+                                        toast("Chỉ được duyệt đề tài trong trạng thái Chờ duyệt")
+                                    }
+                                    1000 -> {
+                                        val page = st.data.result
+                                        val list = page?.content.orEmpty()
+                                        if(list.isEmpty()) {
+                                            binding.rvXetDuyet.visibility = View.GONE
+                                            binding.layoutChuaDangKy.visibility = View.VISIBLE
+                                        } else {
+                                            binding.rvXetDuyet.visibility = View.VISIBLE
+                                            binding.layoutChuaDangKy.visibility = View.GONE
+                                        }
+                                        adapter.submitList(list)
+                                    }
+                                    else -> {
+                                        toast("Lỗi tải danh sách")
+                                    }
+                                }
                             }
                             else -> Unit
                         }
                     }
                 }
-                // 2) Action (approve/reject)
+
                 launch {
                     vm.actionState.collect { st ->
                         when (st) {
@@ -72,7 +97,7 @@ class GVDeTaiXetDuyetFragment : Fragment(R.layout.fragment_xet_duyet_detai_list)
                                         else -> "Thành công"
                                     }
                                 toast(msg)
-                                vm.load(page = 0, size = 10) // reload
+                                vm.load(page = 0, size = 10)
                                 vm.clearAction()
                             }
                             else -> Unit
