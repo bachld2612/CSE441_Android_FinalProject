@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeTaiApprovalRequest {
-    @NotNull(message = "TRANG_THAI_INVALID")
     Boolean approved;   // true: PENDING → ACCEPTED, false: PENDING → CANCELED
     String nhanXet;
 }

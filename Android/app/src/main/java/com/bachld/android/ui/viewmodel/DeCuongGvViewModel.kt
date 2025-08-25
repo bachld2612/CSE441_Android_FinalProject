@@ -35,7 +35,7 @@ class DeCuongGvViewModel(
             } catch (e: HttpException) {
                 val raw = e.response()?.errorBody()?.string()
                 val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
-                val code = apiErr?.message ?: e.code()
+                val code = apiErr?.code ?: e.code()
                 _listState.value = UiState.Error(code.toString())
             }
         }
@@ -48,8 +48,18 @@ class DeCuongGvViewModel(
                 val res = repo.approve(id)
                 if (res.code == 1000) _actionState.value = UiState.Success(res)
                 else _actionState.value = UiState.Error(res.message)
-            } catch (e: Exception) {
-                _actionState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
+                _actionState.value = UiState.Success(
+                    ApiResponse(
+                        code = apiErr?.code ?: e.code(),
+                        message = apiErr?.message ?: e.message(),
+                        result = null
+                    )
+                )
+
             }
         }
     }
@@ -61,8 +71,16 @@ class DeCuongGvViewModel(
                 val res = repo.reject(id, reason)
                 if (res.code == 1000) _actionState.value = UiState.Success(res)
                 else _actionState.value = UiState.Error(res.message)
-            } catch (e: Exception) {
-                _actionState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
+                _actionState.value = UiState.Success(
+                    ApiResponse(
+                        code = apiErr?.code ?: e.code(),
+                        message = apiErr?.message ?: e.message(),
+                        result = null
+                    )
+                )
             }
         }
     }

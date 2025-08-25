@@ -1,39 +1,39 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import MainLayout from '@/layouts/MainLayout';
-import ToChucLayout from '@/layouts/ToChucLayout';
-import NotFound from '@/pages/NotFound';
-import ProtectedRoute from './ProtectedRoute';
-import KhoaPage from '@/pages/KhoaPage';
-import BoMonPage from '@/pages/BoMonPage';
-import NganhPage from '@/pages/NganhPage';
-import LopPage from '@/pages/LopPage';
-import LoginPage from '@/pages/LoginPage';
-import SinhVienLayout from '@/layouts/SinhVienLayout';
-import DotBaoVePage from '@/pages/DotBaoVePage';
-import SinhVienOfGiangVienPage from '@/pages/SinhVienOfGiangVienPage';
-import DoAnLayout from '@/layouts/DoAnLayout';
-import DeTaiApprovalPage from '@/pages/DeTaiApprovalPage';
-import GiangVienLayout from '@/layouts/GiangVienLayout';
-import GiangVienPage from '@/pages/GiangVienPage';
-import DangKiGiangVienHuongDan from '@/pages/DangKiGiangVienHuongDan';
-import SinhVienPage from '@/pages/SinhVienPage';
-import DeCuongApprovalPage from '@/pages/DeCuongApprovalPage';
-import ThongBaoCreatePage from '@/pages/ThongBaoCreatePage';
-import ThongBaoLayout from '@/layouts/ThongBaoLayout';
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import MainLayout from "@/layouts/MainLayout";
+import ToChucLayout from "@/layouts/ToChucLayout";
+import NotFound from "@/pages/NotFound";
+import ProtectedRoute from "./ProtectedRoute";
+import KhoaPage from "@/pages/KhoaPage";
+import BoMonPage from "@/pages/BoMonPage";
+import NganhPage from "@/pages/NganhPage";
+import LopPage from "@/pages/LopPage";
+import LoginPage from "@/pages/LoginPage";
+import SinhVienLayout from "@/layouts/SinhVienLayout";
+import DotBaoVePage from "@/pages/DotBaoVePage";
+import SinhVienOfGiangVienPage from "@/pages/SinhVienOfGiangVienPage";
+import DoAnLayout from "@/layouts/DoAnLayout";
+import DeTaiApprovalPage from "@/pages/DeTaiApprovalPage";
+import GiangVienLayout from "@/layouts/GiangVienLayout";
+import GiangVienPage from "@/pages/GiangVienPage";
+import DangKiGiangVienHuongDan from "@/pages/DangKiGiangVienHuongDan";
+import SinhVienPage from "@/pages/SinhVienPage";
+import DeCuongApprovalPage from "@/pages/DeCuongApprovalPage";
+import ThongBaoCreatePage from "@/pages/ThongBaoCreatePage";
+import ThongBaoLayout from "@/layouts/ThongBaoLayout";
 import ThongBaoLatestPage from "@/pages/ThongBaoLatestPage";
-import TaiKhoanInfoPage from '@/pages/TaiKhoanInfoPage';
-import TaiKhoanLayout from '@/layouts/TaiKhoanLayout';
-import TrangChuPage from '@/pages/TrangChuPage';
-import Hello from '@/pages/Hello';
-import ThoiGianThucHienPage from '@/pages/ThoiGianThucHienPage';
-import HoiDongLayout from '@/layouts/HoiDongLayout';
-import HoiDongBaoVePage from '@/pages/HoiDongBaoVePage';
-import HoiDongPhanBienPage from '@/pages/HoiDongPhanBienPage';
+import TaiKhoanInfoPage from "@/pages/TaiKhoanInfoPage";
+import TaiKhoanLayout from "@/layouts/TaiKhoanLayout";
+import TrangChuPage from "@/pages/TrangChuPage";
+import Hello from "@/pages/Hello";
+import ThoiGianThucHienPage from "@/pages/ThoiGianThucHienPage";
+import HoiDongLayout from "@/layouts/HoiDongLayout";
+import HoiDongBaoVePage from "@/pages/HoiDongBaoVePage";
+import HoiDongPhanBienPage from "@/pages/HoiDongPhanBienPage";
 
 export const router = createBrowserRouter([
-  { path: '/login', element: <LoginPage /> },
+  { path: "/login", element: <LoginPage /> },
   {
-    path: '/sinh-vien',
+    path: "/sinh-vien",
     element: (
       <ProtectedRoute>
         <SinhVienLayout />
@@ -41,126 +41,132 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <SinhVienPage /> },
-      { path: 'huong-dan', element: <SinhVienOfGiangVienPage /> },
-      { path: 'dang-ky-do-an', element: <Hello /> },
-      { path: 'gvhd', element: <DangKiGiangVienHuongDan /> },
+      { path: "huong-dan", element: <SinhVienOfGiangVienPage /> },
+      { path: "dang-ky-do-an", element: <Hello /> },
+      { path: "gvhd", element: <DangKiGiangVienHuongDan /> },
     ],
   },
 
   {
-    path: '/',
+    path: "/",
     element: <MainLayout />,
-    handle: { breadcrumb: 'Trang chủ' },
+    handle: { breadcrumb: "Trang chủ" },
     children: [
-      { index: true, element: <TrangChuPage />, handle: { breadcrumb: "Tổng quan" } },
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <TrangChuPage />
+          </ProtectedRoute>
+        ),
+        handle: { breadcrumb: "Tổng quan" },
+      },
       { path: "*", element: <NotFound /> },
     ],
   },
   {
-    path: '/giang-vien',
+    path: "/giang-vien",
     element: <GiangVienLayout />,
     children: [{ index: true, element: <GiangVienPage /> }],
   },
 
   {
-    path: '/do-an',
+    path: "/do-an",
     element: (
       <ProtectedRoute>
         <DoAnLayout />
       </ProtectedRoute>
     ),
-    handle: { breadcrumb: 'Quản lý đồ án' },
+    handle: { breadcrumb: "Quản lý đồ án" },
     children: [
       { index: true, element: <Navigate to="duyet-de-tai" replace /> },
       {
-        path: 'duyet-de-tai',
+        path: "duyet-de-tai",
         element: <DeTaiApprovalPage />,
-        handle: { breadcrumb: 'Duyệt đề tài' },
+        handle: { breadcrumb: "Duyệt đề tài" },
       },
       {
-        path: 'duyet-de-cuong',
+        path: "duyet-de-cuong",
         element: <DeCuongApprovalPage />,
-        handle: { breadcrumb: 'Duyệt đề cương' },
+        handle: { breadcrumb: "Duyệt đề cương" },
       },
     ],
   },
 
   {
-    path: '/',
+    path: "/",
     element: <MainLayout />,
     children: [
       { index: true, element: <TrangChuPage /> },
-      { path: '*', element: <NotFound /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 
   {
-    path: '/to-chuc',
+    path: "/to-chuc",
     element: (
       <ProtectedRoute>
         <ToChucLayout />
       </ProtectedRoute>
     ),
-    handle: { breadcrumb: 'Quản lý tổ chức' },
+    handle: { breadcrumb: "Quản lý tổ chức" },
     children: [
       { index: true, element: <Navigate to="khoa" replace /> },
       {
-        path: 'khoa',
+        path: "khoa",
         element: <KhoaPage />,
-        handle: { breadcrumb: 'Quản lý khoa' },
+        handle: { breadcrumb: "Quản lý khoa" },
       },
       {
-        path: 'bo-mon',
+        path: "bo-mon",
         element: <BoMonPage />,
-        handle: { breadcrumb: 'Quản lý bộ môn' },
+        handle: { breadcrumb: "Quản lý bộ môn" },
       },
       {
-        path: 'nganh',
+        path: "nganh",
         element: <NganhPage />,
-        handle: { breadcrumb: 'Quản lý ngành' },
+        handle: { breadcrumb: "Quản lý ngành" },
       },
       {
-        path: 'lop',
+        path: "lop",
         element: <LopPage />,
-        handle: { breadcrumb: 'Quản lý lớp' },
+        handle: { breadcrumb: "Quản lý lớp" },
       },
       {
-        path: 'dot-do-an',
+        path: "dot-do-an",
         element: <DotBaoVePage />,
-        handle: { breadcrumb: 'Quản lý đợt đồ án' },
+        handle: { breadcrumb: "Quản lý đợt đồ án" },
       },
       {
-        path: 'thoi-gian-do-an',
+        path: "thoi-gian-do-an",
         element: <ThoiGianThucHienPage />,
-        handle: { breadcrumb: 'Quản lý thời gian đồ án' },
-      }
+        handle: { breadcrumb: "Quản lý thời gian đồ án" },
+      },
     ],
   },
   {
-  path: "/thong-bao",
-  element: (
-    <ProtectedRoute>
-      <ThongBaoLayout />
-    </ProtectedRoute>
-  ),
-  children: [
-    { index: true, element: <ThongBaoCreatePage /> },
-    { path: "moi-nhat", element: <ThongBaoLatestPage /> },
+    path: "/thong-bao",
+    element: (
+      <ProtectedRoute>
+        <ThongBaoLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <ThongBaoCreatePage /> },
+      { path: "moi-nhat", element: <ThongBaoLatestPage /> },
     ],
   },
   {
-  path: "/tai-khoan",
-  element: (
-    <ProtectedRoute>
-      <TaiKhoanLayout />
-    </ProtectedRoute>
-  ),
-  children: [
-    { index: true, element: <TaiKhoanInfoPage /> },
-    ],
+    path: "/tai-khoan",
+    element: (
+      <ProtectedRoute>
+        <TaiKhoanLayout />
+      </ProtectedRoute>
+    ),
+    children: [{ index: true, element: <TaiKhoanInfoPage /> }],
   },
   {
-    path: '/hoi-dong',
+    path: "/hoi-dong",
     element: (
       <ProtectedRoute>
         <HoiDongLayout />
@@ -168,12 +174,12 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="bao-ve" replace /> },
-      { path: 'bao-ve', element: <HoiDongBaoVePage /> },
-      { path: 'phan-bien', element: <HoiDongPhanBienPage /> },
+      { path: "bao-ve", element: <HoiDongBaoVePage /> },
+      { path: "phan-bien", element: <HoiDongPhanBienPage /> },
     ],
   },
   {
-    path: '/hoi-dong',
+    path: "/hoi-dong",
     element: (
       <ProtectedRoute>
         <HoiDongLayout />
@@ -181,8 +187,8 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="bao-ve" replace /> },
-      { path: 'bao-ve', element: <HoiDongBaoVePage /> },
-      { path: 'phan-bien', element: <HoiDongPhanBienPage /> },
+      { path: "bao-ve", element: <HoiDongBaoVePage /> },
+      { path: "phan-bien", element: <HoiDongPhanBienPage /> },
     ],
   },
 ]);
