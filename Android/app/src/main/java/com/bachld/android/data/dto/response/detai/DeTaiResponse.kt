@@ -1,4 +1,4 @@
-package com.bachld.android.data.dto.response
+package com.bachld.android.data.dto.response.detai
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

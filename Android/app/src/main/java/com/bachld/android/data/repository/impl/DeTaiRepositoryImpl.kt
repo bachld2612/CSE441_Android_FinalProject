@@ -2,7 +2,7 @@ package com.bachld.android.data.repository.impl
 
 import android.util.Log
 import com.bachld.android.core.UserPrefs
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import com.bachld.android.data.dto.response.unwrapOrThrow
 import com.bachld.android.data.remote.service.DeTaiApi
 import retrofit2.HttpException

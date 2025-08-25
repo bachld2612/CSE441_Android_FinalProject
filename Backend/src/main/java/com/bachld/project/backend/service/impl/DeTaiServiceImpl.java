@@ -168,7 +168,6 @@ public class DeTaiServiceImpl implements DeTaiService {
             throw new ApplicationException(ErrorCode.TRANG_THAI_INVALID);
         }
         detai.setNhanXet(request.getNhanXet());
-
         return deTaiMapper.toDeTaiResponse(deTaiRepository.save(detai));
     }
 

@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { ApiResponse } from "@/types/api-response";
+import type { ApiResponse } from "@/types/apiResponse";
 
 // ===== DTO từ backend =====
 export interface ThongBaoRequest {
@@ -62,22 +62,30 @@ async function getAllThongBao(): Promise<ApiResponse<ThongBaoResponse[]>> {
 }
 
 // GET /api/v1/thong-bao/{id}
-async function getThongBaoById(id: number): Promise<ApiResponse<ThongBaoResponse>> {
+async function getThongBaoById(
+  id: number
+): Promise<ApiResponse<ThongBaoResponse>> {
   const res: ApiResponse<ThongBaoResponse> = await api.get(`/thong-bao/${id}`);
   return res;
 }
 
 // POST /api/v1/thong-bao (multipart/form-data)
-async function createThongBao(data: ThongBaoRequest): Promise<ApiResponse<ThongBaoResponse>> {
+async function createThongBao(
+  data: ThongBaoRequest
+): Promise<ApiResponse<ThongBaoResponse>> {
   const form = new FormData();
   form.set("tieuDe", data.tieuDe);
   form.set("noiDung", data.noiDung);
   if (data.file) form.set("file", data.file);
 
   // Quan trọng: override Content-Type vì axios base đang set application/json
-  const res: ApiResponse<ThongBaoResponse> = await api.post("/thong-bao", form, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const res: ApiResponse<ThongBaoResponse> = await api.post(
+    "/thong-bao",
+    form,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
   return res;
 }
 

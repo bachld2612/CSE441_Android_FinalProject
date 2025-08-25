@@ -58,7 +58,8 @@ public interface HoiDongMapper {
     }
 
     @AfterMapping
-    default void fillRoles(HoiDong src, @MappingTarget HoiDongDetailResponse.HoiDongDetailResponseBuilder target) {
+    default void fillRoles(HoiDong src,
+                           @MappingTarget HoiDongDetailResponse.HoiDongDetailResponseBuilder target) {
         if (src.getThanhVienHoiDongSet() == null) return;
 
         String chuTich = null;
@@ -67,16 +68,15 @@ public interface HoiDongMapper {
 
         for (ThanhVienHoiDong tv : src.getThanhVienHoiDongSet()) {
             if (tv == null) continue;
-            GiangVien gv = (tv.getDotBaoVeGiangVien() != null) ? tv.getDotBaoVeGiangVien().getGiangVien() : null;
+            GiangVien gv = (tv.getDotBaoVeGiangVien() != null)
+                    ? tv.getDotBaoVeGiangVien().getGiangVien() : null;
             String name = (gv != null) ? gv.getHoTen() : null;
             if (name == null || name.isBlank()) continue;
 
-            if (tv.getChucVu() == HoiDongRole.CHAIR) {
-                chuTich = name;
-            } else if (tv.getChucVu() == HoiDongRole.SECRETARY) {
-                thuKy = name;
-            } else if (tv.getChucVu() == HoiDongRole.EXAMINER) {
-                examiners.add(name);
+            switch (tv.getChucVu()) {
+                case CHAIR     -> chuTich = name;
+                case SECRETARY -> thuKy = name;
+                case EXAMINER  -> examiners.add(name);
             }
         }
 

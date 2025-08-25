@@ -7,6 +7,7 @@ import com.bachld.project.backend.dto.response.bomon.BoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.BoMonWithTruongBoMonResponse;
 import com.bachld.project.backend.dto.response.bomon.TruongBoMonCreationResponse;
 import com.bachld.project.backend.service.BoMonService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,7 +42,7 @@ public class BoMonController {
     }
 
     @PostMapping()
-    public ApiResponse<BoMonResponse> createBoMon(@RequestBody BoMonRequest boMonRequest) {
+    public ApiResponse<BoMonResponse> createBoMon(@RequestBody @Valid BoMonRequest boMonRequest) {
         return ApiResponse.<BoMonResponse>builder()
                 .result(boMonService.createBoMon(boMonRequest))
                 .build();
@@ -49,7 +50,7 @@ public class BoMonController {
 
     @PutMapping(value = "{boMonId}")
     public ApiResponse<BoMonResponse> updateBoMon(
-            @RequestBody BoMonRequest boMonRequest,
+            @RequestBody @Valid BoMonRequest boMonRequest,
             @PathVariable Long boMonId) {
         return ApiResponse.<BoMonResponse>builder()
                 .result(boMonService.updateBoMon(boMonRequest, boMonId))

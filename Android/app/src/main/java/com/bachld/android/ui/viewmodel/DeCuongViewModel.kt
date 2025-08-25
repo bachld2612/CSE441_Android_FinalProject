@@ -1,18 +1,21 @@
 // app/src/main/java/com/bachld/android/ui/viewmodel/DeCuongViewModel.kt
 package com.bachld.android.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bachld.android.core.UiState
 import com.bachld.android.data.dto.request.decuong.DeCuongUploadRequest
+import com.bachld.android.data.dto.response.ApiResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongLogResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongResponse
 import com.bachld.android.data.dto.response.decuong.DeCuongState
 import com.bachld.android.data.repository.DeCuongRepository
 import com.bachld.android.data.repository.impl.DeCuongRepositoryImpl
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class DeCuongViewModel(
     private val repository: DeCuongRepository = DeCuongRepositoryImpl()
@@ -38,8 +41,11 @@ class DeCuongViewModel(
 
                 // 👉 Điền mapping đúng theo DeCuongLogResponse của bạn:
                 _currentState.value = log?.let { extractStateFrom(it) }
-            } catch (e: Exception) {
-                _logState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
+                val code = apiErr?.code ?: 0
+                _logState.value = UiState.Error(code.toString())
             }
         }
     }
@@ -55,12 +61,6 @@ class DeCuongViewModel(
     }
 
     fun submit(fileUrl: String) {
-        // ✅ Chặn ở ViewModel: khi đã duyệt, báo lỗi ngay
-        if (_currentState.value == DeCuongState.ACCEPTED) {
-            _submitState.value = UiState.Error("Đề cương đã được duyệt. Không thể nộp thêm.")
-            return
-        }
-
         _submitState.value = UiState.Loading
         viewModelScope.launch {
             try {
@@ -73,8 +73,12 @@ class DeCuongViewModel(
 
                 // Làm tươi log (và lại suy ra state)
                 loadLog()
-            } catch (e: Exception) {
-                _submitState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                val raw = e.response()?.errorBody()?.string()
+                val apiErr = raw?.let { com.google.gson.Gson().fromJson(it, ApiResponse::class.java) }
+                val code = apiErr?.code ?: 0
+                _submitState.value = UiState.Error(code.toString())
+                Log.d("DeCuongViewModel", "submit: ${_submitState.value}")
             }
         }
     }

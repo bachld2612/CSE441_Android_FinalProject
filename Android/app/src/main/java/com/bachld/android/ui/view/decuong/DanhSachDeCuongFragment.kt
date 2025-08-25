@@ -45,7 +45,6 @@ class DanhSachDeCuongFragment : Fragment() {
             }
         }
 
-        // API /sv/log không cần id → gọi nhẹ khi vào tab
         vm.loadLog()
     }
 

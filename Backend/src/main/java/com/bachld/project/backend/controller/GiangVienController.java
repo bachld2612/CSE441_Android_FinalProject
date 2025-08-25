@@ -43,7 +43,7 @@ public class GiangVienController {
     DeTaiService deTaiService;
 
     @PostMapping
-    public ApiResponse<GiangVienCreationResponse> createGiangVien(@RequestBody GiangVienCreationRequest giangVienCreationRequest) {
+    public ApiResponse<GiangVienCreationResponse> createGiangVien(@RequestBody @Valid GiangVienCreationRequest giangVienCreationRequest) {
 
         return ApiResponse.<GiangVienCreationResponse>builder()
                 .result(giangVienService.createGiangVien(giangVienCreationRequest))
@@ -149,7 +149,7 @@ public class GiangVienController {
     ))
     public ApiResponse<DeTaiResponse> rejectDeTaiByLecturer(
             @PathVariable Long deTaiId,
-            @RequestBody(required = false) DeTaiApprovalRequest request) {
+            @RequestBody(required = false) @Valid DeTaiApprovalRequest request) {
         if (request == null) request = new DeTaiApprovalRequest();
         request.setApproved(false); // ép false bất kể client gửi gì
         return ApiResponse.<DeTaiResponse>builder()

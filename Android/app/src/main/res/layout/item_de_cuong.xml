@@ -26,7 +26,7 @@
                 android:id="@+id/tv_file_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="File:"
+                android:text="Link:"
                 android:textStyle="bold"
                 android:textColor="#000"/>
 
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="ten_file.pdf"
+                android:text="http hoặc https"
                 android:textColor="#1A73E8"
                 android:textStyle="italic"/>
         </LinearLayout>
