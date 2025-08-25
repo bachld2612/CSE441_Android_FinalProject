@@ -22,10 +22,10 @@ export default function SinhVienLayout() {
 
   return (
     <div className="flex min-h-screen">
-      {role !== "giang_vien" && role!== 'truong_bo_mon' && <SidebarSinhVien />}
+      {role !== "giang_vien" && role!== 'truong_bo_mon' && role !== 'admin' && <SidebarSinhVien />}
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className={`flex-1 p-6 mt-[64px] ${role !== "giang_vien" && role!== 'truong_bo_mon'? 'ml-64' : 'container mx-auto'}`}>
+        <main className={`flex-1 p-6 mt-[64px] ${role !== "giang_vien" && role!== 'truong_bo_mon' && role !== 'admin' ? 'ml-64' : 'container mx-auto'}`}>
           <Outlet />
         </main>
       </div>

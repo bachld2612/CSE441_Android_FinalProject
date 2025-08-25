@@ -1,5 +1,6 @@
 package com.bachld.project.backend.repository;
 
+import com.bachld.project.backend.entity.DotBaoVe;
 import com.bachld.project.backend.entity.HoiDong;
 import com.bachld.project.backend.enums.HoiDongType;
 import org.springframework.data.domain.Page;
@@ -53,4 +54,9 @@ public interface HoiDongRepository extends JpaRepository<HoiDong, Long> {
         where hd.id = :id
 """)
     Optional<HoiDong> fetchDetail(@Param("id") Long id);
+
+    Page<HoiDong> findHoiDongByDotBaoVeAndTenHoiDongContainingIgnoreCase(DotBaoVe dotBaoVe, String tenHoiDong, Pageable pageable);
+
+
+    Page<HoiDong> findHoiDongByDotBaoVe(DotBaoVe dotBaoVe, Pageable pageable);
 }

@@ -1,32 +1,31 @@
 // src/pages/HoiDongPage.tsx
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import api from '@/lib/axios';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import api from "@/lib/axios";
 
 import {
   getHoiDongPage,
   createHoiDong,
   getHoiDongDetail,
   importSinhVienToHoiDong,
-} from '@/services/hoiDong.service';
+} from "@/services/hoiDong.service";
 
 import {
   getDotBaoVeOptions,
   getDotBaoVeIdBy,
   type DotBaoVeOption,
-} from '@/services/dot-bao-ve.service';
+} from "@/services/dot-bao-ve.service";
 
 import type {
   HoiDongListItem,
   HoiDongDetail,
-  HoiDongCreateRequest,
   ImportResult,
   HoiDongType,
-} from '@/types/hoiDong.types';
+} from "@/types/hoiDong.types";
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
   ChevronRight,
@@ -39,7 +38,7 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -47,7 +46,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -55,27 +54,27 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from "@/components/ui/breadcrumb";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 
 /* ===== Utils ===== */
-const fmt = (d?: string) => (d ? new Date(d).toLocaleDateString('vi-VN') : '-');
+const fmt = (d?: string) => (d ? new Date(d).toLocaleDateString("vi-VN") : "-");
 const toVnLoai = (x?: string) =>
-  x === 'DEFENSE' ? 'Bảo vệ' : x === 'PEER_REVIEW' ? 'Phản biện' : x ?? '-';
+  x === "DEFENSE" ? "Bảo vệ" : x === "PEER_REVIEW" ? "Phản biện" : x ?? "-";
 
 /* tải file log (cố đặt tên cố định, có fallback) */
-async function downloadByUrl(url: string, filename = 'ket_qua_import.xlsx') {
+async function downloadByUrl(url: string, filename = "ket_qua_import.xlsx") {
   try {
-    const res = await fetch(url, { mode: 'cors' });
+    const res = await fetch(url, { mode: "cors" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
     const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = blobUrl;
     a.download = filename;
     document.body.appendChild(a);
@@ -83,9 +82,9 @@ async function downloadByUrl(url: string, filename = 'ket_qua_import.xlsx') {
     a.remove();
     URL.revokeObjectURL(blobUrl);
   } catch {
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.setAttribute('download', filename);
+    a.setAttribute("download", filename);
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -115,20 +114,20 @@ function SuggestGVInput({
   source: GiangVienOption[];
 }) {
   const [q, setQ] = useState(
-    value ? `${value.hoTen}${value.maGV ? ` (${value.maGV})` : ''}` : '',
+    value ? `${value.hoTen}${value.maGV ? ` (${value.maGV})` : ""}` : ""
   );
   const [open, setOpen] = useState(false);
   const [hi, setHi] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const norm = (s: string) =>
-    (s || '')
+    (s || "")
       .toLowerCase()
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '');
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "");
   const filtered = source
     .filter((x) => {
-      const hay = `${x.hoTen} ${x.maGV ?? ''} ${x.boMon ?? ''}`;
+      const hay = `${x.hoTen} ${x.maGV ?? ""} ${x.boMon ?? ""}`;
       return norm(hay).includes(norm(q));
     })
     .slice(0, 20);
@@ -138,8 +137,8 @@ function SuggestGVInput({
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node))
         setOpen(false);
     };
-    document.addEventListener('mousedown', fn);
-    return () => document.removeEventListener('mousedown', fn);
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
   }, []);
 
   return (
@@ -154,23 +153,23 @@ function SuggestGVInput({
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => {
           if (!open || filtered.length === 0) return;
-          if (e.key === 'ArrowDown') {
+          if (e.key === "ArrowDown") {
             e.preventDefault();
             setHi((h) => (h + 1) % filtered.length);
-          } else if (e.key === 'ArrowUp') {
+          } else if (e.key === "ArrowUp") {
             e.preventDefault();
             setHi((h) => (h - 1 + filtered.length) % filtered.length);
-          } else if (e.key === 'Enter') {
+          } else if (e.key === "Enter") {
             e.preventDefault();
             const chosen = filtered[hi];
             if (chosen) {
               onSelect(chosen);
-              setQ(`${chosen.hoTen}${chosen.maGV ? ` (${chosen.maGV})` : ''}`);
+              setQ(`${chosen.hoTen}${chosen.maGV ? ` (${chosen.maGV})` : ""}`);
               setOpen(false);
             }
           }
         }}
-        placeholder={placeholder ?? 'Nhập tên/mã GV để tìm...'}
+        placeholder={placeholder ?? "Nhập tên/mã GV để tìm..."}
         className="pr-9"
       />
 
@@ -178,7 +177,7 @@ function SuggestGVInput({
         <button
           type="button"
           onClick={() => {
-            setQ('');
+            setQ("");
             onSelect(null);
             setOpen(true);
           }}
@@ -196,20 +195,20 @@ function SuggestGVInput({
             </div>
           ) : (
             filtered.map((o, idx) => {
-              const label = `${o.hoTen}${o.maGV ? ` (${o.maGV})` : ''}${
-                o.boMon ? ` · ${o.boMon}` : ''
+              const label = `${o.hoTen}${o.maGV ? ` (${o.maGV})` : ""}${
+                o.boMon ? ` · ${o.boMon}` : ""
               }`;
               return (
                 <button
-                  key={o.id + '-' + idx}
+                  key={o.id + "-" + idx}
                   type="button"
                   onClick={() => {
                     onSelect(o);
-                    setQ(`${o.hoTen}${o.maGV ? ` (${o.maGV})` : ''}`);
+                    setQ(`${o.hoTen}${o.maGV ? ` (${o.maGV})` : ""}`);
                     setOpen(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 ${
-                    idx === hi ? 'bg-gray-50' : ''
+                    idx === hi ? "bg-gray-50" : ""
                   }`}
                 >
                   {label}
@@ -225,6 +224,20 @@ function SuggestGVInput({
 
 /* ================== PAGE ================== */
 export default function HoiDongPage({ fixedLoai, title }: Props) {
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedInfo = localStorage.getItem("myInfo");
+    if (storedInfo) {
+      try {
+        const parsedInfo = JSON.parse(storedInfo);
+        setUserRole(parsedInfo.role || null);
+      } catch (error) {
+        console.error("Lỗi parse myInfo:", error);
+      }
+    }
+  }, []);
+
   const [searchParams] = useSearchParams();
 
   /* ====== DOT FILTER (ngoài danh sách) ====== */
@@ -236,7 +249,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
       try {
         const opts = await getDotBaoVeOptions();
         setDotOptions(opts);
-        const fromParam = Number(searchParams.get('dot'));
+        const fromParam = Number(searchParams.get("dot"));
         if (fromParam) setDotId(fromParam);
         else if (opts.length) setDotId(opts[0].value);
       } catch {
@@ -255,7 +268,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
   const [loading, setLoading] = useState(false);
 
   // search
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState("");
 
   // dialogs
   const [openCreate, setOpenCreate] = useState(false);
@@ -280,7 +293,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
       setRows(data.content);
       setTotalPages(data.totalPages);
     } catch {
-      toast.error('Không thể tải danh sách hội đồng');
+      toast.error("Không thể tải danh sách hội đồng");
     } finally {
       setLoading(false);
     }
@@ -292,9 +305,9 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
   }, [page, fixedLoai, dotId]);
 
   /* ====== CREATE ====== */
-  const [tenHoiDong, setTenHoiDong] = useState('');
-  const [ngayBatDau, setNgayBatDau] = useState('');
-  const [ngayKetThuc, setNgayKetThuc] = useState('');
+  const [tenHoiDong, setTenHoiDong] = useState("");
+  const [ngayBatDau, setNgayBatDau] = useState("");
+  const [ngayKetThuc, setNgayKetThuc] = useState("");
 
   const [chuTich, setChuTich] = useState<GiangVienOption | null>(null);
   const [thuKy, setThuKy] = useState<GiangVienOption | null>(null);
@@ -312,8 +325,8 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
     (async () => {
       setLoadingGV(true);
       try {
-        const res = await api.get('/giang-vien/list', {
-          params: { keyword: '', page: 0, size: 1000 },
+        const res = await api.get("/giang-vien/list", {
+          params: { keyword: "", page: 0, size: 1000 },
         });
         const payload = (res as any).data?.result ?? (res as any).result ?? {};
         const list = Array.isArray(payload?.content)
@@ -322,14 +335,14 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
         const mapped: GiangVienOption[] = (list as any[])
           .map((x) => ({
             id: x.id ?? x.giangVienId ?? x.userId ?? x.maGV ?? 0,
-            hoTen: x.hoTen ?? x.fullName ?? x.ten ?? x.name ?? '',
-            maGV: x.maGV ?? x.code ?? '',
+            hoTen: x.hoTen ?? x.fullName ?? x.ten ?? x.name ?? "",
+            maGV: x.maGV ?? x.code ?? "",
             boMon:
               (x.boMon && (x.boMon.ten ?? x.boMon.name)) ??
               x.boMon ??
               x.boMonName ??
-              '',
-            email: x.email ?? '',
+              "",
+            email: x.email ?? "",
           }))
           .filter((x) => x.id && x.hoTen);
         setAllGV(mapped);
@@ -342,9 +355,9 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
   }, [openCreate, allGV.length]);
 
   /* ====== SUY RA ĐỢT (trong modal tạo) ====== */
-  const [namBatDau, setNamBatDau] = useState<string>('');
-  const [hocKi, setHocKi] = useState<string>('');
-  const [dotThu, setDotThu] = useState<string>('');
+  const [namBatDau, setNamBatDau] = useState<string>("");
+  const [hocKi, setHocKi] = useState<string>("");
+  const [dotThu, setDotThu] = useState<string>("");
   const [dotIdCreate, setDotIdCreate] = useState<number | null>(null);
   const [findingDot, setFindingDot] = useState(false);
 
@@ -380,7 +393,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
       !ngayKetThuc ||
       !chuTich ||
       !dotIdCreate ||
-      (fixedLoai === 'DEFENSE' && !thuKy),
+      (fixedLoai === "DEFENSE" && !thuKy),
     [
       tenHoiDong,
       ngayBatDau,
@@ -389,7 +402,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
       thuKy,
       fixedLoai,
       dotIdCreate,
-    ],
+    ]
   );
 
   const addReviewer = () => setReviewers((arr) => [...arr, null]);
@@ -399,14 +412,14 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
     setReviewers((arr) => arr.map((x, i) => (i === idx ? v : x)));
 
   const ROLE = {
-    CHU_TICH: 'CHAIR',
-    THU_KY: 'SECRETARY',
-    PHAN_BIEN: 'EXAMINER',
+    CHU_TICH: "CHAIR",
+    THU_KY: "SECRETARY",
+    PHAN_BIEN: "EXAMINER",
   };
 
   const doCreate = async () => {
     if (!dotIdCreate) {
-      toast.error('Chưa xác định được đợt. Nhập đủ Năm/Học kỳ/Đợt thứ.');
+      toast.error("Chưa xác định được đợt. Nhập đủ Năm/Học kỳ/Đợt thứ.");
       return;
     }
 
@@ -414,13 +427,13 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
     const lecturers: Array<{ giangVienId: number; role: string }> = [];
     if (chuTich?.id)
       lecturers.push({ giangVienId: chuTich.id, role: ROLE.CHU_TICH });
-    if (fixedLoai === 'DEFENSE' && thuKy?.id)
+    if (fixedLoai === "DEFENSE" && thuKy?.id)
       lecturers.push({ giangVienId: thuKy.id, role: ROLE.THU_KY });
-    if (fixedLoai === 'DEFENSE') {
+    if (fixedLoai === "DEFENSE") {
       reviewers
         .filter(Boolean)
         .forEach((r) =>
-          lecturers.push({ giangVienId: (r as any).id, role: ROLE.PHAN_BIEN }),
+          lecturers.push({ giangVienId: (r as any).id, role: ROLE.PHAN_BIEN })
         );
     }
 
@@ -436,33 +449,33 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
     try {
       const res = await createHoiDong(body as any);
       if ((res as any).code === 1000) {
-        toast.success('Tạo hội đồng thành công');
+        toast.success("Tạo hội đồng thành công");
         setOpenCreate(false);
         // reset form...
-        setTenHoiDong('');
-        setNgayBatDau('');
-        setNgayKetThuc('');
+        setTenHoiDong("");
+        setNgayBatDau("");
+        setNgayKetThuc("");
         setChuTich(null);
         setThuKy(null);
         setReviewers([null]);
-        setNamBatDau('');
-        setHocKi('');
-        setDotThu('');
+        setNamBatDau("");
+        setHocKi("");
+        setDotThu("");
         setDotIdCreate(null);
         setPage(0);
         loadData();
       } else {
-        toast.error('Tạo hội đồng thất bại');
+        toast.error("Tạo hội đồng thất bại");
       }
     } catch (err: any) {
       // log message chi tiết nếu BE trả về
-      const msg = err?.response?.data?.message || 'Tạo hội đồng thất bại';
+      const msg = err?.response?.data?.message || "Tạo hội đồng thất bại";
       toast.error(msg);
       console.error(
-        'create body sent:',
+        "create body sent:",
         body,
-        'server error:',
-        err?.response?.data,
+        "server error:",
+        err?.response?.data
       );
     }
   };
@@ -475,7 +488,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
         const d = await getHoiDongDetail(detailId);
         setDetail(d);
       } catch {
-        toast.error('Không tải được chi tiết hội đồng');
+        toast.error("Không tải được chi tiết hội đồng");
         setDetailId(null);
       }
     })();
@@ -494,11 +507,11 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
     try {
       const result: ImportResult = await importSinhVienToHoiDong(
         importHoiDongId,
-        f,
+        f
       );
 
       toast.info(
-        `Import xong: ${result.successCount} thành công, ${result.failureCount} thất bại`,
+        `Import xong: ${result.successCount} thành công, ${result.failureCount} thất bại`
       );
 
       if (result.logFileUrl) {
@@ -509,7 +522,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
               : `Import thành công. Bạn có muốn tải file kết quả (.xlsx) về không?`;
 
           if (window.confirm(confirmMsg)) {
-            downloadByUrl(result.logFileUrl!, 'ket_qua_import.xlsx');
+            downloadByUrl(result.logFileUrl!, "ket_qua_import.xlsx");
           }
         }, 300);
       }
@@ -519,10 +532,10 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
       console.error(err);
       const status = err?.response?.status || err?.status;
       if (status === 415)
-        toast.error('Import thất bại: Sai Content-Type (multipart/form-data).');
-      else toast.error('Import thất bại');
+        toast.error("Import thất bại: Sai Content-Type (multipart/form-data).");
+      else toast.error("Import thất bại");
     } finally {
-      e.target.value = '';
+      e.target.value = "";
       setImportHoiDongId(null);
     }
   };
@@ -549,12 +562,14 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
       {/* ===== toolbar ===== */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2">
-          <Button
-            onClick={() => setOpenCreate(true)}
-            className="h-10 px-4 font-semibold rounded-md bg-[#457B9D] hover:bg-[#3A6E90] text-white shadow-sm"
-          >
-            Tạo hội đồng
-          </Button>
+          {userRole === "TRO_LY_KHOA" && (
+            <Button
+              onClick={() => setOpenCreate(true)}
+              className="h-10 px-4 font-semibold rounded-md bg-[#457B9D] hover:bg-[#3A6E90] text-white shadow-sm"
+            >
+              Tạo hội đồng
+            </Button>
+          )}
         </div>
 
         <form
@@ -568,7 +583,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
           {/* chọn đợt */}
           <select
             className="h-10 min-w-[220px] rounded-md border border-gray-300 px-3 text-sm bg-white"
-            value={dotId ?? ''}
+            value={dotId ?? ""}
             onChange={(e) => {
               setPage(0);
               setDotId(Number(e.target.value) || null);
@@ -657,14 +672,16 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
                     <Eye className="w-5 h-5" />
                   </button>
 
-                  <button
-                    type="button"
-                    title="Import sinh viên"
-                    className="w-5 h-5 text-emerald-600 hover:scale-110 transition-transform"
-                    onClick={() => onPickFile(r.id)}
-                  >
-                    <Upload className="w-5 h-5" />
-                  </button>
+                  {userRole === "TRO_LY_KHOA" && (
+                    <button
+                      type="button"
+                      title="Import sinh viên"
+                      className="w-5 h-5 text-emerald-600 hover:scale-110 transition-transform"
+                      onClick={() => onPickFile(r.id)}
+                    >
+                      <Upload className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
@@ -682,8 +699,8 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
             }}
             className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
               page === 0
-                ? 'pointer-events-none opacity-50'
-                : 'hover:bg-gray-200'
+                ? "pointer-events-none opacity-50"
+                : "hover:bg-gray-200"
             }`}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -698,8 +715,8 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
               }}
               className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 ${
                 page === i
-                  ? 'bg-[#2F80ED] text-white font-semibold'
-                  : 'bg-gray-100 hover:bg-gray-200'
+                  ? "bg-[#2F80ED] text-white font-semibold"
+                  : "bg-gray-100 hover:bg-gray-200"
               }`}
             >
               {i + 1}
@@ -713,8 +730,8 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
             }}
             className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
               page + 1 >= totalPages
-                ? 'pointer-events-none opacity-50'
-                : 'hover:bg-gray-200'
+                ? "pointer-events-none opacity-50"
+                : "hover:bg-gray-200"
             }`}
           >
             <ChevronRight className="w-4 h-4" />
@@ -891,7 +908,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
             </div>
 
             {/* Dọc: Thư ký (chỉ Bảo vệ) */}
-            {fixedLoai === 'DEFENSE' && (
+            {fixedLoai === "DEFENSE" && (
               <div className="mt-4">
                 <label className="text-sm font-medium">
                   Thư ký hội đồng <span className="text-red-500">*</span>
@@ -908,7 +925,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
             )}
 
             {/* Dọc: Giảng viên phản biện (chỉ Bảo vệ) */}
-            {fixedLoai === 'DEFENSE' && (
+            {fixedLoai === "DEFENSE" && (
               <div className="mt-4">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium">
@@ -967,9 +984,9 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
                 onClick={doCreate}
                 disabled={creating}
                 className={`px-6 h-10 rounded-lg text-white ${
-                  creating ? 'opacity-50 cursor-not-allowed' : ''
+                  creating ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-                style={{ backgroundColor: '#457B9D' }}
+                style={{ backgroundColor: "#457B9D" }}
               >
                 Tạo
               </button>
@@ -1018,10 +1035,10 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
                 <div className="mt-2">
                   <div className="flex flex-col gap-2 text-[15px]">
                     <p>
-                      <b>Chủ tịch hội đồng:</b> {detail.chuTich ?? '-'}
+                      <b>Chủ tịch hội đồng:</b> {detail.chuTich ?? "-"}
                     </p>
                     <p>
-                      <b>Thư ký hội đồng:</b> {detail.thuKy ?? '-'}
+                      <b>Thư ký hội đồng:</b> {detail.thuKy ?? "-"}
                     </p>
 
                     <div>
@@ -1043,7 +1060,7 @@ export default function HoiDongPage({ fixedLoai, title }: Props) {
 
                 <div>
                   <p className="font-semibold mb-2">
-                    Sinh viên{' '}
+                    Sinh viên{" "}
                     <span className="ml-1 text-sm text-gray-500">
                       ({detail.sinhVienList?.length ?? 0})
                     </span>
