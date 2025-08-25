@@ -6,6 +6,7 @@ import com.bachld.project.backend.dto.request.nganh.NganhRequest;
 import com.bachld.project.backend.dto.response.nganh.NganhResponse;
 import com.bachld.project.backend.entity.Nganh;
 import com.bachld.project.backend.service.NganhService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -38,14 +39,14 @@ public class NganhController {
     }
 
     @PostMapping
-    public ApiResponse<NganhResponse> createNganh(@RequestBody NganhRequest nganhRequest) {
+    public ApiResponse<NganhResponse> createNganh(@RequestBody @Valid NganhRequest nganhRequest) {
         return ApiResponse.<NganhResponse>builder()
                 .result(nganhService.createNganh(nganhRequest))
                 .build();
     }
 
     @PutMapping("/{nganhId}")
-    public ApiResponse<NganhResponse> updateNganh(@PathVariable Long nganhId, @RequestBody NganhRequest nganhRequest) {
+    public ApiResponse<NganhResponse> updateNganh(@PathVariable Long nganhId, @RequestBody @Valid NganhRequest nganhRequest) {
         return ApiResponse.<NganhResponse>builder()
                 .result(nganhService.updateNganh(nganhRequest, nganhId))
                 .build();
