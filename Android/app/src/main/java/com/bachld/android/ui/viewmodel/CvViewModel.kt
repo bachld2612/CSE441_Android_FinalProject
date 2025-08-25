@@ -2,6 +2,7 @@ package com.bachld.android.ui.viewmodel
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bachld.android.core.UiState
@@ -28,10 +29,13 @@ class CvViewModel(
                 val res = repo.uploadCv(context, uri)
                 _cvState.value = UiState.Success(res)
             } catch (e: HttpException) {
-                val raw = e.response()?.errorBody()?.string() // chỉ đọc 1 lần!
+                val raw = e.response()?.errorBody()?.string()
                 val apiErr = raw?.let { Gson().fromJson(it, ApiResponse::class.java) }
-                val code = apiErr?.code ?: e.code()
-                _cvState.value = UiState.Error(code.toString())
+                Log.d("CvViewModel", "uploadCv: ${apiErr?.code}")
+                _cvState.value = UiState.Success(
+                    ApiResponse(code = apiErr?.code ?: 413,
+                    message = apiErr?.message ?: e.message(),
+                    result = null))
             }
         }
     }
