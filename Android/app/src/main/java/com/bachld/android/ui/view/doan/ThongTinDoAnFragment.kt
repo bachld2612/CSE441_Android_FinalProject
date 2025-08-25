@@ -110,6 +110,7 @@ class ThongTinDoAnFragment : Fragment() {
             layoutTopState.visibility = View.VISIBLE
             btnDangKyDeTai.visibility = View.VISIBLE
             btnDeNghiHoan.visibility = View.VISIBLE
+            tvTienDo.visibility = View.GONE
 
             tvDeTai.text = ""
             tvGvhd.visibility = View.GONE
