@@ -41,7 +41,7 @@ import {
   type BoMonRequest,
   type TruongBoMonCreationRequest,
   type BoMonWithTruongBoMonResponse,
-} from "@/services/bo-mon.service";
+} from "@/services/boMon.service";
 import { getAllKhoa, type KhoaResponse } from "@/services/khoa.service";
 import {
   getGiangVienByBoMon,

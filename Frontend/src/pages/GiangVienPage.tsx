@@ -42,7 +42,7 @@ import {
 import {
   getBoMonWithTBMPage,
   type BoMonWithTruongBoMonResponse,
-} from "@/services/bo-mon.service";
+} from "@/services/boMon.service";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import {

@@ -41,7 +41,7 @@ import {
   getDotBaoVePage,
   type DotBaoVeRequest,
   type DotBaoVeResponse,
-} from "@/services/dot-bao-ve.service";
+} from "@/services/dotBaoVe.service";
 import {
   Breadcrumb,
   BreadcrumbItem,
