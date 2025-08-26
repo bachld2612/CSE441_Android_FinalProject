@@ -12,7 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 class DeCuongFragment : Fragment() {
     private var _binding: FragmentDeCuongBinding? = null
     private val binding get() = _binding!!
-    private val titles = listOf("Nộp đề cương", "Danh sách đề cương")
+    private val titles = listOf("Nộp đề cương", "Danh sách")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDeCuongBinding.inflate(inflater, container, false)

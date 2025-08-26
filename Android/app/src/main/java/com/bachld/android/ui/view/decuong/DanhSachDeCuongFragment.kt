@@ -21,10 +21,26 @@ import com.bachld.android.databinding.FragmentDanhSachDeCuongBinding
 import com.bachld.android.ui.viewmodel.DeCuongViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.graphics.Color
+import com.bachld.android.data.dto.response.decuong.DeCuongState
 
 class DanhSachDeCuongFragment : Fragment() {
     private var _binding: FragmentDanhSachDeCuongBinding? = null
     private val binding get() = _binding!!
+
+    private fun DeCuongState?.toLabel(): String = when (this) {
+        DeCuongState.ACCEPTED -> "đã duyệt"
+        DeCuongState.PENDING  -> "đang chờ"
+        DeCuongState.CANCELED -> "bị từ chối"
+        null                  -> "-"
+    }
+
+    private fun DeCuongState?.toColor(): Int = when (this) {
+        DeCuongState.ACCEPTED -> Color.parseColor("#2E7D32") // xanh lá đậm
+        DeCuongState.PENDING  -> Color.parseColor("#EF6C00") // cam
+        DeCuongState.CANCELED -> Color.parseColor("#C62828") // đỏ
+        null                  -> Color.parseColor("#1E1E1E") // mặc định
+    }
 
     private val vm: DeCuongViewModel by activityViewModels()
 
@@ -61,6 +77,12 @@ class DanhSachDeCuongFragment : Fragment() {
 
         groupEmpty.isGone = true
         groupContent.isVisible = true
+
+        val state = data.trangThaiHienTai
+
+        tvTrangThaiHienTai.text = state.toLabel()
+        val valueColor = state?.toColor() ?: 0xFF1E1E1E.toInt()
+        tvTrangThaiHienTai.setTextColor(valueColor)
 
         // File mới nhất (underline + click)
         val url = data.fileUrlMoiNhat

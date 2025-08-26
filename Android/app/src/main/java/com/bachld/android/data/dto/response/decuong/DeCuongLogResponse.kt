@@ -4,6 +4,7 @@ data class DeCuongLogResponse(
     val fileUrlMoiNhat: String?,
     val ngayNopGanNhat: String?,       // yyyy-MM-dd từ LocalDate
     val tongSoLanNop: Int?,
+    val trangThaiHienTai: DeCuongState?,
     val cacNhanXetTuChoi: List<RejectNote>?
 ) {
     data class RejectNote(

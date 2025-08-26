@@ -87,6 +87,28 @@
                 android:text="3"
                 android:textColor="#000"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_trang_thai_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trạng thái:"
+                android:textStyle="bold"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/tv_trang_thai_hien_tai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="-"
+                android:textColor="#000"/>
+        </LinearLayout>
 
         <!-- Danh sách lý do từ chối: dùng 1 TextView duy nhất -->
         <TextView
@@ -96,4 +118,5 @@
             android:layout_marginTop="8dp"
             android:textColor="#000"/>
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>
