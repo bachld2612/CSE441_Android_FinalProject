@@ -30,12 +30,10 @@ public interface SinhVienRepository extends JpaRepository<SinhVien, Long> {
 
     List<SinhVien> findAllByDeTaiIsNullAndKichHoatTrue();
 
-    // MỚI: KHÔNG phân trang - trả về tất cả, sắp xếp theo họ tên
     List<SinhVien> findByDeTai_Gvhd_IdAndDeTai_DotBaoVeOrderByHoTenAsc(
             Long gvhdId, DotBaoVe dotBaoVe
     );
 
-    // MỚI: KHÔNG phân trang + tìm kiếm theo q
     @Query("""
         SELECT sv FROM SinhVien sv
         JOIN sv.deTai dt

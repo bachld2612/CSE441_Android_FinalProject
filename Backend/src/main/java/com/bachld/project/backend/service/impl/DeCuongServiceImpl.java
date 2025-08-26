@@ -121,6 +121,7 @@ public class DeCuongServiceImpl implements DeCuongService {
         res.setFileUrlMoiNhat(dc.getDeCuongUrl());
         res.setNgayNopGanNhat(dc.getUpdatedAt());
         res.setTongSoLanNop(dc.getSoLanNop());
+        res.setTrangThaiHienTai(dc.getTrangThai());
         res.setCacNhanXetTuChoi(
                 logs.stream()
                         .filter(l -> l.getNhanXet() != null && !l.getNhanXet().isBlank())
