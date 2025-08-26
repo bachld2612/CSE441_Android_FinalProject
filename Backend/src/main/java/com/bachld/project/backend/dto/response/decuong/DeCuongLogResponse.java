@@ -1,5 +1,6 @@
 package com.bachld.project.backend.dto.response.decuong;
 
+import com.bachld.project.backend.enums.DeCuongState;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,6 +14,7 @@ public class DeCuongLogResponse {
     String fileUrlMoiNhat;
     LocalDate ngayNopGanNhat;
     Integer tongSoLanNop;
+    DeCuongState trangThaiHienTai;
     List<RejectNote> cacNhanXetTuChoi; // chỉ các lần bị từ chối trong quá khứ
 
     @Getter @Setter
