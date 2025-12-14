@@ -1,6 +1,7 @@
 package com.bachld.project.backend.dto.request.lop;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,7 +14,7 @@ public class LopRequest {
 
     @NotEmpty(message = "LOP_EMPTY")
     String tenLop;
-    @NotEmpty(message = "NGANH_EMPTY")
+    @NotNull(message = "NGANH_EMPTY")
     Long nganhId;
 
 }

@@ -2,6 +2,7 @@ package com.bachld.project.backend.dto.request.sinhvien;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,7 +27,7 @@ public class SinhVienUpdateRequest {
     @Email(message = "EMAIL_INVALID", regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
     String email;
     String matKhau;
-    @NotEmpty(message = "LOP_EMPTY")
+    @NotNull(message = "LOP_EMPTY")
     Long lopId;
 
 }

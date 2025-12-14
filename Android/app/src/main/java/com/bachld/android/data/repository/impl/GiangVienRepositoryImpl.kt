@@ -2,7 +2,7 @@ package com.bachld.android.data.repository.impl
 
 import com.bachld.android.data.dto.request.giangvien.RejectDeTaiRequest
 import com.bachld.android.data.dto.response.ApiResponse
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import com.bachld.android.data.dto.response.giangvien.DeTaiXetDuyetResponse
 import com.bachld.android.data.dto.response.giangvien.PageData
 import com.bachld.android.data.dto.response.unwrapOrThrow

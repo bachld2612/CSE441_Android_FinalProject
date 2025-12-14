@@ -1,11 +1,20 @@
+// src/pages/ThongBaoLatestPage.tsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList,
-  BreadcrumbPage, BreadcrumbSeparator
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getThongBaoPage, type ThongBaoResponse } from "@/services/thong-bao.service";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  getThongBaoPage,
+  type ThongBaoResponse,
+} from "@/services/thongBao.service";
 import { downloadFile } from "@/lib/downloadFile";
 import { toast } from "react-toastify";
 
@@ -16,14 +25,21 @@ const PAGE_SIZE = 10;
 function formatTimeLabel(createdAt?: string) {
   if (!createdAt) return "";
   const pad = (n: number) => n.toString().padStart(2, "0");
-  const toDDMMYYYY = (d: Date) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  const toDDMMYYYY = (d: Date) =>
+    `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
   const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(createdAt);
   if (isDateOnly) {
     const dt = new Date(`${createdAt}T00:00:00`);
     const now = new Date();
-    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startThat  = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-    const diffDays = Math.floor((startToday.getTime() - startThat.getTime()) / 86400000);
+    const startToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+    const startThat = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    const diffDays = Math.floor(
+      (startToday.getTime() - startThat.getTime()) / 86400000
+    );
     if (diffDays === 0) return "Hôm nay";
     if (diffDays === 1) return "Hôm qua";
     return toDDMMYYYY(dt);
@@ -43,17 +59,17 @@ function formatTimeLabel(createdAt?: string) {
 function slugify(s: string) {
   return (s || "thong-bao")
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)+/g, "");
 }
 
-// Lấy tên file từ URL nếu có (cloudinary/raw file v.v.)
+// Lấy tên file từ URL nếu có
 function fileNameFromUrl(url: string): string {
   try {
     const u = new URL(url);
     const last = u.pathname.split("/").filter(Boolean).pop() || "file.pdf";
-    // Nếu không có đuôi, mặc định pdf
     return last.includes(".") ? last : `${last}.pdf`;
   } catch {
     const segs = url.split("?")[0].split("/").filter(Boolean);
@@ -65,11 +81,18 @@ function fileNameFromUrl(url: string): string {
 /* ========== Lưu đã đọc localStorage ========== */
 const STORAGE_KEY = "readThongBaoIds";
 function loadReadSet(): Set<number> {
-  try { return new Set<number>(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")); }
-  catch { return new Set<number>(); }
+  try {
+    return new Set<number>(
+      JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]")
+    );
+  } catch {
+    return new Set<number>();
+  }
 }
 function saveReadSet(set: Set<number>) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...set])); } catch {}
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+  } catch {}
 }
 
 // Parse createdAt (LocalDate "yyyy-MM-dd" hoặc ISO)
@@ -88,12 +111,15 @@ export default function ThongBaoLatestPage() {
 
   const [readIds, setReadIds] = useState<Set<number>>(() => loadReadSet());
   const [tab, setTab] = useState<"all" | "unread">("all");
-  const firstLoadRef = useRef(true);
 
   const [q, setQ] = useState("");
 
+  // Dialog chi tiết
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selected, setSelected] = useState<ThongBaoResponse | null>(null);
+
   const markRead = (id: number) => {
-    setReadIds(prev => {
+    setReadIds((prev) => {
       if (prev.has(id)) return prev;
       const next = new Set(prev);
       next.add(id);
@@ -105,22 +131,24 @@ export default function ThongBaoLatestPage() {
   const fetchPage = async (p: number) => {
     setLoading(true);
     try {
-      const res = await getThongBaoPage({ page: p, size: PAGE_SIZE, sort: "updatedAt,DESC" });
+      const res = await getThongBaoPage({
+        page: p,
+        size: PAGE_SIZE,
+        sort: "updatedAt,DESC",
+      });
       if (!res.result) {
         toast.error(res.message || "Không tải được danh sách thông báo");
         return;
       }
       const pageData = res.result.content || [];
 
-      // 🔒 Lưới an toàn: sort FE theo createdAt desc (nếu BE không sort)
+      // Lưới an toàn: sort FE theo createdAt desc
       pageData.sort((a, b) => {
         const diff = parseCreatedAt(b.createdAt) - parseCreatedAt(a.createdAt);
         return diff !== 0 ? diff : (b.id ?? 0) - (a.id ?? 0);
       });
 
-      setItems(prev =>
-        p === 0 ? pageData : [...prev, ...pageData]
-      );
+      setItems((prev) => (p === 0 ? pageData : [...prev, ...pageData]));
       setTotalPages(res.result.totalPages || 0);
     } catch {
       toast.error("Không tải được danh sách thông báo");
@@ -129,17 +157,20 @@ export default function ThongBaoLatestPage() {
     }
   };
 
-  useEffect(() => { fetchPage(0); }, []);
+  useEffect(() => {
+    fetchPage(0);
+  }, []);
 
   // Lọc tab + tìm nhanh trên FE
   const filtered = useMemo(() => {
     let arr = items;
-    if (tab === "unread") arr = arr.filter(x => !readIds.has(x.id));
+    if (tab === "unread") arr = arr.filter((x) => !readIds.has(x.id));
     if (q.trim()) {
       const t = q.trim().toLowerCase();
-      arr = arr.filter(x =>
-        (x.tieuDe || "").toLowerCase().includes(t) ||
-        (x.noiDung || "").toLowerCase().includes(t)
+      arr = arr.filter(
+        (x) =>
+          (x.tieuDe || "").toLowerCase().includes(t) ||
+          (x.noiDung || "").toLowerCase().includes(t)
       );
     }
     // đảm bảo luôn mới → cũ sau khi filter
@@ -158,19 +189,11 @@ export default function ThongBaoLatestPage() {
     fetchPage(next);
   };
 
+  // Bấm hộp -> mở dialog, KHÔNG tải file ở đây
   const onClickItem = (tb: ThongBaoResponse) => {
     markRead(tb.id);
-    if (!tb.fileUrl) return; // không có file thì chỉ đánh dấu đã đọc
-    const name = fileNameFromUrl(tb.fileUrl || "") || `${slugify(tb.tieuDe || "thong-bao")}.pdf`;
-    downloadFile(tb.fileUrl, name);
-  };
-
-  const onDownloadClick = (e: React.MouseEvent, tb: ThongBaoResponse) => {
-    e.stopPropagation();
-    if (!tb.fileUrl) return;
-    const name = fileNameFromUrl(tb.fileUrl || "") || `${slugify(tb.tieuDe || "thong-bao")}.pdf`;
-    downloadFile(tb.fileUrl, name);
-    markRead(tb.id);
+    setSelected(tb);
+    setDialogOpen(true);
   };
 
   const onRefresh = async () => {
@@ -203,13 +226,21 @@ export default function ThongBaoLatestPage() {
       <div className="flex flex-wrap items-center gap-3 justify-between mb-4">
         <div className="flex gap-4">
           <button
-            className={`pb-2 text-sm ${tab === "all" ? "font-semibold border-b-2 border-black" : "text-gray-600"}`}
+            className={`pb-2 text-sm ${
+              tab === "all"
+                ? "font-semibold border-b-2 border-black"
+                : "text-gray-600"
+            }`}
             onClick={() => setTab("all")}
           >
             Tất cả
           </button>
           <button
-            className={`pb-2 text-sm ${tab === "unread" ? "font-semibold border-b-2 border-black" : "text-gray-600"}`}
+            className={`pb-2 text-sm ${
+              tab === "unread"
+                ? "font-semibold border-b-2 border-black"
+                : "text-gray-600"
+            }`}
             onClick={() => setTab("unread")}
           >
             Chưa đọc
@@ -238,52 +269,38 @@ export default function ThongBaoLatestPage() {
       {/* List */}
       <div className="grid grid-cols-1 gap-3">
         {filtered.length === 0 && !loading && (
-          <div className="text-center text-gray-600 py-8 border rounded-md bg-white">
+          <div className="text-center text-gray-600 py-8 border border-gray-200 rounded-md bg-white">
             Không có thông báo
           </div>
         )}
 
         {filtered.map((tb) => {
           const isRead = readIds.has(tb.id);
-          const hasFile = !!tb.fileUrl;
-          const fname = hasFile ? fileNameFromUrl(tb.fileUrl!) : "";
           return (
             <div
               key={tb.id}
-              className="border rounded-md bg-white p-4 hover:bg-gray-50 cursor-pointer"
+              className="border border-gray-200 rounded-md bg-white p-4 hover:bg-gray-50 cursor-pointer"
               onClick={() => onClickItem(tb)}
-              title={hasFile ? "Bấm để tải PDF & đánh dấu đã đọc" : "Bấm để đánh dấu đã đọc"}
+              title="Bấm để xem chi tiết"
             >
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0" />
                 <div className="min-w-0">
-                  <div className={`text-[15px] font-semibold ${isRead ? "text-gray-700" : "text-gray-900"} line-clamp-1`}>
+                  {/* CHỈ hiển thị tiêu đề + thời gian (đã xóa phần nội dung/preview) */}
+                  <div
+                    className={`text-[15px] font-semibold ${
+                      isRead ? "text-gray-700" : "text-gray-900"
+                    } line-clamp-1`}
+                  >
                     {tb.tieuDe}
                   </div>
-
-                  <div className={`text-[14px] ${isRead ? "text-gray-500" : "text-gray-700"} line-clamp-2`}>
-                    {tb.noiDung}
-                  </div>
-
-                  {/* Hiển thị file nếu có */}
-                  {hasFile && (
-                    <div className="mt-1">
-                      <button
-                        className="text-[13px] underline text-blue-600 hover:text-blue-700"
-                        onClick={(e) => onDownloadClick(e, tb)}
-                        title="Tải tệp PDF"
-                      >
-                        PDF: {fname}
-                      </button>
-                    </div>
-                  )}
-
                   <div className="text-[12px] text-gray-500 mt-1">
                     {formatTimeLabel(tb.createdAt)}
                   </div>
                 </div>
-
-                {!isRead && <div className="ml-auto mt-2 w-2 h-2 bg-blue-500 rounded-full" />}
+                {!isRead && (
+                  <div className="ml-auto mt-2 w-2 h-2 bg-blue-500 rounded-full" />
+                )}
               </div>
             </div>
           );
@@ -303,6 +320,64 @@ export default function ThongBaoLatestPage() {
           </Button>
         )}
       </div>
+
+      {/* DIALOG chi tiết – border-200, thân cuộn dọc, nút theo màu yêu cầu */}
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(v) => {
+          setDialogOpen(v);
+          if (!v) setSelected(null);
+        }}
+      >
+        <DialogContent className="w-[92vw] sm:w-[680px] max-w-2xl p-0 bg-white border border-gray-200 max-h-[80vh] grid grid-rows-[auto,minmax(0,1fr),auto]">
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-bold">
+              {selected?.tieuDe || "Chi tiết thông báo"}
+            </h2>
+            <div className="text-xs text-gray-500 mt-1">
+              {selected?.createdAt ? formatTimeLabel(selected.createdAt) : ""}
+            </div>
+          </div>
+
+          {/* Body (scroll) */}
+          <div className="px-6 py-4 overflow-y-auto overflow-x-hidden">
+            <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-[14px] leading-relaxed text-gray-800">
+              {selected?.noiDung || ""}
+            </div>
+
+            {selected?.fileUrl ? (
+              <div className="mt-4">
+                <Button
+                  className="bg-[#457B9D] hover:bg-[#3e6e8d] text-white border-0"
+                  onClick={() => {
+                    const name =
+                      fileNameFromUrl(selected.fileUrl || "") ||
+                      `${slugify(selected?.tieuDe || "thong-bao")}.pdf`;
+                    downloadFile(selected.fileUrl!, name);
+                  }}
+                >
+                  Tải PDF
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-4 text-sm text-gray-500 italic">
+                Không có tệp đính kèm.
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-3 border-t border-gray-200 flex justify-end gap-2">
+            <Button
+              className="bg-[#BFBFBF] hover:bg-[#a6a6a6] text-black border-0"
+              onClick={() => setDialogOpen(false)}
+            >
+              Quay lại
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

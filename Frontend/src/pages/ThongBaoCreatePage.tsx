@@ -9,7 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { createThongBao } from "@/services/thong-bao.service";
+import { createThongBao } from "@/services/thongBao.service";
 import { toast } from "react-toastify";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -43,7 +43,6 @@ export default function ThongBaoCreatePage() {
       return;
     }
     if (!validatePdf(f)) {
-      // reset input nếu không hợp lệ
       if (fileRef.current) fileRef.current.value = "";
       setFile(null);
       return;
@@ -60,7 +59,7 @@ export default function ThongBaoCreatePage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (file && !validatePdf(file)) return; // double-check
+    if (file && !validatePdf(file)) return;
 
     try {
       setLoading(true);
@@ -68,11 +67,7 @@ export default function ThongBaoCreatePage() {
       if (!res.result) throw new Error(res.message || "Tạo thông báo thất bại");
 
       toast.success("Tạo thông báo thành công");
-
-      // 1) Reset form + clear file input
       resetForm();
-
-      // 2) Phát event để khay thông báo tăng badge +1
       window.dispatchEvent(new CustomEvent("thongbao:new"));
     } catch (err: any) {
       toast.error(err?.message || "Tạo thông báo thất bại");
@@ -109,6 +104,7 @@ export default function ThongBaoCreatePage() {
         <div>
           <label className="block text-sm font-medium mb-1">Tiêu đề</label>
           <Input
+            className="border border-gray-200"
             value={tieuDe}
             onChange={(e) => setTieuDe(e.target.value)}
             required
@@ -119,7 +115,7 @@ export default function ThongBaoCreatePage() {
         <div>
           <label className="block text-sm font-medium mb-1">Nội dung</label>
           <textarea
-            className="border rounded-md w-full p-2 min-h-[160px]"
+            className="border border-gray-200 rounded-md w-full p-2 min-h-[160px]"
             value={noiDung}
             onChange={(e) => setNoiDung(e.target.value)}
             required
@@ -136,6 +132,7 @@ export default function ThongBaoCreatePage() {
             type="file"
             accept="application/pdf,.pdf"
             onChange={onFileChange}
+            className="border border-gray-200"
           />
           <p className="text-xs text-gray-500 mt-1">
             Chỉ chấp nhận tệp PDF. Dung lượng tối đa 5MB.

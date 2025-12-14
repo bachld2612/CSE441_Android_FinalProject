@@ -1,25 +1,87 @@
 // src/pages/DotBaoVePage.tsx
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import {
+  Plus,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "@/components/ui/pagination";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuthStore } from "@/stores/authStore";
-import { createDotBaoVe, updateDotBaoVe, getDotBaoVePage, type DotBaoVeRequest, type DotBaoVeResponse } from "@/services/dot-bao-ve.service";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  createDotBaoVe,
+  updateDotBaoVe,
+  getDotBaoVePage,
+  type DotBaoVeRequest,
+  type DotBaoVeResponse,
+} from "@/services/dotBaoVe.service";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 function ColoredPencil({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <rect x="5" y="12" width="12" height="4" rx="1" fill="#FFC107" transform="rotate(-45 5 12)" />
-      <rect x="6" y="13" width="10" height="2" rx="1" fill="#FF9800" transform="rotate(-45 6 13)" />
+      <rect
+        x="5"
+        y="12"
+        width="12"
+        height="4"
+        rx="1"
+        fill="#FFC107"
+        transform="rotate(-45 5 12)"
+      />
+      <rect
+        x="6"
+        y="13"
+        width="10"
+        height="2"
+        rx="1"
+        fill="#FF9800"
+        transform="rotate(-45 6 13)"
+      />
       <polygon points="18,6 20.5,3.5 22,5 19.5,7.5" fill="#212121" />
-      <rect x="3" y="14" width="3" height="4" rx="0.8" fill="#FF5C8A" transform="rotate(-45 3 14)" />
+      <rect
+        x="3"
+        y="14"
+        width="3"
+        height="4"
+        rx="0.8"
+        fill="#FF5C8A"
+        transform="rotate(-45 3 14)"
+      />
       <path d="M18 6 L20.5 3.5" stroke="white" strokeWidth="0.6" />
     </svg>
   );
@@ -54,7 +116,11 @@ export default function DotBaoVePage() {
   const fetchPage = async (p = page) => {
     setLoading(true);
     try {
-      const res = await getDotBaoVePage({ page: p, size, sort: "updatedAt,DESC" });
+      const res = await getDotBaoVePage({
+        page: p,
+        size,
+        sort: "updatedAt,DESC",
+      });
       setRows(res.result?.content ?? []);
       setTotalPages(res.result?.totalPages ?? 0);
     } catch {
@@ -85,10 +151,11 @@ export default function DotBaoVePage() {
   const filtered = useMemo(() => {
     if (!query.trim()) return rows;
     const q = query.toLowerCase().trim();
-    return rows.filter((d) =>
-      (d.tenDotBaoVe ?? "").toLowerCase().includes(q) ||
-      String(d.hocKi ?? "").includes(q) ||
-      `${d.namBatDau ?? ""}-${d.namKetThuc ?? ""}`.includes(q)
+    return rows.filter(
+      (d) =>
+        (d.tenDotBaoVe ?? "").toLowerCase().includes(q) ||
+        String(d.hocKi ?? "").includes(q) ||
+        `${d.namBatDau ?? ""}-${d.namKetThuc ?? ""}`.includes(q)
     );
   }, [rows, query]);
 
@@ -117,8 +184,10 @@ export default function DotBaoVePage() {
   const handleSave = async () => {
     if (!ten.trim()) return toast.error("Tên đợt bảo vệ không được để trống");
     if (!hocKi || Number(hocKi) <= 0) return toast.error("Học kì không hợp lệ");
-    if (!batDau || !ketThuc) return toast.error("Vui lòng chọn thời gian bắt đầu/kết thúc");
-    if (!namBD || !namKT) return toast.error("Vui lòng nhập năm bắt đầu/kết thúc");
+    if (!batDau || !ketThuc)
+      return toast.error("Vui lòng chọn thời gian bắt đầu/kết thúc");
+    if (!namBD || !namKT)
+      return toast.error("Vui lòng nhập năm bắt đầu/kết thúc");
 
     const data: DotBaoVeRequest = {
       tenDotBaoVe: ten.trim(),
@@ -131,7 +200,9 @@ export default function DotBaoVePage() {
 
     setSubmitting(true);
     try {
-      const res = editing ? await updateDotBaoVe(editing.id!, data) : await createDotBaoVe(data);
+      const res = editing
+        ? await updateDotBaoVe(editing.id!, data)
+        : await createDotBaoVe(data);
       if (res.result) {
         toast.success(editing ? "Cập nhật thành công" : "Thêm mới thành công");
         setOpen(false);
@@ -185,9 +256,14 @@ export default function DotBaoVePage() {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-xl bg-white" aria-describedby="dotbv-desc">
+            <DialogContent
+              className="sm:max-w-xl bg-white"
+              aria-describedby="dotbv-desc"
+            >
               <DialogHeader>
-                <DialogTitle>{editing ? "Sửa đợt đồ án" : "Thêm đợt đồ án"}</DialogTitle>
+                <DialogTitle>
+                  {editing ? "Sửa đợt đồ án" : "Thêm đợt đồ án"}
+                </DialogTitle>
                 <DialogDescription id="dotbv-desc" className="sr-only">
                   Biểu mẫu {editing ? "cập nhật" : "tạo mới"} đợt đồ án.
                 </DialogDescription>
@@ -215,7 +291,9 @@ export default function DotBaoVePage() {
                       min={1}
                       max={3}
                       value={hocKi}
-                      onChange={(e) => setHocKi(e.target.value ? Number(e.target.value) : "")}
+                      onChange={(e) =>
+                        setHocKi(e.target.value ? Number(e.target.value) : "")
+                      }
                       autoComplete="off"
                       placeholder="1 | 2 | 3"
                       className="border border-gray-300"
@@ -278,7 +356,9 @@ export default function DotBaoVePage() {
                       id="namBDInput"
                       type="number"
                       value={namBD}
-                      onChange={(e) => setNamBD(e.target.value ? Number(e.target.value) : "")}
+                      onChange={(e) =>
+                        setNamBD(e.target.value ? Number(e.target.value) : "")
+                      }
                       autoComplete="off"
                       placeholder="2025"
                       className="border border-gray-300"
@@ -290,7 +370,9 @@ export default function DotBaoVePage() {
                       id="namKTInput"
                       type="number"
                       value={namKT}
-                      onChange={(e) => setNamKT(e.target.value ? Number(e.target.value) : "")}
+                      onChange={(e) =>
+                        setNamKT(e.target.value ? Number(e.target.value) : "")
+                      }
                       autoComplete="off"
                       placeholder="2026"
                       className="border border-gray-300"
@@ -334,7 +416,13 @@ export default function DotBaoVePage() {
             name="searchDotBaoVe"
             autoComplete="off"
           />
-          <Button variant="outline" size="icon" aria-label="Tìm kiếm" title="Tìm kiếm" className="border border-gray-300">
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Tìm kiếm"
+            title="Tìm kiếm"
+            className="border border-gray-300"
+          >
             <Search className="w-4 h-4" />
           </Button>
         </div>
@@ -344,35 +432,59 @@ export default function DotBaoVePage() {
       <Table className="mt-6 rounded-lg overflow-hidden shadow-sm border border-gray-300">
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead className="text-center font-semibold border border-gray-300 w-[40%]">Tên đợt</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300 w-[10%]">Học kì</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300 w-[25%]">Thời gian</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300 w-[15%]">Năm học</TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300 w-[40%]">
+              Tên đợt
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300 w-[10%]">
+              Học kì
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300 w-[25%]">
+              Thời gian
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300 w-[15%]">
+              Năm học
+            </TableHead>
             {canManage && (
-              <TableHead className="text-center font-semibold border border-gray-300 w-[10%]">Hành động</TableHead>
+              <TableHead className="text-center font-semibold border border-gray-300 w-[10%]">
+                Hành động
+              </TableHead>
             )}
           </TableRow>
         </TableHeader>
         <TableBody>
           {loading ? (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={canManage ? 5 : 4}>
+              <TableCell
+                className="text-center border border-gray-300"
+                colSpan={canManage ? 5 : 4}
+              >
                 Đang tải…
               </TableCell>
             </TableRow>
           ) : filtered.length === 0 ? (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={canManage ? 5 : 4}>
+              <TableCell
+                className="text-center border border-gray-300"
+                colSpan={canManage ? 5 : 4}
+              >
                 Không có dữ liệu
               </TableCell>
             </TableRow>
           ) : (
             filtered.map((d) => (
-              <TableRow key={`${d.tenDotBaoVe}-${d.thoiGianBatDau}-${d.namBatDau}`} className="hover:bg-gray-50 transition-colors">
-                <TableCell className="text-center border border-gray-300">{d.tenDotBaoVe}</TableCell>
-                <TableCell className="text-center border border-gray-300">{d.hocKi}</TableCell>
+              <TableRow
+                key={`${d.tenDotBaoVe}-${d.thoiGianBatDau}-${d.namBatDau}`}
+                className="hover:bg-gray-50 transition-colors"
+              >
                 <TableCell className="text-center border border-gray-300">
-                  {d.thoiGianBatDau?.slice(0, 10)} → {d.thoiGianKetThuc?.slice(0, 10)}
+                  {d.tenDotBaoVe}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {d.hocKi}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {d.thoiGianBatDau?.slice(0, 10)} →{" "}
+                  {d.thoiGianKetThuc?.slice(0, 10)}
                 </TableCell>
                 <TableCell className="text-center border border-gray-300">
                   {d.namBatDau} - {d.namKetThuc}
@@ -403,9 +515,14 @@ export default function DotBaoVePage() {
           <PaginationContent className="flex items-center gap-2">
             <PaginationItem>
               <button
-                onClick={(e) => { e.preventDefault(); if (page > 0) setAndFetch(page - 1); }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page > 0) setAndFetch(page - 1);
+                }}
                 className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
-                  page === 0 ? "pointer-events-none opacity-50" : "hover:bg-gray-200"
+                  page === 0
+                    ? "pointer-events-none opacity-50"
+                    : "hover:bg-gray-200"
                 }`}
                 aria-label="Trang trước"
               >
@@ -416,9 +533,14 @@ export default function DotBaoVePage() {
             {Array.from({ length: totalPages }, (_, i) => (
               <PaginationItem key={i}>
                 <button
-                  onClick={(e) => { e.preventDefault(); setAndFetch(i); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setAndFetch(i);
+                  }}
                   className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 ${
-                    page === i ? "bg-[#2F80ED] text-white font-semibold" : "bg-gray-100 hover:bg-gray-200"
+                    page === i
+                      ? "bg-[#2F80ED] text-white font-semibold"
+                      : "bg-gray-100 hover:bg-gray-200"
                   }`}
                   aria-current={page === i ? "page" : undefined}
                   aria-label={`Trang ${i + 1}`}
@@ -430,9 +552,14 @@ export default function DotBaoVePage() {
 
             <PaginationItem>
               <button
-                onClick={(e) => { e.preventDefault(); if (page + 1 < totalPages) setAndFetch(page + 1); }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page + 1 < totalPages) setAndFetch(page + 1);
+                }}
                 className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-200 bg-gray-100 ${
-                  page + 1 >= totalPages ? "pointer-events-none opacity-50" : "hover:bg-gray-200"
+                  page + 1 >= totalPages
+                    ? "pointer-events-none opacity-50"
+                    : "hover:bg-gray-200"
                 }`}
                 aria-label="Trang sau"
               >

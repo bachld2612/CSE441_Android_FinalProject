@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.bachld.android.core.UserPrefs
 import com.bachld.android.data.remote.client.ApiClient
 import com.bachld.android.data.repository.impl.DeTaiRepositoryImpl
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 import com.bachld.android.databinding.FragmentThongTinDoAnBinding
 import com.bachld.android.ui.viewmodel.DoAnDetailViewModel
 import com.bachld.android.ui.viewmodel.SharedDeTaiViewModel
@@ -31,6 +31,7 @@ class ThongTinDoAnFragment : Fragment() {
 
     private val shared by activityViewModels<SharedDeTaiViewModel>()
 
+    @Suppress("unused")
     private val repo by lazy {
         DeTaiRepositoryImpl(
             api = ApiClient.deTaiApi,
@@ -48,7 +49,9 @@ class ThongTinDoAnFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentThongTinDoAnBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -56,10 +59,18 @@ class ThongTinDoAnFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Nhận tín hiệu từ màn Đăng ký để Toast + reload
+        parentFragmentManager.setFragmentResultListener("dangKyDeTai", viewLifecycleOwner) { _, b ->
+            if (b.getBoolean("changed", false)) {
+                Toast.makeText(requireContext(), "Đăng ký đề tài thành công!", Toast.LENGTH_SHORT).show()
+                vm.load(forceRefresh = true)
+            }
+        }
+
+        // Collect state
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch { vm.project.collect { render(it) } }
-                // (tuỳ chọn) để biết đang lỗi gì
                 launch { vm.error.collect { it?.let { msg ->
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                 } } }
@@ -71,13 +82,11 @@ class ThongTinDoAnFragment : Fragment() {
                 com.bachld.android.R.id.action_navigation_do_an_to_hoan_do_an
             )
         }
-
         binding.btnNopDeCuong.setOnClickListener {
             findNavController().navigate(
                 com.bachld.android.R.id.action_navigation_do_an_to_de_cuong
             )
         }
-
         binding.btnDangKyDeTai.setOnClickListener {
             findNavController().navigate(
                 com.bachld.android.R.id.action_navigation_do_an_to_dang_ky_do_an
@@ -87,26 +96,29 @@ class ThongTinDoAnFragment : Fragment() {
         vm.load(forceRefresh = true)
     }
 
+    private fun statusLabelVi(status: String?): String = when (status?.uppercase(Locale.ROOT)) {
+        "ACCEPTED" -> "Đã duyệt"
+        "PENDING"  -> "Chờ xét duyệt"
+        "CANCELED" -> "Bị hủy"
+        else       -> "Không rõ"
+    }
+
     private fun render(p: DeTaiResponse?) = with(binding) {
         if (p == null) {
-            // CHƯA CÓ ĐỀ TÀI
             layoutDaDangKy.visibility = View.GONE
             layoutChuaDangKy.visibility = View.VISIBLE
+            layoutTopState.visibility = View.VISIBLE
+            btnDangKyDeTai.visibility = View.VISIBLE
+            btnDeNghiHoan.visibility = View.VISIBLE
+            tvTienDo.visibility = View.GONE
 
-            // ✅ Quan trọng: bật lại hai nút khi chưa có đề tài
-            layoutTopState.visibility   = View.VISIBLE
-            btnDangKyDeTai.visibility   = View.VISIBLE
-            btnDeNghiHoan.visibility    = View.VISIBLE
-
-            // (tuỳ chọn) dọn text/ẩn GVHD
-            tvTrangThai.text = ""
             tvDeTai.text = ""
             tvGvhd.visibility = View.GONE
-
+            tvTrangThai.visibility = View.GONE
+            btnNopDeCuong.visibility = View.GONE
             return@with
         }
 
-        // ĐÃ CÓ ĐỀ TÀI
         shared.setDeTaiId(p.id)
 
         layoutDaDangKy.visibility = View.VISIBLE
@@ -123,24 +135,13 @@ class ThongTinDoAnFragment : Fragment() {
         }
 
         val statusUpper = p.status?.toString()?.uppercase(Locale.ROOT)
-        val isAccepted = statusUpper == "ACCEPTED" || statusUpper == "ĐÃ DUYỆT"
+        val isAccepted  = statusUpper == "ACCEPTED"
+        layoutTopState.visibility = if (isAccepted) View.GONE else View.VISIBLE
 
-        if (isAccepted) {
-            // ✅ Đã duyệt → ẩn 2 nút
-            btnDangKyDeTai.visibility = View.GONE
-            btnDeNghiHoan.visibility  = View.GONE
-            // (tuỳ chọn) ẩn dải thông tin trên cùng:
-            // layoutTopState.visibility = View.GONE
-        } else {
-            // ✅ Chưa duyệt → hiện 2 nút
-            btnDangKyDeTai.visibility = View.VISIBLE
-            btnDeNghiHoan.visibility  = View.VISIBLE
-            layoutTopState.visibility = View.VISIBLE
-        }
-
-        tvTrangThai.text = "Trạng thái: ${p.status}"
+        btnNopDeCuong.visibility = if (isAccepted) View.VISIBLE else View.GONE
+        tvTrangThai.visibility = View.VISIBLE
+        tvTrangThai.text = "Trạng thái: ${statusLabelVi(statusUpper)}"
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

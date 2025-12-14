@@ -39,10 +39,10 @@ public class DotBaoVeController {
     @GetMapping
     public ApiResponse<Page<DotBaoVeResponse>> findAllDotBaoVe(
             @PageableDefault(
-            page = 0,
-            size = 10,
-            sort = "updatedAt",
-            direction = Sort.Direction.DESC) Pageable pageable
+                    page = 0,
+                    size = 10,
+                    sort = "updatedAt",
+                    direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ApiResponse.<Page<DotBaoVeResponse>>builder()
                 .result(dotBaoVeService.findAllDotBaoVe(pageable))

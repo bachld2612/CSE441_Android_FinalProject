@@ -4,6 +4,7 @@ import com.bachld.project.backend.dto.ApiResponse;
 import com.bachld.project.backend.dto.request.lop.LopRequest;
 import com.bachld.project.backend.dto.response.lop.LopResponse;
 import com.bachld.project.backend.service.impl.LopService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -37,7 +38,7 @@ public class LopController {
     }
 
     @PostMapping
-    public ApiResponse<LopResponse> createLop(@RequestBody LopRequest lopRequest) {
+    public ApiResponse<LopResponse> createLop(@RequestBody @Valid LopRequest lopRequest) {
 
         return ApiResponse.<LopResponse>builder()
                 .result(lopService.createLop(lopRequest))
@@ -46,7 +47,7 @@ public class LopController {
     }
 
     @PutMapping("{lopId}")
-    public ApiResponse<LopResponse> updateLop(@PathVariable Long lopId, @RequestBody LopRequest lopRequest) {
+    public ApiResponse<LopResponse> updateLop(@PathVariable Long lopId, @RequestBody @Valid LopRequest lopRequest) {
 
         return ApiResponse.<LopResponse>builder()
                 .result(lopService.updateLop(lopRequest, lopId))

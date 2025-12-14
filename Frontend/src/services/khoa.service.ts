@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { ApiResponse } from "@/types/api-response";
+import type { ApiResponse } from "@/types/apiResponse";
 
 // ====================
 // DTO mapping từ backend

@@ -31,11 +31,11 @@ import {
 } from "@/services/sinhVien.service";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { getAllBoMon, type BoMonResponse } from "@/services/bo-mon.service";
+import { getAllBoMon, type BoMonResponse } from "@/services/boMon.service";
 import {
   getGiangVienByBoMonAndSoLuongDeTai,
   type GiangVienInfoResponse,
-} from "@/services/giang-vien.service";
+} from "@/services/giangVien.service";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -52,7 +52,15 @@ import {
   addGiangVienHuongDan,
   type DeTaiGiangVienHuongDanRequest,
 } from "@/services/deTai.service";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { downloadFile } from "@/lib/downloadFile";
 
 const formSchema = z.object({
   boMonId: z.string().nonempty("Vui lòng chọn bộ môn"),
@@ -182,17 +190,18 @@ export default function DangKiGiangVienHuongDan() {
         </BreadcrumbList>
       </Breadcrumb>
 
-
-      <h1 className="text-3xl mt-10 font-bold mb-4 text-center">Đăng ký giảng viên hướng dẫn</h1>
+      <h1 className="text-3xl mt-10 font-bold mb-4 text-center">
+        Đăng ký giảng viên hướng dẫn
+      </h1>
 
       <Table className="mt-6 rounded-lg overflow-hidden shadow-sm border border-gray-300">
         <TableHeader>
           <TableRow className="bg-gray-100">
             <TableHead className="text-center font-semibold border border-gray-300">
-              Mã Sinh Viên
+              Mã sinh viên
             </TableHead>
             <TableHead className="text-center font-semibold border border-gray-300">
-              Giảng Viên
+              Họ và tên
             </TableHead>
             <TableHead className="text-center font-semibold border border-gray-300">
               Hành động
@@ -266,12 +275,19 @@ export default function DangKiGiangVienHuongDan() {
             <p>
               <span className="font-semibold">CV:</span>{" "}
               {(sinhVienDetail.cvUrl && (
-                <a className="text-blue-700 underline" href={sinhVienDetail.cvUrl  ?? "#"} download>
+                <span
+                  className="text-blue-700 underline"
+                  onClick={() =>
+                    downloadFile(
+                      sinhVienDetail.cvUrl!,
+                      `${sinhVienDetail.maSV}_CV.pdf`
+                    )
+                  }
+                >
                   CV sinh viên
-                </a>
+                </span>
               )) ||
                 "Chưa có"}
-                <span> (để định dạng pdf khi tải)</span>
             </p>
           </div>
 

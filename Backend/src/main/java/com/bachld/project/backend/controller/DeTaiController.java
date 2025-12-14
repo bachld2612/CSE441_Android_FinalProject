@@ -8,6 +8,7 @@ import com.bachld.project.backend.dto.response.detai.DeTaiGiangVienHuongDanRespo
 import com.bachld.project.backend.dto.response.detai.DeTaiResponse;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.service.DeTaiService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,7 +28,7 @@ public class DeTaiController {
     DeTaiService deTaiService;
 
     @PostMapping(value = "/dang-ky", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<DeTaiResponse> registerDeTai(@ModelAttribute DeTaiRequest request) {
+    public ApiResponse<DeTaiResponse> registerDeTai(@ModelAttribute @Valid DeTaiRequest request) {
         return ApiResponse.<DeTaiResponse>builder()
                 .result(deTaiService.registerDeTai(request))
                 .build();
@@ -47,7 +48,7 @@ public class DeTaiController {
     @PutMapping("/xet-duyet/{deTaiId}")
     public ApiResponse<DeTaiResponse> approveDeTai(
             @PathVariable Long deTaiId,
-            @RequestBody DeTaiApprovalRequest request) {
+            @RequestBody @Valid DeTaiApprovalRequest request) {
 
         return ApiResponse.<DeTaiResponse>builder()
                 .result(deTaiService.approveDeTai(deTaiId, request))

@@ -6,7 +6,7 @@ import com.squareup.moshi.Moshi
 import com.bachld.android.data.dto.response.auth.MyInfoResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import androidx.core.content.edit
-import com.bachld.android.data.dto.response.DeTaiResponse
+import com.bachld.android.data.dto.response.detai.DeTaiResponse
 
 class UserPrefs(context: Context) {
 

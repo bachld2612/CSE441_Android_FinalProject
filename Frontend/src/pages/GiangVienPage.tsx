@@ -2,12 +2,29 @@ import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog, DialogClose, DialogContent, DialogDescription,
-  DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChevronLeft, ChevronRight, Search, ShieldCheck, Pencil } from "lucide-react";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  ShieldCheck,
+  Pencil,
+} from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,15 +36,23 @@ import {
   createGiangVien,
   importGiangVien,
   createTroLyKhoa,
-  updateGiangVien,                  // NEW
-  type GiangVienUpdateRequest,     // NEW (optional, dùng cho payload)
-} from "@/services/giang-vien.service";
+  updateGiangVien, // NEW
+  type GiangVienUpdateRequest, // NEW (optional, dùng cho payload)
+} from "@/services/giangVien.service";
 import {
   getBoMonWithTBMPage,
   type BoMonWithTruongBoMonResponse,
-} from "@/services/bo-mon.service";
+} from "@/services/boMon.service";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 /* ================== Schema tạo giảng viên ================== */
 const createSchema = z.object({
@@ -66,15 +91,18 @@ export default function GiangVienPage() {
   const [loading, setLoading] = useState(false);
 
   /* ================== Sort server-side ================== */
-  const [sort, setSort] =
-    useState<"maGV,asc" | "maGV,desc" | "hoTen,asc" | "hoTen,desc">("maGV,asc");
+  const [sort, setSort] = useState<
+    "maGV,asc" | "maGV,desc" | "hoTen,asc" | "hoTen,desc"
+  >("maGV,asc");
 
   /* ================== Search client-side ================== */
   const [q, setQ] = useState("");
 
   /* ================== Bộ môn map (id -> tên) ================== */
   const [boMonMap, setBoMonMap] = useState<Record<number, string>>({});
-  const [boMonOptions, setBoMonOptions] = useState<{ id: number; tenBoMon: string }[]>([]);
+  const [boMonOptions, setBoMonOptions] = useState<
+    { id: number; tenBoMon: string }[]
+  >([]);
   const [loadingBoMon, setLoadingBoMon] = useState(false);
 
   /* ================== Dialogs: Create + Import ================== */
@@ -122,7 +150,9 @@ export default function GiangVienPage() {
       try {
         const parsed = JSON.parse(info);
         setRole(parsed?.role ?? null);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
   }, []);
 
@@ -130,7 +160,11 @@ export default function GiangVienPage() {
   const loadBoMonMap = async () => {
     setLoadingBoMon(true);
     try {
-      const res = await getBoMonWithTBMPage({ page: 0, size: 1000, sort: "tenBoMon,ASC" });
+      const res = await getBoMonWithTBMPage({
+        page: 0,
+        size: 1000,
+        sort: "tenBoMon,ASC",
+      });
       const list: BoMonWithTruongBoMonResponse[] = res.result?.content ?? [];
       const map: Record<number, string> = {};
       const opts: { id: number; tenBoMon: string }[] = [];
@@ -149,7 +183,11 @@ export default function GiangVienPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res: PageType<GiangVien> = await getGiangVienPage({ page, size, sort });
+      const res: PageType<GiangVien> = await getGiangVienPage({
+        page,
+        size,
+        sort,
+      });
       setData(res.content);
       setTotalPages(res.totalPages);
     } finally {
@@ -157,15 +195,19 @@ export default function GiangVienPage() {
     }
   };
 
-  useEffect(() => { loadBoMonMap(); }, []);
-  useEffect(() => { loadData(); }, [page, size, sort]);
+  useEffect(() => {
+    loadBoMonMap();
+  }, []);
+  useEffect(() => {
+    loadData();
+  }, [page, size, sort]);
 
   /* ================== Filter client-side ================== */
   const filtered = useMemo(() => {
     const kw = q.trim().toLowerCase();
     if (!kw) return data;
     return data.filter((x) => {
-      const bmName = x.boMonId != null ? (boMonMap[x.boMonId] ?? "") : "";
+      const bmName = x.boMonId != null ? boMonMap[x.boMonId] ?? "" : "";
       return (
         x.maGV?.toLowerCase().includes(kw) ||
         x.hoTen?.toLowerCase().includes(kw) ||
@@ -203,7 +245,9 @@ export default function GiangVienPage() {
         } else if (code === 1025) {
           toast.error("Mã giảng viên đã tồn tại", { autoClose: 3000 });
         } else {
-          toast.error(`Thêm giảng viên thất bại: ${err.message}`, { autoClose: 3000 });
+          toast.error(`Thêm giảng viên thất bại: ${err.message}`, {
+            autoClose: 3000,
+          });
         }
       } else {
         toast.error("Thêm giảng viên thất bại", { autoClose: 3000 });
@@ -214,7 +258,9 @@ export default function GiangVienPage() {
   /* ================== Handlers: Import ================== */
   const onImport = async () => {
     if (!file) {
-      toast.error("Vui lòng chọn file Excel trước khi import", { autoClose: 3000 });
+      toast.error("Vui lòng chọn file Excel trước khi import", {
+        autoClose: 3000,
+      });
       return;
     }
     try {
@@ -245,13 +291,20 @@ export default function GiangVienPage() {
       if (res.code === 1000) {
         toast.success("Đặt Trợ lý khoa thành công", { autoClose: 3000 });
       } else {
-        toast.success(res.message ?? "Thực hiện thành công", { autoClose: 3000 });
+        toast.success(res.message ?? "Thực hiện thành công", {
+          autoClose: 3000,
+        });
       }
     } catch (err) {
       if (err instanceof AxiosError) {
-        toast.error(`Không thể đặt Trợ lý khoa: ${err.response?.data?.message || err.message}`, {
-          autoClose: 3000,
-        });
+        toast.error(
+          `Không thể đặt Trợ lý khoa: ${
+            err.response?.data?.message || err.message
+          }`,
+          {
+            autoClose: 3000,
+          }
+        );
       } else {
         toast.error("Không thể đặt Trợ lý khoa", { autoClose: 3000 });
       }
@@ -275,7 +328,9 @@ export default function GiangVienPage() {
 
   const onSubmitUpdate = async (values: UpdateFormValues) => {
     if (!editing?.id) {
-      toast.error("Không xác định được giảng viên cần sửa", { autoClose: 3000 });
+      toast.error("Không xác định được giảng viên cần sửa", {
+        autoClose: 3000,
+      });
       return;
     }
     const payload: GiangVienUpdateRequest = {
@@ -296,7 +351,9 @@ export default function GiangVienPage() {
         setEditing(null);
         loadData();
       } else {
-        toast.error(res.message ?? "Cập nhật giảng viên thất bại", { autoClose: 3000 });
+        toast.error(res.message ?? "Cập nhật giảng viên thất bại", {
+          autoClose: 3000,
+        });
       }
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -319,7 +376,22 @@ export default function GiangVienPage() {
 
   return (
     <div>
-      <h1 className="text-3xl text-center mt-10 font-bold mb-4">Danh sách giảng viên</h1>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Trang chủ</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>
+            <BreadcrumbLink className="font-bold" href="#">
+              Giảng viên
+            </BreadcrumbLink>
+          </BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <h1 className="text-3xl text-center mt-5 font-bold mb-4">
+        Danh sách giảng viên
+      </h1>
 
       {/* Controls: Quyền + Sort + Search */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -334,7 +406,9 @@ export default function GiangVienPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[500px] bg-white border-none rounded-lg shadow-lg">
                 <DialogHeader>
-                  <DialogTitle className="text-center">Thêm giảng viên</DialogTitle>
+                  <DialogTitle className="text-center">
+                    Thêm giảng viên
+                  </DialogTitle>
                   <DialogDescription className="text-center">
                     Nhập thông tin giảng viên theo biểu mẫu bên dưới.
                   </DialogDescription>
@@ -461,7 +535,10 @@ export default function GiangVienPage() {
                         Trở về
                       </Button>
                     </DialogClose>
-                    <Button type="submit" className="bg-[#457B9D] text-white hover:bg-[#35607a]">
+                    <Button
+                      type="submit"
+                      className="bg-[#457B9D] text-white hover:bg-[#35607a]"
+                    >
                       Thêm giảng viên
                     </Button>
                   </DialogFooter>
@@ -479,14 +556,20 @@ export default function GiangVienPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[480px] bg-white border-none rounded-lg shadow-lg">
                 <DialogHeader>
-                  <DialogTitle className="text-center">Import giảng viên</DialogTitle>
+                  <DialogTitle className="text-center">
+                    Import giảng viên
+                  </DialogTitle>
                   <DialogDescription className="text-center">
                     Tải file Excel mẫu, điền thông tin rồi upload.
                   </DialogDescription>
                 </DialogHeader>
 
                 <div className="mt-2 space-y-3">
-                  <a className="text-blue-600 underline" download href="/assets/giangvien.xlsx">
+                  <a
+                    className="text-blue-600 underline"
+                    download
+                    href="/assets/giangvien.xlsx"
+                  >
                     Tải file mẫu
                   </a>
                   <Input
@@ -503,7 +586,10 @@ export default function GiangVienPage() {
                       Trở về
                     </Button>
                   </DialogClose>
-                  <Button onClick={onImport} className="bg-[#457B9D] text-white hover:bg-[#35607a]">
+                  <Button
+                    onClick={onImport}
+                    className="bg-[#457B9D] text-white hover:bg-[#35607a]"
+                  >
                     Thực hiện import
                   </Button>
                 </DialogFooter>
@@ -519,7 +605,10 @@ export default function GiangVienPage() {
             <select
               className="border border-gray-300 rounded px-2 py-1"
               value={sort}
-              onChange={(e) => { setSort(e.target.value as typeof sort); setPage(0); }}
+              onChange={(e) => {
+                setSort(e.target.value as typeof sort);
+                setPage(0);
+              }}
             >
               <option value="maGV,asc">Mã GV ↑</option>
               <option value="maGV,desc">Mã GV ↓</option>
@@ -530,7 +619,9 @@ export default function GiangVienPage() {
 
           <form
             className="flex items-center gap-1"
-            onSubmit={(e) => { e.preventDefault(); /* filter realtime */ }}
+            onSubmit={(e) => {
+              e.preventDefault(); /* filter realtime */
+            }}
           >
             <Input
               type="text"
@@ -539,7 +630,11 @@ export default function GiangVienPage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
-            <Button type="submit" className="h-10 border border-gray-300" variant="outline">
+            <Button
+              type="submit"
+              className="h-10 border border-gray-300"
+              variant="outline"
+            >
               <Search />
             </Button>
           </form>
@@ -550,16 +645,34 @@ export default function GiangVienPage() {
       <Table className="mt-6 rounded-lg overflow-hidden shadow-sm border border-gray-300">
         <TableHeader>
           <TableRow className="bg-gray-100">
-            <TableHead className="text-center font-semibold border border-gray-300">STT</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Mã GV</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Họ tên</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Bộ môn</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">SĐT</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Học vị</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Học hàm</TableHead>
-            <TableHead className="text-center font-semibold border border-gray-300">Email</TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              STT
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Mã GV
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Họ tên
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Bộ môn
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              SĐT
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Học vị
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Học hàm
+            </TableHead>
+            <TableHead className="text-center font-semibold border border-gray-300">
+              Email
+            </TableHead>
             {showActionCol && (
-              <TableHead className="text-center font-semibold border border-gray-300">Hành động</TableHead>
+              <TableHead className="text-center font-semibold border border-gray-300">
+                Hành động
+              </TableHead>
             )}
           </TableRow>
         </TableHeader>
@@ -567,7 +680,10 @@ export default function GiangVienPage() {
         <TableBody>
           {!loading && filtered.length === 0 && (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={totalCols}>
+              <TableCell
+                className="text-center border border-gray-300"
+                colSpan={totalCols}
+              >
                 Không có dữ liệu
               </TableCell>
             </TableRow>
@@ -575,57 +691,79 @@ export default function GiangVienPage() {
 
           {loading && (
             <TableRow>
-              <TableCell className="text-center border border-gray-300" colSpan={totalCols}>
+              <TableCell
+                className="text-center border border-gray-300"
+                colSpan={totalCols}
+              >
                 Đang tải dữ liệu...
               </TableCell>
             </TableRow>
           )}
 
-          {!loading && filtered.map((gv, i) => (
-            <TableRow key={gv.id ?? `${gv.maGV}-${i}`} className="hover:bg-gray-50 transition-colors">
-              <TableCell className="text-center border border-gray-300">{page * size + i + 1}</TableCell>
-              <TableCell className="text-center border border-gray-300 font-medium">{gv.maGV}</TableCell>
-              <TableCell className="text-center border border-gray-300">{gv.hoTen}</TableCell>
-              <TableCell className="text-center border border-gray-300">
-                {gv.boMonId != null
-                  ? (boMonMap[gv.boMonId] ?? (loadingBoMon ? "Đang tải..." : "-"))
-                  : "-"}
-              </TableCell>
-              <TableCell className="text-center border border-gray-300">{gv.soDienThoai ?? "-"}</TableCell>
-              <TableCell className="text-center border border-gray-300">{gv.hocVi ?? "-"}</TableCell>
-              <TableCell className="text-center border border-gray-300">{gv.hocHam ?? "-"}</TableCell>
-              <TableCell className="text-center border border-gray-300">{gv.email ?? "-"}</TableCell>
-
-              {showActionCol && (
+          {!loading &&
+            filtered.map((gv, i) => (
+              <TableRow
+                key={gv.id ?? `${gv.maGV}-${i}`}
+                className="hover:bg-gray-50 transition-colors"
+              >
                 <TableCell className="text-center border border-gray-300">
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border border-gray-300"
-                      onClick={() => openEditDialog(gv)}
-                      title="Sửa thông tin"
-                    >
-                      <Pencil className="w-4 h-4 mr-1" />
-                    </Button>
+                  {page * size + i + 1}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300 font-medium">
+                  {gv.maGV}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {gv.hoTen}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {gv.boMonId != null
+                    ? boMonMap[gv.boMonId] ??
+                      (loadingBoMon ? "Đang tải..." : "-")
+                    : "-"}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {gv.soDienThoai ?? "-"}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {gv.hocVi ?? "-"}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {gv.hocHam ?? "-"}
+                </TableCell>
+                <TableCell className="text-center border border-gray-300">
+                  {gv.email ?? "-"}
+                </TableCell>
 
-                    {role === "ADMIN" && (
+                {showActionCol && (
+                  <TableCell className="text-center border border-gray-300">
+                    <div className="flex items-center justify-center gap-2">
                       <Button
                         size="sm"
                         variant="outline"
                         className="border border-gray-300"
-                        onClick={() => onSetTroLyKhoa(gv)}
-                        title="Đặt Trợ lý khoa"
+                        onClick={() => openEditDialog(gv)}
+                        title="Sửa thông tin"
                       >
-                        <ShieldCheck className="w-4 h-4 mr-1" />
-                        TLK
+                        <Pencil className="w-4 h-4 mr-1" />
                       </Button>
-                    )}
-                  </div>
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
+
+                      {role === "ADMIN" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border border-gray-300"
+                          onClick={() => onSetTroLyKhoa(gv)}
+                          title="Đặt Trợ lý khoa"
+                        >
+                          <ShieldCheck className="w-4 h-4 mr-1" />
+                          TLK
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
 
@@ -633,9 +771,14 @@ export default function GiangVienPage() {
       <div className="flex justify-end mx-auto mt-6">
         <div className="flex items-center gap-2">
           <button
-            onClick={(e)=>{ e.preventDefault(); if(page>0) setPage(page-1); }}
+            onClick={(e) => {
+              e.preventDefault();
+              if (page > 0) setPage(page - 1);
+            }}
             className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-300 bg-gray-100 ${
-              page === 0 ? "pointer-events-none opacity-50" : "hover:bg-gray-200"
+              page === 0
+                ? "pointer-events-none opacity-50"
+                : "hover:bg-gray-200"
             }`}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -644,9 +787,14 @@ export default function GiangVienPage() {
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i}
-              onClick={(e)=>{ e.preventDefault(); setPage(i); }}
+              onClick={(e) => {
+                e.preventDefault();
+                setPage(i);
+              }}
               className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-300 ${
-                page === i ? "bg-[#2F80ED] text-white font-semibold" : "bg-gray-100 hover:bg-gray-200"
+                page === i
+                  ? "bg-[#2F80ED] text-white font-semibold"
+                  : "bg-gray-100 hover:bg-gray-200"
               }`}
             >
               {i + 1}
@@ -654,9 +802,14 @@ export default function GiangVienPage() {
           ))}
 
           <button
-            onClick={(e)=>{ e.preventDefault(); if(page + 1 < totalPages) setPage(page + 1); }}
+            onClick={(e) => {
+              e.preventDefault();
+              if (page + 1 < totalPages) setPage(page + 1);
+            }}
             className={`h-8 w-8 flex items-center justify-center rounded-full border border-gray-300 bg-gray-100 ${
-              page + 1 >= totalPages ? "pointer-events-none opacity-50" : "hover:bg-gray-200"
+              page + 1 >= totalPages
+                ? "pointer-events-none opacity-50"
+                : "hover:bg-gray-200"
             }`}
           >
             <ChevronRight className="w-4 h-4" />
@@ -670,7 +823,8 @@ export default function GiangVienPage() {
           <DialogHeader>
             <DialogTitle className="text-center">Sửa giảng viên</DialogTitle>
             <DialogDescription className="text-center">
-              Cập nhật thông tin giảng viên. Để trống mật khẩu nếu không muốn đổi.
+              Cập nhật thông tin giảng viên. Để trống mật khẩu nếu không muốn
+              đổi.
             </DialogDescription>
           </DialogHeader>
 
@@ -771,7 +925,10 @@ export default function GiangVienPage() {
                   Trở về
                 </Button>
               </DialogClose>
-              <Button type="submit" className="bg-[#457B9D] text-white hover:bg-[#35607a]">
+              <Button
+                type="submit"
+                className="bg-[#457B9D] text-white hover:bg-[#35607a]"
+              >
                 Lưu thay đổi
               </Button>
             </DialogFooter>

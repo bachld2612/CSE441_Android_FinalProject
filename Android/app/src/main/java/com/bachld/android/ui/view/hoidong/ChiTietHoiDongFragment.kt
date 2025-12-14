@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -41,12 +42,8 @@ class ChiTietHoiDongFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Nhận tham số từ Bundle (đã navigate bằng Bundle ở HoiDongFragment)
         val hoiDongId  = requireArguments().getLong("hoiDongId")
         val tenHoiDong = requireArguments().getString("tenHoiDong") ?: "Hội đồng"
-
-//        vb.toolbar.title = tenHoiDong
-//        vb.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
 
         vb.rvStudents.layoutManager = LinearLayoutManager(requireContext())
         vb.rvStudents.adapter = svAdapter
@@ -120,6 +117,9 @@ class ChiTietHoiDongFragment : Fragment() {
 
                         // 4) Danh sách sinh viên
                         svAdapter.submit(d.sinhVienList)
+                    }
+                    is UiState.Error -> {
+                        Toast.makeText(requireContext(), st.message ?: "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show()
                     }
                     else -> Unit
                 }

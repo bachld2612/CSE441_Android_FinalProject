@@ -45,7 +45,22 @@ public class ThoiGianThucHienServiceImpl implements ThoiGianThucHienService {
     public ThoiGianThucHienResponse updateThoiGianThucHien(ThoiGianThucHienRequest thoiGianThucHienRequest, Long thoiGianThucHienId) {
         var thoiGianThucHien = thoiGianThucHienRepository.findById(thoiGianThucHienId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.THOI_GIAN_THUC_HIEN_NOT_FOUND));
-        DotBaoVe dotBaoVe = validateThoiGianThucHien(thoiGianThucHienRequest);
+
+        DotBaoVe dotBaoVe = dotBaoVeRepository.findById(thoiGianThucHienRequest.getDotBaoVeId())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DOT_BAO_VE_NOT_FOUND));
+        if(thoiGianThucHienRequest.getThoiGianBatDau().isAfter(thoiGianThucHienRequest.getThoiGianKetThuc())) {
+            throw new ApplicationException(ErrorCode.INVALID_TIME_RANGE);
+        }
+        if (thoiGianThucHienRequest.getThoiGianBatDau().isBefore(dotBaoVe.getThoiGianBatDau()) ||
+                thoiGianThucHienRequest.getThoiGianKetThuc().isAfter(dotBaoVe.getThoiGianKetThuc())) {
+            throw new ApplicationException(ErrorCode.INVALID_TIME_RANGE);
+        }
+        if (thoiGianThucHien.getCongViec() != thoiGianThucHienRequest.getCongViec()
+                && thoiGianThucHienRepository.existsByDotBaoVeAndCongViec
+                (dotBaoVe, thoiGianThucHienRequest.getCongViec())) {
+            throw new ApplicationException(ErrorCode.CONG_VIEC_EXISTED);
+        }
+
         thoiGianThucHienMapper.updateThoiGianThucHienFromDto(thoiGianThucHienRequest, thoiGianThucHien);
         return thoiGianThucHienMapper.toThoiGianThucHienResponse(thoiGianThucHienRepository.save(thoiGianThucHien));
     }

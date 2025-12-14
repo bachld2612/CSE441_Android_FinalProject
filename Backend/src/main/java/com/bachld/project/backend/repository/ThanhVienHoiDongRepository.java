@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ThanhVienHoiDongRepository extends JpaRepository<ThanhVienHoiDong, Long> {
 
@@ -22,4 +23,5 @@ public interface ThanhVienHoiDongRepository extends JpaRepository<ThanhVienHoiDo
             @Param("hoiDongIds") Collection<Long> hoiDongIds
     );
 
+    List<ThanhVienHoiDong> findByHoiDong_Id(Long hoiDongId);
 }

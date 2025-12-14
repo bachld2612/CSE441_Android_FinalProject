@@ -14,4 +14,5 @@ public class SinhVienSupervisedResponse {
     String tenLop;
     String soDienThoai;
     String tenDeTai;
+    String cvUrl;
 }
