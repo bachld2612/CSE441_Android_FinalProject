@@ -1,6 +1,8 @@
 package com.bachld.project.backend.repository;
 
 import com.bachld.project.backend.entity.DeTai;
+import com.bachld.project.backend.entity.DotBaoVe;
+import com.bachld.project.backend.entity.GiangVien;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -20,4 +22,6 @@ public interface DeTaiRepository extends JpaRepository<DeTai, Long> {
     Optional<DeTai> findBySinhVienThucHien_TaiKhoan_EmailIgnoreCase(String email);
     List<DeTai> findBySinhVienThucHien_MaSVIgnoreCaseAndDotBaoVe_Id(String maSv, Long dotId);
     List<DeTai> findBySinhVienThucHien_MaSVIgnoreCaseAndDotBaoVe_IdAndTrangThai(String maSv, Long dotId, DeTaiState trangThai);
+
+    List<DeTai> findByGvhdAndDotBaoVe(GiangVien gvhd, DotBaoVe dotBaoVe);
 }

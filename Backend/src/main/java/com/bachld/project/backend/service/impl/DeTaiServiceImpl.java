@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -70,6 +71,11 @@ public class DeTaiServiceImpl implements DeTaiService {
         String accountEmail = getCurrentUsername();
         SinhVien sv = sinhVienRepository.findByTaiKhoan_Email(accountEmail)
                         .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
+        Optional<GiangVien> giangVien = giangVienRepository.findById(request.getGvhdId());
+
+        if (giangVien.isEmpty()) {
+            throw new IllegalArgumentException("Giảng viên hướng dẫn không tồn tại trong hệ thống");
+        }
 
         if (sv.getGpa() < 2.0){
             throw new IllegalArgumentException("Sinh viên dưới 2.0 GPA không được tham gia đồ án");
@@ -111,9 +117,6 @@ public class DeTaiServiceImpl implements DeTaiService {
             deTaiMapper.update(request, deTai);
         }
 
-
-
-
         deTai.setTrangThai(DeTaiState.PENDING);
 
         if (request.getFileTongQuan() != null && !request.getFileTongQuan().isEmpty()) {
@@ -130,6 +133,12 @@ public class DeTaiServiceImpl implements DeTaiService {
         }
 
         deTai.setDotBaoVe(dotBaoVe);
+
+        List<DeTai> deTais = deTaiRepository.findByGvhdAndDotBaoVe(giangVien.get(), dotBaoVe);
+        if(deTais.size() > 10){
+            throw new IllegalArgumentException("Giảng viên chỉ được hướng dẫn tối đa 10 đề tài");
+        }
+
         DeTai saved = deTaiRepository.save(deTai);
         return deTaiMapper.toDeTaiResponse(saved);
     }
@@ -183,13 +192,23 @@ public class DeTaiServiceImpl implements DeTaiService {
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
     @Override
     public DeTaiResponse approveDeTai(Long deTaiId, DeTaiApprovalRequest request) {
-        DeTai detai = deTaiRepository.findById(deTaiId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
+        Optional<DeTai> deTaiOptional = deTaiRepository.findById(deTaiId);
+
+        if(deTaiOptional.isEmpty()) {
+            throw new IllegalArgumentException("Đề tài không tồn tại trong hệ thống");
+        }
+
+        DeTai detai = deTaiOptional.get();
 
         String email = getCurrentUsername();
         GiangVien gv = giangVienRepository.findByTaiKhoan_Email((email))
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_GVHD_OF_DE_TAI));
         Long gvhdId = gv.getId();
+
+        List<DeTai> deTais = deTaiRepository.findByGvhdAndDotBaoVe(detai.getGvhd(), detai.getDotBaoVe());
+        if(deTais.size() > 10 && request.getApproved() == true){
+            throw new IllegalArgumentException("Giảng viên chỉ được hướng dẫn tối đa 10 đề tài");
+        }
 
         if (detai.getGvhd() == null || !gvhdId.equals(detai.getGvhd().getId())) {
             throw new IllegalArgumentException("Chỉ giảng viên hướng dẫn mới được duyệt hoặc từ chối đề tài");
