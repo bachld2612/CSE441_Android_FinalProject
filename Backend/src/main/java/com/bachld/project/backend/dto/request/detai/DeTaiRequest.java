@@ -13,10 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class DeTaiRequest {
 
-    @NotNull(message = "DE_TAI_GVHD_REQUIRED")
+//    @NotNull(message = "DE_TAI_GVHD_REQUIRED")
     Long gvhdId;
 
-    @NotBlank(message = "DE_TAI_TEN_REQUIRED")
+//    @NotBlank(message = "DE_TAI_TEN_REQUIRED")
     String tenDeTai;
 
     MultipartFile fileTongQuan;

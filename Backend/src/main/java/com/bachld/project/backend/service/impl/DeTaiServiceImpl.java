@@ -9,6 +9,7 @@ import com.bachld.project.backend.entity.DeTai;
 import com.bachld.project.backend.entity.GiangVien;
 import com.bachld.project.backend.entity.SinhVien;
 import com.bachld.project.backend.entity.*;
+import com.bachld.project.backend.enums.CongViec;
 import com.bachld.project.backend.enums.DeTaiState;
 import com.bachld.project.backend.exception.ApplicationException;
 import com.bachld.project.backend.exception.ErrorCode;
@@ -28,6 +29,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,6 +46,8 @@ public class DeTaiServiceImpl implements DeTaiService {
     CloudinaryService cloudinaryService;
     DeTaiMapper deTaiMapper;
     TimeGatekeeper timeGatekeeper;
+    private static final ZoneId ZONE_BKK = ZoneId.of("Asia/Bangkok");
+    private final ThoiGianThucHienRepository thoiGianThucHienRepository;
 
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_GIANG_VIEN', 'SCOPE_TRO_LY_KHOA', 'SCOPE_TRUONG_BO_MON')")
@@ -61,28 +67,65 @@ public class DeTaiServiceImpl implements DeTaiService {
     @PreAuthorize("hasAuthority('SCOPE_SINH_VIEN')")
     @Override
     public DeTaiResponse registerDeTai(DeTaiRequest request) {
-        // get sinh viên
         String accountEmail = getCurrentUsername();
         SinhVien sv = sinhVienRepository.findByTaiKhoan_Email(accountEmail)
                         .orElseThrow(() -> new ApplicationException(ErrorCode.SINH_VIEN_NOT_FOUND));
-        ThoiGianThucHien thoiGianDangKy = timeGatekeeper.validateThoiGianDangKy();
-        DotBaoVe dotBaoVe = thoiGianDangKy.getDotBaoVe();
-        DeTai deTai = sv.getDeTai();
 
+        if (sv.getGpa() < 2.0){
+            throw new IllegalArgumentException("Sinh viên dưới 2.0 GPA không được tham gia đồ án");
+        }
+
+        if(request.getTenDeTai().trim().isEmpty()){
+            throw new IllegalArgumentException("Tên đề tài không được bỏ trống");
+        }
+
+        if(request.getGvhdId() == null){
+            throw new IllegalArgumentException("Giảng viên hướng dẫn không được bỏ trống");
+        }
+
+        LocalDate today = LocalDate.now(ZONE_BKK);
+        Optional<ThoiGianThucHien> thoiGianDangKyOp = thoiGianThucHienRepository
+                .findTopByCongViecAndThoiGianBatDauLessThanEqualAndThoiGianKetThucGreaterThanEqualOrderByThoiGianBatDauDesc(CongViec.DANG_KY_DE_TAI, today, today);
+
+        if (thoiGianDangKyOp.isEmpty()){
+            throw new IllegalArgumentException("Thời gian đăng ký chưa mở, vui lòng liên hệ với phòng đạo tạo để biết thêm chi tiết");
+        }
+
+        DotBaoVe dotBaoVe = thoiGianDangKyOp.get().getDotBaoVe();
+        DeTai deTai = sv.getDeTai();
+        Optional<DeTai> existingDeTai = deTaiRepository.findByTenDeTaiIgnoreCase(request.getTenDeTai());
         if (deTai == null) {
             deTai = deTaiMapper.toDeTai(request);
             deTai.setSinhVienThucHien(sv);
+            if(existingDeTai.isPresent()){
+                throw new IllegalArgumentException("Đề tài đã tồn tại, vui lòng thực hiện đề tài khác ");
+            }
         } else {
             if(deTai.getTrangThai() == DeTaiState.ACCEPTED){
-                throw  new ApplicationException(ErrorCode.DE_TAI_ALREADY_ACCEPTED);
+                    throw new IllegalArgumentException("Đề tài đã được duyệt, không thể đổi");
+            }
+
+            if(existingDeTai.isPresent() && !Objects.equals(deTai.getId(), existingDeTai.get().getId())){
+                throw new IllegalArgumentException("Đề tài đã tồn tại, vui lòng thực hiện đề tài khác ");
             }
             deTaiMapper.update(request, deTai);
         }
 
+
+
+
         deTai.setTrangThai(DeTaiState.PENDING);
 
         if (request.getFileTongQuan() != null && !request.getFileTongQuan().isEmpty()) {
+            if(request.getFileTongQuan().getSize() > 10 * 1024 * 1024){
+                throw new IllegalArgumentException("File tổng quan không được quá 10MB");
+            }
             String url = upload(request.getFileTongQuan());
+
+            String fileExtension = url.substring(url.lastIndexOf(".") + 1).toLowerCase();
+            if (!fileExtension.equals("doc") && !fileExtension.equals("pdf")) {
+                throw new IllegalArgumentException("File tổng quan chỉ chấp nhận định dạng .doc hoặc .pdf");
+            }
             deTai.setTongQuanDeTaiUrl(url);
         }
 
@@ -140,7 +183,6 @@ public class DeTaiServiceImpl implements DeTaiService {
     @PreAuthorize("hasAuthority('SCOPE_GIANG_VIEN')")
     @Override
     public DeTaiResponse approveDeTai(Long deTaiId, DeTaiApprovalRequest request) {
-        // 1) load đề tài
         DeTai detai = deTaiRepository.findById(deTaiId)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DE_TAI_NOT_FOUND));
 
@@ -149,25 +191,25 @@ public class DeTaiServiceImpl implements DeTaiService {
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_GVHD_OF_DE_TAI));
         Long gvhdId = gv.getId();
 
-        // 2) xác thực đúng GVHD
         if (detai.getGvhd() == null || !gvhdId.equals(detai.getGvhd().getId())) {
-            throw new ApplicationException(ErrorCode.NOT_GVHD_OF_DE_TAI);
+            throw new IllegalArgumentException("Chỉ giảng viên hướng dẫn mới được duyệt hoặc từ chối đề tài");
         }
 
-        // 3) chỉ cho duyệt khi đang PENDING
         if (detai.getTrangThai() != DeTaiState.PENDING) {
-            throw new ApplicationException(ErrorCode.DE_TAI_NOT_IN_PENDING_STATUS);
+            throw new IllegalArgumentException("Chỉ đề tài trạng thái đang chờ mới được duyệt hoặc từ chối");
         }
 
-        // 4) chuyển trạng thái + lưu nhận xét
         if (Boolean.TRUE.equals(request.getApproved())) {
             detai.setTrangThai(DeTaiState.ACCEPTED);
         } else if (Boolean.FALSE.equals(request.getApproved())) {
             detai.setTrangThai(DeTaiState.CANCELED);
+            if(request.getNhanXet().trim().isEmpty()){
+                throw new IllegalArgumentException("Lý do chọn đề tài không được bỏ trống khi từ chối");
+            }
+            detai.setNhanXet(request.getNhanXet());
         } else {
-            throw new ApplicationException(ErrorCode.TRANG_THAI_INVALID);
+            throw new IllegalArgumentException("Trạng thái không hợp lệ");
         }
-        detai.setNhanXet(request.getNhanXet());
         return deTaiMapper.toDeTaiResponse(deTaiRepository.save(detai));
     }
 
