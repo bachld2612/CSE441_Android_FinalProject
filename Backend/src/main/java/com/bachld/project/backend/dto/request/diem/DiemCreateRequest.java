@@ -16,18 +16,6 @@ public class DiemCreateRequest {
     String maSV;
     String tenDeTai;
     String nhanXetChung;
-    Double tinhThucTien;
-    Double thoiGianTrinhBay;
-    Double hinhVeSanPham;
-    Double hinhThucTrinhChieu;
-    Double cachTrinhBay;
-    Double noiDungYeuCau;
-    Double tiepNhanThongTinCauHoi;
-    Double traLoiPhanBien;
-    Double traLoiHoiDong;
-    Double sangTao;
-    Double mucDoSuDung;
-    Double trienVongDeTai;
-    Double apDungCongNghe;
+    Double Diem;
 
 }
