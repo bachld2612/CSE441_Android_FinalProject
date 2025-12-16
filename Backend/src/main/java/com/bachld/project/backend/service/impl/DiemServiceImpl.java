@@ -124,8 +124,8 @@ public class DiemServiceImpl implements DiemService {
             throw new IllegalArgumentException("Điểm không được bỏ trống");
         }
 
-        if(request.getDiem() < 0 || request.getDiem() > 0.5){
-            throw new IllegalArgumentException("Điểm chỉ được phép từ 0 đến 0.5");
+        if(request.getDiem() < 0 || request.getDiem() > 10.0){
+            throw new IllegalArgumentException("Điểm chỉ được phép từ 0 đến 10.0");
         }
 
         if(!util.kiemTraThapPhan(request.getDiem())){
