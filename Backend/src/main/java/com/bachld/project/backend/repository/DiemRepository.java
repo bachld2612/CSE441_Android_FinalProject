@@ -7,4 +7,9 @@ import java.util.Optional;
 
 public interface DiemRepository extends JpaRepository<Diem, Long> {
     Optional<Diem> findByMaGVAndMaDeTai(String maGV, Long maDeTai);
+
+    List<Diem> findByMaSVAndMaDeTai(String maSV, Long maDeTai);
+
+    long countByMaSV(String maSV);
+
 }

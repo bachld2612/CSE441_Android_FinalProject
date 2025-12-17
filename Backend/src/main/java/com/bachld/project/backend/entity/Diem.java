@@ -15,14 +15,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class Diem extends BaseEntity{
-
-    String maGV;
+     String maGV;
     Long maDeTai;
-    String tenSV;
     String maSV;
-    String tenDeTai;
+
+    // điểm đại diện: Đề tài có tính cấp thiết & thực tiễn
+    Double diemCapThiet;
+
     @Column(columnDefinition = "TEXT")
     String nhanXetChung;
-    Double Diem;
-
 }
